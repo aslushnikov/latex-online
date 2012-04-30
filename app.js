@@ -31,18 +31,11 @@ app.configure('production', function(){
 // Routes
 
 app.get('/', function(req, res) {
-    /*
-    res.writeHead(200, {'content-type': "application/pdf"});
-    fs.createReadStream("tmp/pdf.pdf", {
-          'bufferSize': 4 * 1024
-    }).pipe(res);
-    */
+    res.render('index.jade');
 });
 
-app.get('/tex=:url', function(req, res) {
-    //res.send(req.params.url);
-    console.log(req.params.url);
-    get(req.params.url, function(err, data) {
+app.get('/compile', function(req, res) {
+    get(req.query['url'], function(err, data) {
         if (err) {
             res.writeHead(500, {'content-type': 'text/plain'});
             res.write(err);

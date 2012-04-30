@@ -2,7 +2,7 @@ var nMemcached = require('memcached')
   , fs = require('fs')
   , exec  = require('child_process').exec;
 
-var memcached = new nMemcached( "localhost:11211", { compressionThreshold:10 } );
+var memcached = new nMemcached( "localhost:11211", { });
 
 // each time a server fails
 memcached.on( "issue", function( issue ){
@@ -34,6 +34,7 @@ function generate(url, callback) {
                 callback(err);
                 return;
             }
+            console.log("Successfully read " + data.length + " bytes");
             console.log("memcaching data");
             memcacheData(encodeURIComponent(url), data);
             console.log("calling callback");
@@ -46,6 +47,11 @@ function generate(url, callback) {
 
 function memcacheData(key, data) {
     memcached.set(key, data, 60 * 60 * 3, function(error, result){
+        if (error) {
+            console.error(error);
+        } else {
+            console.log("" + result.length + " bytes are memcached");
+        }
     });
 }
 
@@ -60,7 +66,7 @@ function get(url, callback) {
             console.log("memcache doesn't have anything for KEY " + key);
             generate(url, callback);
         } else {
-            console.log("fetched from memcache for KEY " + key);
+            console.log("fetched " + result.length + " bytes from memcache for KEY " + key);
             callback(null, result);
         }
     });
