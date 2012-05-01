@@ -1,6 +1,7 @@
 var nMemcached = require('memcached')
   , fs = require('fs')
-  , exec  = require('child_process').exec;
+  , exec  = require('child_process').exec
+  , CACHING = true;
 
 var memcached = new nMemcached( "localhost:11211", { });
 
@@ -35,7 +36,6 @@ function generate(url, callback) {
                 return;
             }
             console.log("Successfully read " + data.length + " bytes");
-            console.log("memcaching data");
             memcacheData(encodeURIComponent(url), data);
             console.log("calling callback");
             callback(null, data);
@@ -46,6 +46,8 @@ function generate(url, callback) {
 }
 
 function memcacheData(key, data) {
+    if (!CACHING) return;
+    console.log("memcaching data");
     memcached.set(key, data, 60 * 60 * 3, function(error, result){
         if (error) {
             console.error(error);
@@ -60,6 +62,12 @@ function retrieveData(key, callback) {
 }
 
 function get(url, callback) {
+    if (!CACHING) {
+        console.log("Caching is OFF, generating");
+        generate(url, callback);
+        return;
+    }
+
     var key = encodeURIComponent(url);
     retrieveData(key, function(err, result) {
         if (err || !result) {
@@ -72,4 +80,7 @@ function get(url, callback) {
     });
 }
 
-module.exports = get;
+module.exports = function(caching) {
+    CACHING = caching;
+    return get;
+}

@@ -5,7 +5,8 @@
 
 var express = require('express')
   , fs = require('fs')
-  , get = require('./process.js')
+  // Pass FALSE as argument if you don't want Memcached
+  , get = require('./process.js')(true);
 
 var app = module.exports = express.createServer();
 
