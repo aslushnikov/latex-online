@@ -17,7 +17,7 @@ module.exports = function Memcached() {
             if (error) {
                 console.error(error);
             } else {
-                console.log("" + result.length + " bytes are memcached");
+                console.log("Memcached response: " + result);
             }
         };
         console.log("memcaching data");
