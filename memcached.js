@@ -2,21 +2,13 @@
  * Wrapping differnt memcached clients
  * */
 
-var nMemcached = require('memcached')
+var mc = require('mc');
 
 module.exports = function Memcached() {
+    this.client = new mc.Client("localhost", mc.Adapter.raw);
     this.connect = function() {
-        this.memcached = new nMemcached( "localhost:11211", { });
-        this.memcached.on( "issue", function( issue ){
-            console.log( "Issue occured on server " + issue.server + ", " + issue.retries  + " attempts left untill failure" );
-        });
-
-        this.memcached.on( "failure", function( issue ){
-            console.log( issue.server + " failed!" );
-        });
-
-        this.memcached.on( "reconnecting", function( issue ){
-            console.log( "reconnecting to server: " + issue.server + " failed!" );
+        this.client.connect(function() {
+              console.log("Connected to the localhost memcache on port 11211!");
         });
     }
 
@@ -29,10 +21,14 @@ module.exports = function Memcached() {
             }
         };
         console.log("memcaching data");
-        this.memcached.set(key, data, 60 * 60 * 3, callback);
+        this.client.set(key, data, { flags: 0, exptime: 60*60*3}, callback);
     }
 
     this.get = function(key, callback) {
-        this.memcached.get(key, callback);
+        this.client.get(key, function(err, response) {
+            if (err) callback(err, null); else {
+                callback(null, response[key].buffer);
+            }
+        });
     }
 }

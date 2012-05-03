@@ -5,6 +5,6 @@
   , "dependencies": {
       "express": "2.5.1"
     , "jade": ">= 0.0.1"
-    , "memcached": ">=0.0.1"
+    , "mc": ">=0.0.1"
   }
 }
