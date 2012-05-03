@@ -6,9 +6,10 @@ var mc = require('mc');
 
 module.exports = function Memcached() {
     this.client = new mc.Client("localhost", mc.Adapter.raw);
-    this.connect = function() {
+    this.connect = function(callback) {
         this.client.connect(function() {
               console.log("Connected to the localhost memcache on port 11211!");
+              if (callback) callback();
         });
     }
 
@@ -30,5 +31,21 @@ module.exports = function Memcached() {
                 callback(null, response[key].buffer);
             }
         });
+    }
+
+    this.stats = function(cmd, callback) {
+        if (typeof(cmd) === 'function') {
+            callback = cmd;
+            cmd = null;
+        }
+        if (cmd) {
+            this.client.stats(cmd, callback);
+        } else {
+            this.client.stats(callback);
+        }
+    }
+
+    this.disconnect = function() {
+        this.client.disconnect();
     }
 }
