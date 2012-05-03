@@ -1,22 +1,10 @@
-var nMemcached = require('memcached')
+var Memcached = require('./memcached.js')
   , fs = require('fs')
   , exec  = require('child_process').exec
   , CACHING = true;
 
-var memcached = new nMemcached( "localhost:11211", { });
+var memcached = new Memcached();
 
-// each time a server fails
-memcached.on( "issue", function( issue ){
-    console.log( "Issue occured on server " + issue.server + ", " + issue.retries  + " attempts left untill failure" );
-});
-
-memcached.on( "failure", function( issue ){
-    console.log( issue.server + " failed!" );
-});
-
-memcached.on( "reconnecting", function( issue ){
-    console.log( "reconnecting to server: " + issue.server + " failed!" );
-});
 
 function generate(url, callback) {
     var cmd = 'cd tmp && sh compile.sh ' + url;
@@ -36,29 +24,15 @@ function generate(url, callback) {
                 return;
             }
             console.log("Successfully read " + data.length + " bytes");
-            memcacheData(encodeURIComponent(url), data);
+            if (CACHING) {
+                memcached.store(encodeURIComponent(url), data);
+            }
             console.log("calling callback");
             callback(null, data);
             console.log("removing file");
             fs.unlink(fileName);
         });
     });
-}
-
-function memcacheData(key, data) {
-    if (!CACHING) return;
-    console.log("memcaching data");
-    memcached.set(key, data, 60 * 60 * 3, function(error, result){
-        if (error) {
-            console.error(error);
-        } else {
-            console.log("" + result.length + " bytes are memcached");
-        }
-    });
-}
-
-function retrieveData(key, callback) {
-    memcached.get(key, callback);
 }
 
 function get(url, callback) {
@@ -69,7 +43,7 @@ function get(url, callback) {
     }
 
     var key = encodeURIComponent(url);
-    retrieveData(key, function(err, result) {
+    memcached.get(key, function(err, result) {
         if (err || !result) {
             console.log("memcache doesn't have anything for KEY " + key);
             generate(url, callback);
@@ -82,5 +56,8 @@ function get(url, callback) {
 
 module.exports = function(caching) {
     CACHING = caching;
+    if (CACHING) {
+        memcached.connect();
+    }
     return get;
 }
