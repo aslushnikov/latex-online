@@ -5,9 +5,22 @@ var Memcached = require('./memcached.js')
 
 var memcached = new Memcached();
 
+function fetch(url, callback) {
+    var cmd = 'sh fetch.sh ' + url;
+    exec(cmd, function (error, stdout, stderr) {
+        if (error !== null) {
+            console.error("cmd ERR: " + error);
+            callback(error);
+            return;
+        }
+        var filename = stdout.split('\n')[0];
+        var md5 = stdout.split('\n')[1];
+        callback(null, filename, md5);
+    });
+}
 
-function generate(url, callback) {
-    var cmd = 'cd tmp && sh compile.sh ' + url;
+function generate(filename, md5, callback) {
+    var cmd = 'sh compile.sh ' + filename;
     console.log(cmd);
     exec(cmd, function (error, stdout, stderr) {
         if (error !== null) {
@@ -15,9 +28,9 @@ function generate(url, callback) {
             callback(error);
             return;
         }
-        var fileName = "./tmp/" + stdout.trim();
-        console.log("reading file " + fileName);
-        fs.readFile(fileName, function(err, data){
+        var newFileName = './tmp/' + stdout.trim();
+        console.log("Compiled file saved as: " + newFileName);
+        fs.readFile(newFileName, function(err, data){
             if (err) {
                 console.error("File read error: " + err);
                 callback(err);
@@ -25,32 +38,36 @@ function generate(url, callback) {
             }
             console.log("Successfully read " + data.length + " bytes");
             if (CACHING) {
-                memcached.store(encodeURIComponent(url), data);
+                memcached.store(md5, data);
             }
             console.log("calling callback");
             callback(null, data);
             console.log("removing file");
-            fs.unlink(fileName);
+            fs.unlink(newFileName);
         });
     });
 }
 
 function get(url, callback) {
-    if (!CACHING) {
-        console.log("Caching is OFF, generating");
-        generate(url, callback);
-        return;
-    }
+    fetch(url, function(err, filename, md5) {
+        console.log("Fetched file saved as " + filename + " with md5 = " + md5);
+        if (err) throw err;
 
-    var key = encodeURIComponent(url);
-    memcached.get(key, function(err, result) {
-        if (err || !result) {
-            console.log("memcache doesn't have anything for KEY " + key);
-            generate(url, callback);
-        } else {
-            console.log("fetched " + result.length + " bytes from memcache for KEY " + key);
-            callback(null, result);
+        if (!CACHING) {
+            console.log("Caching is OFF, generating");
+            generate(filename, md5, callback);
+            return;
         }
+
+        memcached.get(md5, function(err, result) {
+            if (err || !result) {
+                console.log("memcache doesn't have anything for KEY " + md5);
+                generate(filename, md5, callback);
+            } else {
+                console.log("fetched " + result.length + " bytes from memcache for KEY " + md5);
+                callback(null, result);
+            }
+        });
     });
 }
 
