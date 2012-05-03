@@ -24,6 +24,7 @@ This project is a solution that's going to satisfy my needs
 - `node.js` to run server
 - `express.js` for routing & rendering
 - `memcached` for caching compiled documents
+- `md5` utility to hash documents according to their value
 
 # Installation
 
@@ -46,7 +47,6 @@ service:
 
 # Current state of the art
 
-Everything works fine, thanks to the overclocked/mc node-memcached module!
-I'm planning to add caching that relies on md5 hash of the document, and
-additionally host the thing somewhere.
+Everything works just fine, thanks to the overclocked/mc node-memcached module!
+Now I need a place to host the thing
 
