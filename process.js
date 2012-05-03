@@ -9,10 +9,10 @@ function fetch(url, callback) {
     var cmd = 'sh fetch.sh ' + url;
     exec(cmd, function (error, stdout, stderr) {
         if (error !== null) {
-            console.error("cmd ERR: " + error);
             callback(error);
             return;
         }
+
         var filename = stdout.split('\n')[0];
         var md5 = stdout.split('\n')[1];
         callback(null, filename, md5);
@@ -50,8 +50,11 @@ function generate(filename, md5, callback) {
 
 function get(url, callback) {
     fetch(url, function(err, filename, md5) {
+        if (err)  {
+            callback(err);
+            return;
+        }
         console.log("Fetched file saved as " + filename + " with md5 = " + md5);
-        if (err) throw err;
 
         if (!CACHING) {
             console.log("Caching is OFF, generating");
@@ -65,6 +68,8 @@ function get(url, callback) {
                 generate(filename, md5, callback);
             } else {
                 console.log("fetched " + result.length + " bytes from memcache for KEY " + md5);
+                // don't forget to clear the fetched file
+                fs.unlink('./tmp/' + filename);
                 callback(null, result);
             }
         });
