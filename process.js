@@ -1,9 +1,8 @@
 var Memcached = require('./memcached.js')
   , fs = require('fs')
   , exec  = require('child_process').exec
-  , CACHING = true;
 
-var memcached = new Memcached();
+var memcached;
 
 function fetch(url, callback) {
     var cmd = 'sh fetch.sh ' + url;
@@ -19,11 +18,12 @@ function fetch(url, callback) {
     });
 }
 
-function generate(filename, md5, callback) {
+function compile(filename, md5, callback) {
     var cmd = 'sh compile.sh ' + filename;
     console.log(cmd);
     exec(cmd, function (error, stdout, stderr) {
         if (error !== null) {
+            fs.unlink('./tmp/' + filename);
             console.error("cmd ERR: " + error);
             callback(error);
             return;
@@ -37,9 +37,9 @@ function generate(filename, md5, callback) {
                 return;
             }
             console.log("Successfully read " + data.length + " bytes");
-            if (CACHING) {
-                memcached.store(md5, data);
-            }
+
+            memcached.store(md5, data);
+
             console.log("calling callback");
             callback(null, data);
             console.log("removing file");
@@ -56,16 +56,14 @@ function get(url, callback) {
         }
         console.log("Fetched file saved as " + filename + " with md5 = " + md5);
 
-        if (!CACHING) {
-            console.log("Caching is OFF, generating");
-            generate(filename, md5, callback);
-            return;
-        }
-
         memcached.get(md5, function(err, result) {
             if (err || !result) {
-                console.log("memcache doesn't have anything for KEY " + md5);
-                generate(filename, md5, callback);
+                if (err) {
+                    console.log("Memcached GET error: " + err);
+                } else {
+                    console.error("Memcached doesn't have anything for key = " + md5);
+                }
+                compile(filename, md5, callback);
             } else {
                 console.log("fetched " + result.length + " bytes from memcache for KEY " + md5);
                 // don't forget to clear the fetched file
@@ -76,10 +74,22 @@ function get(url, callback) {
     });
 }
 
-module.exports = function(caching) {
-    CACHING = caching;
-    if (CACHING) {
+module.exports = function(options) {
+    options = options || {
+        caching: true
+    };
+    if (options.caching) {
+        memcached = new Memcached();
         memcached.connect();
+    } else {
+        // creating mock memcached instance
+        memcached = {
+            store: function(key, data) {
+            },
+            get: function(key, callback) {
+                callback(new Error("Memcached is disabled in the app"));
+            }
+        }
     }
     return get;
 }

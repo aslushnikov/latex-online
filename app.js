@@ -5,8 +5,8 @@
 
 var express = require('express')
   , fs = require('fs')
-  // Pass FALSE as argument if you don't want Memcached
-  , get = require('./process.js')(true);
+  // pass false to disable use of memcached
+  , get = require('./process.js')({caching: true});
 
 var app = module.exports = express.createServer();
 
