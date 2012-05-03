@@ -46,11 +46,7 @@ service:
 
 # Current state of the art
 
-Unfortunately I failed to find a working node-memcached module that
-would support binary data storing, so at the moment it uses some module that is
-not reliable. Beware: having caching option turned on may cause the service to
-be laggy.
-
-Btw, caching could be easily turned off, and in this configuration everything
-works fine but kinda slow.
+Everything works fine, thanks to the overclocked/mc node-memcached module!
+I'm planning to add caching that relies on md5 hash of the document, and
+additionally host the thing somewhere.
 
