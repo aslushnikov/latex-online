@@ -6,7 +6,7 @@
 var express = require('express')
   , fs = require('fs')
   // pass false to disable use of memcached
-  , get = require('./process.js')({caching: true});
+  , process = require('./process.js')({caching: true});
 
 var app = module.exports = express.createServer();
 
@@ -36,7 +36,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/compile', function(req, res) {
-    get(req.query['url'], function(err, data) {
+    process(req.query['url'], function(err, data) {
         if (err) {
             res.writeHead(500, {'content-type': 'text/plain'});
             res.write(err.toString());

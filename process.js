@@ -48,7 +48,7 @@ function compile(filename, md5, callback) {
     });
 }
 
-function get(url, callback) {
+function process(url, callback) {
     fetch(url, function(err, filename, md5) {
         if (err)  {
             callback(err);
@@ -91,5 +91,5 @@ module.exports = function(options) {
             }
         }
     }
-    return get;
+    return process;
 }
