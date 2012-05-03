@@ -1,6 +1,6 @@
 h1 TeX renderer
-p IMPORTANT: Each PDF document is cached for 3 hours
 
 form(action="/compile", method="get")
-  input(type="url", name="url")
+  label(for="url-field") URL of TeX document
+  input(type="url", name="url", id="url-field", size="100")
   input(type="submit")
