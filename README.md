@@ -2,7 +2,7 @@
 
 ## Try it
 
-[Simple Tex Renderer](http://udalov.org:2700)
+[Latex-Online](http://udalov.org:2700)
 
 Thanks to [@udalov](https://github.com/udalov) for deployment server
 
