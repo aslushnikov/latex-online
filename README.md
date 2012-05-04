@@ -1,26 +1,32 @@
 # Latex-Online
 
+## Try it
+
+[Simple Tex Renderer](http://udalov.org:2700)
+
+Thanks to [@udalov](https://github.com/udalov) for deployment server
+
 ## About
 
 This is a small service developed to
 compile simple latex documents online using only a link to the source TeX
 document. You give it a link, it gives you a PDF.
 
-The service is *not deployed yet* anywhere
-
 ## Dependencies
 
 - `pdflatex` command to compile documents
 - `curl` to fetch documents from web
 - `node.js` to run server
-- `express.js` for routing & rendering
+- `npm` to install node dependencies
 - `memcached` for caching compiled documents
-- `md5` utility to hash documents according to their value
+- `md5` or `md5sum` utility to hash documents according to their value
 
 ## Installation
 
-1. `git clone git@github.com:aslushnikov/latex-online.git`
-2. `npm install`
+1. `git clone git@github.com:aslushnikov/latex-online.git` to clone repo
+2. `sh util/check.sh` to check if all dependencies are satisfied and create
+   `tmp/` dir
+3. `npm install` to install node dependencies
 
 Installation of `pdflatex` is beyond the scope of the document.
 
