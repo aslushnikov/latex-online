@@ -1,3 +1,13 @@
+#!/bin/sh
+
+function compute_md5 {
+    if command -v md5 >/dev/null; then
+        echo `cat $1 | md5`
+    elif commanv -v md5sum > /dev/null; then
+        echo `cat $1 | md5sum - | cut -d ' ' -f1`
+    fi
+}
+
 cd tmp
 timestamp=`date +%s`
 filename=$timestamp.tex
@@ -8,4 +18,5 @@ if [ $? == 22 ]; then
     exit 1
 fi
 echo $filename
-echo `cat $filename | md5`
+
+echo $(compute_md5 $filename)
