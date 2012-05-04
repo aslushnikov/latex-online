@@ -5,7 +5,7 @@ var Memcached = require('./memcached.js')
 var memcached;
 
 function fetch(url, callback) {
-    var cmd = 'sh fetch.sh ' + url;
+    var cmd = 'bash fetch.sh ' + url;
     exec(cmd, function (error, stdout, stderr) {
         if (error !== null) {
             callback(error);
@@ -19,7 +19,7 @@ function fetch(url, callback) {
 }
 
 function compile(filename, md5, callback) {
-    var cmd = 'sh compile.sh ' + filename;
+    var cmd = 'bash compile.sh ' + filename;
     console.log(cmd);
     exec(cmd, function (error, stdout, stderr) {
         if (error !== null) {

@@ -1,3 +1,4 @@
+#!/bin/bash
 cd tmp
 filename=$1
 timestamp=`basename $filename .tex`
