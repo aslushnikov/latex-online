@@ -1,8 +1,15 @@
 #!/bin/bash
-
-# The tool gets one argument: a path to a file to compile.
-# It writes a PDF file with the same name, but with .pdf
-# extension.
+#
+# Use the tool to remotely compile .TEX files.
+# Example usage:
+#   bash remote-compile.sh foo.tex
+#
+# This will produce foo.pdf in the current folder.
+#
+# NOTE Only .TEX files are allowed
+#
+# Tool is written by Andrey Lushnikov
+#
 
 if [ $# -ne 1 ]; then
     echo Usage: bash remote-compile.sh foo.tex

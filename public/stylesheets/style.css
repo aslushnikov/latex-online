@@ -4,7 +4,7 @@ body {
 }
 
 a {
-  color: #00B7FF;
+    color: #00B7FF;
 }
 
 
@@ -29,6 +29,14 @@ a {
 
 #hint-link {
     color: green;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    color: blue;
 }
 
 
