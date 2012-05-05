@@ -6,7 +6,7 @@
 var express = require('express')
   , fs = require('fs')
   // pass false to disable use of memcached
-  , process = require('./process.js')({caching: true});
+  , processor = require('./process.js')({caching: true});
 
 var app = module.exports = express.createServer();
 
@@ -17,6 +17,7 @@ app.configure(function(){
   app.set('view engine', 'jade');
   app.use(express.bodyParser());
   app.use(express.methodOverride());
+
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });
@@ -36,7 +37,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/compile', function(req, res) {
-    process(req.query['url'], function(err, data) {
+    processor.processUrl(req.query['url'], function(err, data) {
         if (err) {
             res.writeHead(500, {'content-type': 'text/plain'});
             res.write(err.toString());
@@ -48,6 +49,24 @@ app.get('/compile', function(req, res) {
         }
     });
 });
+
+app.post('/data', function(req, res) {
+     // connect-form adds the req.form object
+  // we can (optionally) define onComplete, passing
+  // the exception (if any) fields parsed, and files parsed
+    processor.processFile(req.files['file'].path, function(err, data) {
+        if (err) {
+            res.writeHead(500, {'content-type': 'text/plain'});
+            res.write(err.toString());
+            res.end();
+        } else {
+            res.writeHead(200, {'content-type': 'application/pdf'});
+            res.write(data);
+            res.end();
+        }
+    });
+});
+
 
 app.listen(2700);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

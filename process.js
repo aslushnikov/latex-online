@@ -4,8 +4,15 @@ var Memcached = require('./memcached.js')
 
 var memcached;
 
-function fetch(url, callback) {
-    var cmd = 'bash fetch.sh ' + url;
+function fetch(options, callback) {
+    var cmd = 'bash ';
+    if (options.fetchType == "file") {
+        cmd += "fetchFile.sh " + options.file;
+    } else if (options.fetchType == "url") {
+        cmd += "fetchUrl.sh " + options.url;
+    } else {
+        throw new Error("Wrong options passed to fetch: " + JSON.stringify(options));
+    }
     exec(cmd, function (error, stdout, stderr) {
         if (error !== null) {
             callback(error);
@@ -48,8 +55,8 @@ function compile(filename, md5, callback) {
     });
 }
 
-function process(url, callback) {
-    fetch(url, function(err, filename, md5) {
+function createFetchCallback(callback) {
+    function fetchCallback(err, filename, md5) {
         if (err)  {
             callback(err);
             return;
@@ -71,7 +78,17 @@ function process(url, callback) {
                 callback(null, result);
             }
         });
-    });
+    }
+
+    return fetchCallback;
+}
+
+function processUrl(url, callback) {
+    fetch({fetchType: "url", url: url}, createFetchCallback(callback));
+}
+
+function processFile(file, callback) {
+    fetch({fetchType: "file", file: file}, createFetchCallback(callback));
 }
 
 module.exports = function(options) {
@@ -91,5 +108,8 @@ module.exports = function(options) {
             }
         }
     }
-    return process;
+    return {
+        processFile: processFile,
+        processUrl: processUrl
+    };
 }
