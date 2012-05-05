@@ -7,6 +7,10 @@ form(action="/compile", method="get")
   input(type="url", name="url", id="url-field", size="100")
   input(type="submit")
 
+p#hint.
+  Dunno <b>what's this</b>? Try to submit the link:
+  <code id="hint-link">https://raw.github.com/aslushnikov/latex-online/master/sample/sample.tex</code>
+
 #middle
   #left
     h2 What is going to happen
@@ -32,19 +36,23 @@ form(action="/compile", method="get")
       PDF.
 
   #right
-    h2 Example
+    h2 Examples
     p
       | Click <a href="/compile?url=https%3A%2F%2Fraw.github.com%2Faslushnikov%2Flatex-online%2Fmaster%2Fsample%2Fsample.tex">here</a>
       | to compile this <a href="https://github.com/aslushnikov/latex-online/blob/master/sample/sample.tex"> source</a>
       | code.
     p.
-      If you want to do it on your own, you have to feed it a link to the RAW
-      document
+      I additionally use it to create "See Latest" link in my
+      <a href="https://github.com/aslushnikov/diplom-latex#readme">diploma</a>
 
-    h2 This might be interesting
+    h2 For Hackers
     p.
-      Don't forget to check a <a href="https://github.com/aslushnikov/latex-online/blob/master/util/remote-compile.sh">remote compile tool</a> to compile documents
+      Check a <a href="https://github.com/aslushnikov/latex-online/blob/master/util/remote-compile.sh">remote compile tool</a> to compile documents
       remotely and get rid of LaTeX heavy packages installed locally!
+
+    h2 About
+    p.
+      You like the service? Tell me about it via twitter <code id="twitter">@KoTeHoK_gav</code>!
 
 
 

@@ -19,6 +19,11 @@ a {
     color: gray;
 }
 
+#hint-link {
+    color: green;
+}
+
+
 #middle {
     padding-top: 1em;
 
@@ -34,9 +39,15 @@ a {
 #right {
 }
 
+#twitter {
+    color: blue;
+}
+
 #bottom {
     border-top: 1px solid lightgray;
     padding-top: 1em;
     clear: both;
 }
+
+
 
