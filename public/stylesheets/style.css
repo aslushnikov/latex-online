@@ -19,6 +19,14 @@ a {
     color: gray;
 }
 
+#form {
+    font-size: 13pt;
+}
+
+#hint {
+    font-size: 10pt;
+}
+
 #hint-link {
     color: green;
 }

@@ -2,10 +2,11 @@ div
   h1#header LaTeX Online
   i#slogan you give it a link, it gives you PDF
 
-form(action="/compile", method="get")
-  label(for="url-field") URL of TeX document
-  input(type="url", name="url", id="url-field", size="100")
-  input(type="submit")
+div#form
+  form(action="/compile", method="get")
+    label(for="url-field") URL of TeX document
+    input(type="url", name="url", id="url-field", size="100")
+    input(type="submit")
 
 p#hint.
   Dunno <b>what's this</b>? Try to submit the link:
