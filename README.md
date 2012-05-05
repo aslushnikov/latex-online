@@ -12,6 +12,9 @@ This is a small service developed to
 compile simple latex documents online using only a link to the source TeX
 document. You give it a link, it gives you a PDF.
 
+Additionally the service could be used for *remote compiling* of latex documents.
+See "usage" section for a bit more information.
+
 ## Dependencies
 
 - `pdflatex` command to compile documents
@@ -39,4 +42,18 @@ Installation of `pdflatex` is beyond the scope of the document.
 * A small web interface has a box. Insert a URL there and click "submit" button
   to compile
 * Just request `/compile?url=...` to get a response with pdf
+* A tool `utils/remote-compile.sh` to remotely compile a tex document.
 
+### Remote compiling
+Suppose you're writing a small paper in tex and wish to compile it, but
+you're too lazy to install all this TeX-related stuff. Fine, you can use the
+service to compile your document!
+
+Just download `util/remote-compile.sh` and run it like this:
+```
+bash remote-compile.sh foo.tex
+```
+After compiling the file a `foo.pdf` will be created in the same dir with
+`foo.tex`
+
+*NOTE* Only files with `.tex` extension are allowed
