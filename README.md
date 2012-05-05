@@ -2,7 +2,7 @@
 
 ## Try it
 
-[Latex-Online](http://udalov.org:2700)
+[Latex-Online](http://latex.aslushnikov.com)
 
 Thanks to [@udalov](https://github.com/udalov) for deployment server
 
