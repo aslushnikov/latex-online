@@ -19,3 +19,22 @@ div
   p.
     If you want to do it on your own, you have to feed it a link to the RAW
     document
+
+  h2 What is going to happen
+  p.
+    When you enter url and click "submit" button, the following sequence of
+    events happens server-side
+  ol
+    li The file is fetched and saved with <code>.tex</code> extension
+    li Hash sum of the file is counted
+    li.
+      If we have the pdf for the file with this hash sum in our cash, then we
+      return it as-is
+    li.
+      Otherwise we compile the file using <code>pdflatex</code>, store the
+      result in cash and return it
+
+  p.
+    Notice that all includes of external resources are ignored
+
+
