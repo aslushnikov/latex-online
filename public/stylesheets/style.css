@@ -18,3 +18,25 @@ a {
     vertical-align: middle;
     color: gray;
 }
+
+#middle {
+    padding-top: 1em;
+
+}
+
+#left {
+    float: left;
+    padding-right: 1em;
+    margin-right: 1em;
+    border-right: 1px solid lightgray;
+}
+
+#right {
+}
+
+#bottom {
+    border-top: 1px solid lightgray;
+    padding-top: 1em;
+    clear: both;
+}
+

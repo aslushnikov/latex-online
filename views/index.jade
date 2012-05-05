@@ -7,43 +7,46 @@ form(action="/compile", method="get")
   input(type="url", name="url", id="url-field", size="100")
   input(type="submit")
 
-div
-  h2 What is going to happen
-  p.
-    When you enter url and click "submit" button, the following sequence of
-    events happens server-side
-  ol
-    li The file is fetched and saved with <code>.tex</code> extension
-    li Hash sum of the file is counted
-    li.
-      If we have the compiled pdf for the hash sum in our cash, then we
-      return cached PDF
-    li.
-      Otherwise we compile the file using <code>pdflatex</code>, store the
-      result in cash and return it
+#middle
+  #left
+    h2 What is going to happen
+    p.
+      When you enter url and click "submit" button, the following sequence of
+      events happens server-side
+    ol
+      li The file is fetched and saved with <code>.tex</code> extension
+      li Hash sum of the file is counted
+      li.
+        If we have the compiled pdf for the hash sum in our cash, then we
+        return cached PDF
+      li.
+        Otherwise we compile the file using <code>pdflatex</code>, store the
+        result in cash and return it
 
-  p.
-    Notice that all includes of external resources your paper relies on are ignored
-  h2 Restrictions
-  p.
-    The service doesn't include any figures or other external resources into the
-    PDF.
+    p.
+      Notice that all includes of external resources your paper relies on are ignored
 
-  h2 Example
-  p
-    | Click <a href="/compile?url=https%3A%2F%2Fraw.github.com%2Faslushnikov%2Flatex-online%2Fmaster%2Fsample%2Fsample.tex">here</a>
-    | to compile this <a href="https://github.com/aslushnikov/latex-online/blob/master/sample/sample.tex"> source</a>
-    | code.
-  p.
-    If you want to do it on your own, you have to feed it a link to the RAW
-    document
+    h2 Restrictions
+    p.
+      The service doesn't include any figures or other external resources into the
+      PDF.
 
-  h2 This might be interesting
-  p.
-    Don't forget to check a <a href="https://github.com/aslushnikov/latex-online/blob/master/util/remote-compile.sh">remote compile tool</a> to compile documents
-    remotely and get rid of LaTeX heavy packages installed locally!
+  #right
+    h2 Example
+    p
+      | Click <a href="/compile?url=https%3A%2F%2Fraw.github.com%2Faslushnikov%2Flatex-online%2Fmaster%2Fsample%2Fsample.tex">here</a>
+      | to compile this <a href="https://github.com/aslushnikov/latex-online/blob/master/sample/sample.tex"> source</a>
+      | code.
+    p.
+      If you want to do it on your own, you have to feed it a link to the RAW
+      document
+
+    h2 This might be interesting
+    p.
+      Don't forget to check a <a href="https://github.com/aslushnikov/latex-online/blob/master/util/remote-compile.sh">remote compile tool</a> to compile documents
+      remotely and get rid of LaTeX heavy packages installed locally!
 
 
 
-
+#bottom
   | <div class="fb-like" data-href="http://latex.aslushnikov.com" data-send="true" data-width="450" data-show-faces="true"></div>
