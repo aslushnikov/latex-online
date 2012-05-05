@@ -19,7 +19,7 @@ then
     exit 1
 fi
 
-curl -F file=@$1 latex.aslushnikov.com/data > $filename.pdf
+curl -f -F file=@$1 latex.aslushnikov.com/data > $filename.pdf
 if [ $? -ne 0 ];
 then
     echo Errors during compiling TeX document
