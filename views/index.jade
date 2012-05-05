@@ -1,4 +1,6 @@
-h1 TeX renderer
+div
+  h1#header LaTeX Online
+  i#slogan you give it a link, it gives you PDF
 
 form(action="/compile", method="get")
   label(for="url-field") URL of TeX document
@@ -6,6 +8,22 @@ form(action="/compile", method="get")
   input(type="submit")
 
 div
+  h2 What is going to happen
+  p.
+    When you enter url and click "submit" button, the following sequence of
+    events happens server-side
+  ol
+    li The file is fetched and saved with <code>.tex</code> extension
+    li Hash sum of the file is counted
+    li.
+      If we have the compiled pdf for the hash sum in our cash, then we
+      return cached PDF
+    li.
+      Otherwise we compile the file using <code>pdflatex</code>, store the
+      result in cash and return it
+
+  p.
+    Notice that all includes of external resources your paper relies on are ignored
   h2 Restrictions
   p.
     The service doesn't include any figures or other external resources into the
@@ -20,27 +38,12 @@ div
     If you want to do it on your own, you have to feed it a link to the RAW
     document
 
+  h2 This might be interesting
   p.
     Don't forget to check a <a href="https://github.com/aslushnikov/latex-online/blob/master/util/remote-compile.sh">remote compile tool</a> to compile documents
-    remotely.
+    remotely and get rid of LaTeX heavy packages installed locally!
 
 
-  h2 What is going to happen
-  p.
-    When you enter url and click "submit" button, the following sequence of
-    events happens server-side
-  ol
-    li The file is fetched and saved with <code>.tex</code> extension
-    li Hash sum of the file is counted
-    li.
-      If we have the pdf for the file with this hash sum in our cash, then we
-      return it as-is
-    li.
-      Otherwise we compile the file using <code>pdflatex</code>, store the
-      result in cash and return it
-
-  p.
-    Notice that all includes of external resources are ignored
 
 
   | <div class="fb-like" data-href="http://latex.aslushnikov.com" data-send="true" data-width="450" data-show-faces="true"></div>

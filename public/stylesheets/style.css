@@ -6,3 +6,15 @@ body {
 a {
   color: #00B7FF;
 }
+
+
+#header {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#slogan {
+    margin-left: 1em;
+    vertical-align: middle;
+    color: gray;
+}
