@@ -4,3 +4,13 @@ form(action="/compile", method="get")
   label(for="url-field") URL of TeX document
   input(type="url", name="url", id="url-field", size="100")
   input(type="submit")
+
+div
+  h2 Example
+  p
+    | Click <a href="/compile?url=https%3A%2F%2Fraw.github.com%2Faslushnikov%2Flatex-online%2Fmaster%2Fsample%2Fsample.tex">here</a>
+    | to compile this <a href="https://github.com/aslushnikov/latex-online/blob/master/sample/sample.tex"> source</a>
+    | code.
+  p.
+    If you want to do it on your own, you have to feed it a link to the RAW
+    document
