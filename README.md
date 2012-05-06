@@ -53,8 +53,7 @@ Just download `util/remote-compile.sh` and run it like this:
 ```
 bash remote-compile.sh foo.tex
 ```
-After compiling the file a `foo.pdf` will be created in the same dir with
-`foo.tex`
+After compiling the file a `foo.pdf` will be created in the current dir
 
 *NOTE* Only files with `.tex` extension are allowed
 
