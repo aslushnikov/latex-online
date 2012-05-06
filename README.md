@@ -57,3 +57,12 @@ After compiling the file a `foo.pdf` will be created in the same dir with
 `foo.tex`
 
 *NOTE* Only files with `.tex` extension are allowed
+
+## What's next
+
+* `remote-compile` TODO List
+    - Show compilation errors if any
+    - Add support for command line arguments like -o (As I am not proficient in
+      `BASH` scripting, I will appreciate any help with the option.)
+* Add some statistics on API usage
+
