@@ -43,7 +43,10 @@ app.get('/compile', function(req, res) {
             res.write(err.toString());
             res.end();
         } else {
-            res.writeHead(200, {'content-type': 'application/pdf'});
+            res.writeHead(200, {
+                'content-type': 'application/pdf',
+                'content-length': data.length
+            });
             res.write(data);
             res.end();
         }
@@ -60,7 +63,10 @@ app.post('/data', function(req, res) {
             res.write(err.toString());
             res.end();
         } else {
-            res.writeHead(200, {'content-type': 'application/pdf'});
+            res.writeHead(200, {
+                'content-type': 'application/pdf',
+                'content-length': data.length
+            });
             res.write(data);
             res.end();
         }
