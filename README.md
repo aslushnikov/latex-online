@@ -60,9 +60,9 @@ After compiling the file a `foo.pdf` will be created in the same dir with
 
 ## What's next
 
-* `remote-compile` TODO List
+* Improve `remote-compile` tool
     - Show compilation errors if any
     - Add support for command line arguments like -o (As I am not proficient in
-      `BASH` scripting, I will appreciate any help with the option.)
+      `BASH` scripting, I will appreciate any help with the feature.)
 * Add some statistics on API usage
 
