@@ -32,6 +32,7 @@ function compile(filename, md5, callback) {
         if (error !== null) {
             fs.unlink('./tmp/' + filename);
             console.error("cmd ERR: " + error);
+            error = new Error(error.toString() + "\n" + stdout);
             callback(error);
             return;
         }
