@@ -59,6 +59,13 @@ After compiling the file a `foo.pdf` will be created in the current dir
 
 ## What's next
 
+* Make different folder to store files related to any request
+* Add optional query arguments
+    - `strict-mode` if true, then return PDF if and only if it doesn't have
+      errors
+    - `download` if true, return file in attachment and not to the browser
+    - `cache` if false, do not cache response
+* Support INCLUDES via downloading GIT repo
 * Improve `remote-compile` tool
     - Show compilation errors if any
     - Add support for command line arguments like -o (As I am not proficient in
