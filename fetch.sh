@@ -43,7 +43,7 @@ function cleanup {
 trap cleanup EXIT
 
 # initializing global variables
-tmpdir=`TMPDIR='./tmp'; mktemp -d -t latex`
+tmpdir=`mktemp -d -t latex ./tmp`
 basename="source.tex"
 filename=$tmpdir/$basename
 
