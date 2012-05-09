@@ -7,9 +7,9 @@ var memcached;
 function fetch(options, callback) {
     var cmd = 'bash ';
     if (options.fetchType == "file") {
-        cmd += "fetchFile.sh " + options.file;
+        cmd += "fetch.sh -f" + options.file;
     } else if (options.fetchType == "url") {
-        cmd += "fetchUrl.sh " + options.url;
+        cmd += "fetch.sh -u" + options.url;
     } else {
         throw new Error("Wrong options passed to fetch: " + JSON.stringify(options));
     }
@@ -19,28 +19,31 @@ function fetch(options, callback) {
             return;
         }
 
-        var filename = stdout.split('\n')[0];
-        var md5 = stdout.split('\n')[1];
-        callback(null, filename, md5);
+        var lines = stdout.split('\n');
+        var tmpdir = lines[0];
+        var filename = lines[1];
+        var md5 = lines[2];
+        callback(null, tmpdir, filename, md5);
     });
 }
 
-function compile(filename, md5, callback) {
+function compile(tmpdir, filename, md5, callback) {
     var cmd = 'bash compile.sh ' + filename;
     console.log(cmd);
     exec(cmd, function (error, stdout, stderr) {
         if (error !== null) {
-            fs.unlink('./tmp/' + filename);
+            exec('bash cleanup.sh ' + tmpdir);
             console.error("cmd ERR: " + error);
-            error = new Error(error.toString() + "\n" + stdout);
+            error = new Error(error.toString() + "\n" + stderr);
             callback(error);
             return;
         }
-        var newFileName = './tmp/' + stdout.trim();
-        console.log("Compiled file saved as: " + newFileName);
-        fs.readFile(newFileName, function(err, data){
+        var compiledFileName = stdout.trim();
+        console.log("Compiled file saved as: " + compiledFileName);
+        fs.readFile(compiledFileName, function(err, data){
             if (err) {
                 console.error("File read error: " + err);
+                exec('bash cleanup.sh ' + tmpdir);
                 callback(err);
                 return;
             }
@@ -51,13 +54,13 @@ function compile(filename, md5, callback) {
             console.log("calling callback");
             callback(null, data);
             console.log("removing file");
-            fs.unlink(newFileName);
+            exec('bash cleanup.sh ' + tmpdir);
         });
     });
 }
 
 function createFetchCallback(callback) {
-    function fetchCallback(err, filename, md5) {
+    function fetchCallback(err, tmpdir, filename, md5) {
         if (err)  {
             callback(err);
             return;
@@ -71,11 +74,12 @@ function createFetchCallback(callback) {
                 } else {
                     console.error("Memcached doesn't have anything for key = " + md5);
                 }
-                compile(filename, md5, callback);
+                compile(tmpdir, filename, md5, callback);
             } else {
                 console.log("fetched " + result.length + " bytes from memcache for KEY " + md5);
                 // don't forget to clear the fetched file
-                fs.unlink('./tmp/' + filename);
+                exec('bash cleanup.sh ' + tmpdir);
+                // call callback
                 callback(null, result);
             }
         });
