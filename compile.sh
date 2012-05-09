@@ -28,7 +28,7 @@ filename=$1
 tmpdir=$2
 if $tmpdir; then
     tmpdir=${1%/*.*}
-    echo "Getting tmp dir from file name. tmpdir=$tmpdir"
+    #echo "Getting tmp dir from file name. tmpdir=$tmpdir"
 fi
 noExtension=${filename%.*}
 
