@@ -14,6 +14,13 @@
 # Tool is written by Andrey Lushnikov
 #
 
+function cleanup {
+    rm $dumpHeaders
+    rm $outputFile
+}
+
+trap cleanup EXIT
+
 if [[ $# < 1 ]]; then
     echo Usage: bash remote-compile.sh foo.tex
     exit 1
@@ -40,10 +47,22 @@ then
     exit 1
 fi
 
-curl -f -F file=@$filename $host/data > $pdfFileName
-if [ $? -ne 0 ];
+# create tmp file for headers
+dumpHeaders=`mktemp -t latexCurlHeaders`
+outputFile=`mktemp -t latexCurlOutput`
+curl -D $dumpHeaders -F file=@$filename $host/data > $outputFile
+
+httpResponse=`cat $dumpHeaders | grep ^HTTP | tail -1 | cut -f 2 -d ' '`
+
+if [ $httpResponse == 2* ];
 then
     echo Errors during compiling TeX document
+    # if so then output is not pdfFile but plain text one with errors
+    cat $outputFile
+    # and we should remove it after
 else
-    echo $pdfFileName is written
+    cp $outputFile $pdfFileName
+    echo Success! $pdfFileName is written
 fi
+
+
