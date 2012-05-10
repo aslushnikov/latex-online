@@ -59,7 +59,7 @@ app.post('/data', function(req, res) {
   // the exception (if any) fields parsed, and files parsed
     processor.processFile(req.files['file'].path, function(err, data) {
         if (err) {
-            res.writeHead(500, {'content-type': 'text/plain'});
+            res.writeHead(400, {'content-type': 'text/plain'});
             res.write(err.toString());
             res.end();
         } else {
