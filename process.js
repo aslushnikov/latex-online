@@ -27,9 +27,9 @@ function RequestProcessor(options) {
     this.fetch = function(options, callback) {
         var cmd = 'bash ';
         if (options.fetchType == "file") {
-            cmd += "fetch.sh -f" + options.file;
+            cmd += "fetch.sh -f " + options.file;
         } else if (options.fetchType == "url") {
-            cmd += "fetch.sh -u" + options.url;
+            cmd += "fetch.sh -u " + options.url;
         } else {
             throw new Error("Wrong options passed to fetch: " + JSON.stringify(options));
         }
