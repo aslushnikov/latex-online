@@ -48,8 +48,8 @@ then
 fi
 
 # create tmp file for headers
-dumpHeaders=`mktemp -t latexCurlHeaders`
-outputFile=`mktemp -t latexCurlOutput`
+dumpHeaders=`mktemp latexCurlHeaders-XXXXXX`
+outputFile=`mktemp latexCurlOutput-XXXXXX`
 curl -D $dumpHeaders -F file=@$filename $host/data > $outputFile
 
 httpResponse=`cat $dumpHeaders | grep ^HTTP | tail -1 | cut -f 2 -d ' '`
