@@ -38,7 +38,7 @@ function fetchGit {
         echo Failed to clone repository >&2
         exit 1
     fi
-    cd -
+    cd - > /dev/null
 }
 
 function cleanup {
@@ -60,7 +60,8 @@ filename=$tmpdir/$basename
 
 foundSource=false
 GIT=false
-while getopts "f:u:g:" flag
+GIT_SHA1_ONLY=false
+while getopts "f:u:g:s" flag
 do
     if [[ $flag == "f" ]]; then
         foundSource=true
@@ -71,7 +72,9 @@ do
     elif [[ $flag == "g" ]]; then
         foundSource=true
         GIT=true
-        fetchGit $OPTARG
+        GIT_REPO=$OPTARG
+    elif [[ $flag == "s" ]]; then
+        GIT_SHA1_ONLY=true
     fi
 done
 
@@ -80,14 +83,28 @@ if [[ $foundSource  == false ]]; then
     exit 1
 fi
 
-echo $tmpdir
+if [[ $GIT_SHA1_ONLY == true && $GIT == false ]]; then
+    echo "Flag -s could be used with -g only" >&2
+    exit 1
+fi
+
 if [[ $GIT == false ]]; then
+    echo $tmpdir
     echo $filename
     echo $(compute_md5 $filename)
-else
-    echo $tmpdir/git
-    cd $tmpdir/git
-    # instead of md5 show git hashsum
-    git log --pretty=oneline | head -1 | cut -f1 -d' '
-    cd -
+    exit 0
 fi
+
+# Fetching GIT repo
+if [[ $GIT_SHA1_ONLY == true ]]; then
+    # get remote master sha1
+    git ls-remote $GIT_REPO | grep master | grep -o '[0-9a-f]*'
+    exit 0
+fi
+
+fetchGit $GIT_REPO
+echo $tmpdir
+echo $tmpdir/git
+cd $tmpdir/git
+# instead of md5 show git hashsum
+git log --pretty=oneline | head -1 | cut -f1 -d' '
