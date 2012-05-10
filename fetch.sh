@@ -30,9 +30,20 @@ function fetchUrl {
     fi
 }
 
+function fetchGit {
+    echo "fetching git $1" >&2
+    cd $tmpdir
+    git clone --depth 1 $1 git > /dev/null 2> /dev/null
+    if [[ $? != 0 ]]; then
+        echo Failed to clone repository >&2
+        exit 1
+    fi
+    cd -
+}
+
 function cleanup {
     if [[ $? != 0 ]]; then
-        rm -r $tmpdir
+        rm -rf $tmpdir
     fi
 }
 
@@ -43,19 +54,24 @@ function cleanup {
 trap cleanup EXIT
 
 # initializing global variables
-tmpdir=`mktemp -d -t latex ./tmp`
+tmpdir=`mktemp -d tmp/latex-XXXXXXXX`
 basename="source.tex"
 filename=$tmpdir/$basename
 
 foundSource=false
-while getopts "f:u:" flag
+GIT=false
+while getopts "f:u:g:" flag
 do
-    if [ $flag == "f" ]; then
+    if [[ $flag == "f" ]]; then
         foundSource=true
         fetchFile $OPTARG
-    elif [ $flag == "u" ]; then
+    elif [[ $flag == "u" ]]; then
         foundSource=true
         fetchUrl $OPTARG
+    elif [[ $flag == "g" ]]; then
+        foundSource=true
+        GIT=true
+        fetchGit $OPTARG
     fi
 done
 
@@ -65,5 +81,13 @@ if [[ $foundSource  == false ]]; then
 fi
 
 echo $tmpdir
-echo $filename
-echo $(compute_md5 $filename)
+if [[ $GIT == false ]]; then
+    echo $filename
+    echo $(compute_md5 $filename)
+else
+    echo $tmpdir/git
+    cd $tmpdir/git
+    # instead of md5 show git hashsum
+    git log --pretty=oneline | head -1 | cut -f1 -d' '
+    cd -
+fi
