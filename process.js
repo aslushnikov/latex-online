@@ -2,11 +2,27 @@ var Memcached = require('./memcached.js')
   , fs = require('fs')
   , exec  = require('child_process').exec
 
-var memcached;
+var memcached = new Memcached();
+memcached.connect();
+
+var mockMemcached = {
+    store: function(key, data) {
+    },
+    get: function(key, callback) {
+        callback(new Error("Memcached is disabled in the app"));
+    }
+}
 
 function RequestProcessor(options) {
     var self = this;
+    options = options || {};
+    options.caching = options.caching || true;
     this.options = options;
+    if (options.caching) {
+        self.memcached = memcached;
+    } else {
+        self.memcached= mockMemcached;
+    }
 
     this.fetch = function(options, callback) {
         var cmd = 'bash ';
@@ -53,7 +69,7 @@ function RequestProcessor(options) {
                 }
                 console.log("Successfully read " + data.length + " bytes");
 
-                memcached.store(md5, data);
+                self.memcached.store(md5, data);
 
                 console.log("calling callback");
                 callback(null, data);
@@ -63,34 +79,32 @@ function RequestProcessor(options) {
         });
     }
 
-    function fetchCallback(err, tmpdir, filename, md5) {
-        if (err)  {
-            self.callback(err);
-            return;
-        }
-        console.log("Fetched file saved as " + filename + " with md5 = " + md5);
-
-        memcached.get(md5, function(err, result) {
-            if (err || !result) {
-                if (err) {
-                    console.log("Memcached GET error: " + err);
-                } else {
-                    console.error("Memcached doesn't have anything for key = " + md5);
-                }
-                self.compile(tmpdir, filename, md5, self.callback);
-            } else {
-                console.log("fetched " + result.length + " bytes from memcache for KEY " + md5);
-                // don't forget to clear the fetched file
-                exec('bash cleanup.sh ' + tmpdir);
-                // call callback
-                self.callback(null, result);
-            }
-        });
-    }
-
     this.process = function(callback) {
         this.callback = callback;
-        this.fetch(this.options, fetchCallback);
+        this.fetch(this.options, function(err, tmpdir, filename, md5) {
+            if (err)  {
+                self.callback(err);
+                return;
+            }
+            console.log("Fetched file saved as " + filename + " with md5 = " + md5);
+
+            self.memcached.get(md5, function(err, result) {
+                if (err || !result) {
+                    if (err) {
+                        console.log("Memcached GET error: " + err);
+                    } else {
+                        console.error("Memcached doesn't have anything for key = " + md5);
+                    }
+                    self.compile(tmpdir, filename, md5, self.callback);
+                } else {
+                    console.log("fetched " + result.length + " bytes from memcache for KEY " + md5);
+                    // don't forget to clear the fetched file
+                    exec('bash cleanup.sh ' + tmpdir);
+                    // call callback
+                    self.callback(null, result);
+                }
+            });
+        });
     }
 }
 
@@ -104,25 +118,7 @@ function processUrl(url, callback) {
     rp.process(callback);
 }
 
-module.exports = function(options) {
-    options = options || {
-        caching: true
-    };
-    if (options.caching) {
-        memcached = new Memcached();
-        memcached.connect();
-    } else {
-        // creating mock memcached instance
-        memcached = {
-            store: function(key, data) {
-            },
-            get: function(key, callback) {
-                callback(new Error("Memcached is disabled in the app"));
-            }
-        }
-    }
-    return {
-        processFile: processFile,
-        processUrl: processUrl
-    };
-}
+module.exports = {};
+module.exports.RequestProcessor = RequestProcessor;
+module.exports.processFile = processFile;
+module.exports.processUrl = processUrl;
