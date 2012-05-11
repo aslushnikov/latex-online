@@ -54,11 +54,12 @@ curl -D $dumpHeaders -F file=@$filename $host/data > $outputFile
 
 httpResponse=`cat $dumpHeaders | grep ^HTTP | tail -1 | cut -f 2 -d ' '`
 
-if [ $httpResponse == 2* ];
+if [[ $httpResponse != 2* ]];
 then
     echo Errors during compiling TeX document
     # if so then output is not pdfFile but plain text one with errors
-    cat $outputFile
+    cat $outputFile >&2
+    exit 1
     # and we should remove it after
 else
     cp $outputFile $pdfFileName
