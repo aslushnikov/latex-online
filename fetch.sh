@@ -50,8 +50,8 @@ function fetchGit {
 # initializing global variables
 
 if [[ $# != 3 ]]; then
-    echo "Not enough arguments!"
-    echo "Usage: bash fetch.sh [tmpdir] [-fug] [file]"
+    echo "Not enough arguments!" >&2
+    echo "Usage: bash fetch.sh [tmpdir] [-fug] [file]" >&2
     exit 1
 fi
 
@@ -66,7 +66,7 @@ elif [[ $flag == "u" ]]; then
 elif [[ $flag == "g" ]]; then
     fetchGit $OPTARG $tmpdir/git
 else
-    echo "Only [-fug] option allowed! Your option $flag didn't match"
+    echo "Only [-fug] option allowed! Your option $flag didn't match" >&2
     exit 1
 fi
 

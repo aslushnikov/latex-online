@@ -27,8 +27,8 @@ function compile {
 ##############
 
 if [[ $# != 2 ]]; then
-    echo "Not enough arguments!"
-    echo "Usage: bash compile.sh [tmpdir] [target]"
+    echo "Not enough arguments!" >&2
+    echo "Usage: bash compile.sh [tmpdir] [target]" >&2
     exit 1
 fi
 

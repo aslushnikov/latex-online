@@ -53,8 +53,8 @@ function compute_git_md5 {
 ##############
 
 if [[ $# != 2 ]]; then
-    echo "Not enough arguments!"
-    echo "Usage: bash hashSum.sh [-fg] [filename|path to git]"
+    echo "Not enough arguments!" >&2
+    echo "Usage: bash hashSum.sh [-fg] [filename|path to git]" >&2
     exit -1
 fi
 
