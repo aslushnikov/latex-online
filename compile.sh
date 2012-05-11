@@ -3,7 +3,9 @@
 # Compiles given source, running pdflatex on it couple of times
 #
 # Usage
-#   bash compile.sh [tmpdir] [target]
+#   bash compile.sh [rootdir] [target]
+#
+# Note: target is a relative to rootdir path
 #
 # Output
 #   On success returns name of produced PDF, otherwise
@@ -14,11 +16,12 @@
 #####################
 
 function compile {
-    opts="-interaction nonstopmode -output-directory $tmpdir"
+    opts="-interaction nonstopmode"
     if [[ "$1" == "draft" ]]; then
         pdflatex $opts -draftmode $target >/dev/null
     else
-        pdflatex $opts $target >&2
+        pdflatex $opts ${target##*/} >&2
+        #pdflatex $opts $target > /dev/null
     fi
 }
 
@@ -28,24 +31,25 @@ function compile {
 
 if [[ $# != 2 ]]; then
     echo "Not enough arguments!" >&2
-    echo "Usage: bash compile.sh [tmpdir] [target]" >&2
+    echo "Usage: bash compile.sh [rootdir] [target]" >&2
     exit 1
 fi
 
-tmpdir=${1%/}
+rootdir=${1%/}
 target=$2
 
+cd $rootdir
 has_toc=`grep -l '\tableofcontents' $target | wc -l`
-if [[ ${has_toc// /} -gt 1 ]]; then
+if [[ ${has_toc// /} -gt 0 ]]; then
     compile "draft"
     compile
 else
     compile
 fi
+cd - > /dev/null
 
 # if no PDF created, then exitcode 1
-pdfCreated=$tmpdir/`basename $target`
-pdfCreated=${pdfCreated%.*}.pdf
+pdfCreated=$rootdir/${target%.*}.pdf
 if [[ ! -e $pdfCreated ]]; then
     exit 1
 else
