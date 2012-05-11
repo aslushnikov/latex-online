@@ -32,7 +32,7 @@ function RequestProcessor(options, callback) {
 
     this.finishProcessing = function(err, data) {
         self.webServiceCallback(err, data);
-        exec('bash cleanup.sh ' + self.tmpdir);
+        exec('bash shells/cleanup.sh ' + self.tmpdir);
     }
 
     this.execShellScript = function(cmd, callback) {
@@ -58,11 +58,11 @@ function RequestProcessor(options, callback) {
     }
 
     this.mkTempDir = function(callback) {
-        this.execShellScript("bash mkTempDir.sh tmp", callback);
+        this.execShellScript("bash shells/mkTempDir.sh tmp", callback);
     }
 
     this.hashSum = function(type, entity, callback) {
-        var cmd = "bash hashSum.sh ";
+        var cmd = "bash shells/hashSum.sh ";
         if (type == "file") {
             cmd += "-f ";
         } else if (type == "git") {
@@ -75,7 +75,7 @@ function RequestProcessor(options, callback) {
     }
 
     this.fetch = function(type, entity, callback) {
-        var cmd = 'bash fetch.sh ' + self.tmpdir + " ";
+        var cmd = 'bash shells/fetch.sh ' + self.tmpdir + " ";
         if (type == "file") {
             cmd += "-f ";
         } else if (type == "url") {
@@ -91,7 +91,7 @@ function RequestProcessor(options, callback) {
     }
 
     this.compile = function (rootdir, target,callback) {
-        var cmd = 'bash compile.sh ' + rootdir + ' ' + target;
+        var cmd = 'bash shells/compile.sh ' + rootdir + ' ' + target;
         this.execShellScript(cmd, function (compiledFileName) {
             console.log("Compiled file saved as: " + compiledFileName);
             console.log("END");
