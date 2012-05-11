@@ -28,7 +28,11 @@ function fetchFile {
 
 function fetchUrl {
     echo "fetching url $1" >&2
-    curl -f $1 > $tmpdir/$2 2> /dev/null
+
+    # Max file size is 2MB
+
+    maxFileSize=`echo 1024*1024*2 | bc -l`
+    curl -f --max-filesize $maxFileSize $1 > $tmpdir/$2 2> /dev/null
     if [ $? == 22 ]; then
         echo Failed to fetch document >&2
         exit 1
