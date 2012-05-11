@@ -28,15 +28,19 @@ if [[ $# < 1 ]]; then
 fi
 
 host="latex.aslushnikov.com"
-while getopts "h:" flag
+GIT_TRACKED=false
+while getopts "h:g" flag
 do
     if [ $flag == "h" ]; then
         host=$OPTARG
+    elif [[ $flag == "g" ]]; then
+        GIT_TRACKED=true
     fi
 done
 
 shift $((OPTIND-1))
 target=$1
+shift
 base=$(basename $target)
 extension=${base##*.}
 pdfFileName=${base%.*}.pdf
@@ -46,8 +50,14 @@ then
     echo "Only files with .tex extensions are allowed"
     exit 1
 fi
+
 tarball=`mktemp latexTarball-XXXXXX`
-tar -cz $@ > $tarball
+if [[ $GIT_TRACKED == true ]]; then
+    supportingFiles=`git ls-files`
+else
+    supportingFiles=$@
+fi
+tar -cz $target $supportingFiles > $tarball
 
 # create tmp file for headers
 dumpHeaders=`mktemp latexCurlHeaders-XXXXXX`
