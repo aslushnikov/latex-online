@@ -60,6 +60,11 @@ service to compile your document!
 To do so, you will need a tool called `remote-compile.sh`. You can obtain it
 [here](https://raw.github.com/aslushnikov/latex-online/master/util/remote-compile.sh)
 
+For convenience, you can make the script executeable with the command
+```
+chmod 755 remote-compile.sh
+```
+
 ### 1. Compile single file
 
 If you've got a single file (say `main.tex`) that doesn't have any includes,
