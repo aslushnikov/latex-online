@@ -6,7 +6,10 @@ var memcached = new Memcached();
 memcached.connect();
 
 var mockMemcached = {
-    store: function(key, data) {
+    store: function(key, data, callback) {
+        if (callback) {
+            callback(new Error("Memcached is OFF"), null);
+        }
     },
     get: function(key, callback) {
         callback(new Error({info: "Memcached is disabled in the app"}));
@@ -95,10 +98,8 @@ function RequestProcessor(options, callback) {
         var cmd = 'bash shells/compile.sh ' + rootdir + ' ' + target;
         this.execShellScript(cmd, function (compiledFileName) {
             console.log("Compiled file saved as: " + compiledFileName);
-            console.log("END");
             self.readFile(compiledFileName, function(data){
                 console.log("Successfully read " + data.length + " bytes");
-                self.finishProcessing(null, data);
                 callback(data);
             });
         });
@@ -120,7 +121,10 @@ function RequestProcessor(options, callback) {
                             console.log("Memcached GET error: " + err.message);
                         }
                         self.compile(self.tmpdir, target, function(data) {
-                            self.memcached.store(hash, data);
+                            self.memcached.store(hash, data, function(err, resp) {
+                                self.finishProcessing(null, data);
+                                console.log("Memcache store response: " + resp);
+                            });
                         });
                     } else {
                         console.log("fetched " + data.length + " bytes from memcache for KEY " + hash);
@@ -157,7 +161,10 @@ function RequestProcessor(options, callback) {
 
         function fetchCallback(gitDir) {
             self.compile(self.tmpdir + "/" + gitDir, self.options.target, function(data) {
-                self.memcached.store(self.hashSum, data);
+                self.memcached.store(self.hashSum, data, function(err, resp) {
+                    self.finishProcessing(null, data);
+                    console.log("Memcache store response: " + resp);
+                });
             });
         }
 

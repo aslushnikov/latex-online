@@ -16,12 +16,11 @@ module.exports = function Memcached() {
     this.store = function(key, data, callback) {
         callback = callback || function(error, result) {
             if (error) {
-                console.error(error);
+                console.error("Erros:" + error.message + " " + JSON.stringify(error));
             } else {
                 console.log("Memcached response: " + result);
             }
         };
-        console.log("memcaching data");
         this.client.set(key, data, { flags: 0, exptime: 60*60*3}, callback);
     }
 
