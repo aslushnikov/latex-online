@@ -41,7 +41,7 @@ function compute_file_md5 {
 }
 
 function compute_git_md5 {
-    git ls-remote $1 2> /dev/null | grep master | grep -o '[0-9a-f]*'
+    git ls-remote $1 2> /dev/null | grep master | grep -o '^[0-9a-f]*'
     if [[ $? != 0 ]]; then
         echo "remote repo is not accessible" >&2
         exit 3
