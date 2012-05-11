@@ -9,6 +9,7 @@
 #   outputs name of created directory
 
 if [[ $# != 1 ]]; then
+    echo "Not enough arguments!"
     echo "Usage: bash mkTempDir.sh [path]"
     exit 1
 fi

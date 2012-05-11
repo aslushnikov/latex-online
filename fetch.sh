@@ -50,6 +50,7 @@ function fetchGit {
 # initializing global variables
 
 if [[ $# != 3 ]]; then
+    echo "Not enough arguments!"
     echo "Usage: bash fetch.sh [tmpdir] [-fug] [file]"
     exit 1
 fi
