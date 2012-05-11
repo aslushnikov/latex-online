@@ -1,8 +1,17 @@
 #!/bin/bash
-# options:
-# -f file - use file as a source
-# -u url - use url as a source
-# -g git - shellow cloning of git repo
+#
+# Fetches entities and puts them in a tmp directory
+# Usage:
+#   bash fetch.sh [tmpdir] [-fug] [file|url|git]
+#
+# Output:
+#   returns name of the fetched entity on success,
+#   exits with code 1 on failure
+#
+# Options:
+#   -f file - use file as a source
+#   -u url - use url as a source
+#   -g git - shellow cloning of git repo
 
 #####################
 # F U N C T I O N S #
