@@ -2,14 +2,29 @@
 #
 # Use the tool to remotely compile .TEX files.
 # Example usage:
-#   bash remote-compile.sh [-h host] foo.tex
+#   bash remote-compile.sh [-h host] main.tex [file1] [file2]...
 #
-# This will produce foo.pdf in the current folder.
+# This will produce main.pdf in the current folder.
+# Files file1, file2 etc are treated as a supporting files
+# for the tex file, like images, other tex files etc
 #
-# NOTE Only .TEX files are allowed
+# NOTE The first file must be .TEX
 #
 # Options:
 #   -h HOST - use HOST instead of latex.aslushnikov.com
+#   -g - pass git tracked files instead of file1, file2, etc.
+#
+# Example
+#   1. If you've got a simple tex file FOO.TEX that doesn't rely on any other files.
+#   You can compile it via command
+#       bash remote-compile.sh FOO.TEX
+#
+#   2. If you're including image MY_KITTY.JPG in FOO.TEX
+#       bash remote-compile.sh FOO.TEX MY_KITTY.JPG
+#
+#   3. If you've got a big paper that includes plenty of different
+#   files like images/tex/other, and main file like DIPLOMA.TEX, then
+#       bash remote-compile.sh -g DIPLOMA.TEX
 #
 # Tool is written by Andrey Lushnikov
 #
