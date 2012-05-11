@@ -103,21 +103,22 @@ function RequestProcessor(options, callback) {
         });
     }
 
-    this.process = function() {
+    this.process = function(target) {
         function mkTempDirCallback(tmpDir) {
             self.tmpdir = tmpDir;
             self.fetch(self.options.type, self.options.entity, fetchCallback);
         }
 
         function fetchCallback(fetchedFile) {
-            self.hashSum("file", self.tmpdir + "/" + fetchedFile, function(hash) {
-                console.log('Hash sum for ' + fetchedFile + ' = ' + hash);
+            target = target || fetchedFile;
+            self.hashSum("file", self.tmpdir + "/" + target, function(hash) {
+                console.log('Hash sum for ' + target + ' = ' + hash);
                 self.memcached.get(hash, function(err, data) {
                     if (err || !data) {
                         if (err) {
                             console.log("Memcached GET error: " + err.message);
                         }
-                        self.compile(self.tmpdir, fetchedFile, function(data) {
+                        self.compile(self.tmpdir, target, function(data) {
                             self.memcached.store(hash, data);
                         });
                     } else {
@@ -163,12 +164,12 @@ function RequestProcessor(options, callback) {
     }
 }
 
-function processFile(file, callback) {
+function processFile(file, target, callback) {
     var rp = new RequestProcessor({
         type: "file",
         entity: file
     }, callback);
-    rp.process();
+    rp.process(target);
 }
 
 function processUrl(url, callback) {

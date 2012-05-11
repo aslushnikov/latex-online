@@ -20,8 +20,8 @@ function compile {
     if [[ "$1" == "draft" ]]; then
         pdflatex $opts -draftmode $target >/dev/null
     else
-        pdflatex $opts ${target##*/} >&2
-        #pdflatex $opts $target > /dev/null
+        pdflatex $opts ${target} >&2
+        #pdflatex $opts ${target} >/dev/null
     fi
 }
 
@@ -49,7 +49,8 @@ fi
 cd - > /dev/null
 
 # if no PDF created, then exitcode 1
-pdfCreated=$rootdir/${target%.*}.pdf
+basename=`basename $target`
+pdfCreated=$rootdir/${basename%.*}.pdf
 if [[ ! -e $pdfCreated ]]; then
     exit 1
 else

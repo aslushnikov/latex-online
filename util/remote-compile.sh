@@ -2,7 +2,7 @@
 #
 # Use the tool to remotely compile .TEX files.
 # Example usage:
-#   bash remote-compile.sh foo.tex
+#   bash remote-compile.sh [-h host] foo.tex
 #
 # This will produce foo.pdf in the current folder.
 #
@@ -15,14 +15,15 @@
 #
 
 function cleanup {
-    rm $dumpHeaders
-    rm $outputFile
+    rm $dumpHeaders 2>/dev/null
+    rm $outputFile 2>/dev/null
+    rm $tarball 2>/dev/null
 }
 
 trap cleanup EXIT
 
 if [[ $# < 1 ]]; then
-    echo Usage: bash remote-compile.sh foo.tex
+    echo "Usage: bash remote-compile.sh [-h host] foo.tex"
     exit 1
 fi
 
@@ -35,9 +36,8 @@ do
 done
 
 shift $((OPTIND-1))
-filename=$1
-echo $filename
-base=$(basename $filename)
+target=$1
+base=$(basename $target)
 extension=${base##*.}
 pdfFileName=${base%.*}.pdf
 
@@ -46,11 +46,13 @@ then
     echo "Only files with .tex extensions are allowed"
     exit 1
 fi
+tarball=`mktemp latexTarball-XXXXXX`
+tar -cz $@ > $tarball
 
 # create tmp file for headers
 dumpHeaders=`mktemp latexCurlHeaders-XXXXXX`
 outputFile=`mktemp latexCurlOutput-XXXXXX`
-curl -D $dumpHeaders -F file=@$filename $host/data > $outputFile
+curl -D $dumpHeaders -F file=@$tarball $host/data?target=$target > $outputFile
 
 httpResponse=`cat $dumpHeaders | grep ^HTTP | tail -1 | cut -f 2 -d ' '`
 

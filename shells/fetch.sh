@@ -19,8 +19,11 @@
 
 function fetchFile {
     echo fetching file $1 1>&2
-    mv $1 $tmpdir/$2
-    echo $2
+    mv $1 $tmpdir/tarball.tar.gz
+    cd $tmpdir
+    tar -xf tarball.tar.gz
+    cd - > /dev/null
+    echo UNPACKED
 }
 
 function fetchUrl {
