@@ -37,7 +37,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/compile', function(req, res) {
-    processor.processUrl(req.query['url'], function(err, data) {
+    function processCallback(err, data) {
         if (err) {
             res.writeHead(500, {'content-type': 'text/plain'});
             res.write(err.toString());
@@ -50,7 +50,13 @@ app.get('/compile', function(req, res) {
             res.write(data);
             res.end();
         }
-    });
+    }
+    if (req.query['git'] && req.query['target']) {
+        processor.processGit(req.query['git'], req.query['target'], processCallback);
+    } else {
+        processor.processUrl(req.query['url'], processCallback);
+    }
+
 });
 
 app.post('/data', function(req, res) {

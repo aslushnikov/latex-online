@@ -58,7 +58,8 @@ if [[ $httpResponse != 2* ]];
 then
     echo Errors during compiling TeX document
     # if so then output is not pdfFile but plain text one with errors
-    cat $outputFile
+    cat $outputFile >&2
+    exit 1
     # and we should remove it after
 else
     cp $outputFile $pdfFileName
