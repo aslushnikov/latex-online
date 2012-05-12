@@ -106,6 +106,7 @@ Generally speaking the service is made out of two parts
   files, hashSumming them, compiling e.t.c)
 
 There are three types of requests:
+
 1. Given a link to a `.TEX` file, compile it
 2. Given a tarball with files structure, compile it
 3. Given a git repo, compile it
