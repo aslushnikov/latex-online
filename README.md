@@ -6,6 +6,28 @@
 
 Thanks to [@udalov](https://github.com/udalov) for deployment server
 
+## Contents
+
+- [About](#about)
+- [Capabilities](#capabilities)
+- [API](#api)
+  * [HTTP Response Codes](#http-resonse-codes)
+  * [Compile single file](#Compile-single-file)
+  * [Compile git repo](#compile-git-repo)
+- [Remote Compiling](#remote-compiling)
+  * [1. Compile single file](#1-compile-single-file)
+  * [2. Compile files with dependencies](#2-compile-files-with-dependencies)
+  * [3. Compile local git repo](#3-compile-local-git-repo)
+- [How it works](#how-it-works)
+  * [1. Given a link to a .TEX file, compile it](#1-given-a-link-to-a-tex-file-compile-it)
+  * [2. Given a tarball with files structure, compile it](#2-given-a-tarball-with-files-structure-compile-it)
+  * [3. Given a git repo, compile it](#3-given-a-git-repo-compile-it)
+- [DEPLOYMENT](#deployment)
+  * [Dependencies](#dependencies)
+  * [Installation](#installation)
+  * [Running](#running)
+- [TODO list](#todo-list)
+
 ## About
 
 This is a small service developed to
@@ -23,7 +45,7 @@ See "usage" section for a bit more information.
 
 ## API
 
-### HTTP Response Code
+### HTTP Response Codes
 
 The service will return HTTP.2xx on success and compiled PDF file. Otherwise
 a HTTP.4xx code will be returned with a compilation error log in response body.
