@@ -95,6 +95,51 @@ bash remote-compile.sh -g main.tex
 ```
 The script will behave as if `main.tex` includes each file stored in your git repo.
 
+## How it works?
+
+In this section a brief description of the service from the inside is given.
+
+Generally speaking the service is made out of two parts
+- `Node.js` part which with the help of `express.js` provides the REST API, and
+  with the help of `mc` bridges the gap with `memcached` instance
+- `Bash` scripts which handle all the jobs related to the service (fetching
+  files, hashSumming them, compiling e.t.c)
+
+There are three types of requests:
+1. Given a link to a `.TEX` file, compile it
+2. Given a tarball with files structure, compile it
+3. Given a git repo, compile it
+
+Every request is handled in a bit special way
+
+### 1. Given a link to a `.TEX` file, compile it
+
+1. The URL of the given file is fetched and saved locally
+2. The hash sum of the file is counted in some way
+3. Check in cache if we've got a PDF for the hashsum
+4. If yes, then just return the precompiled PDF from cache
+5. If no, then compile the file, cache the result and return it to user
+
+### 2. Given a tarball with files structure, compile it
+
+1. The tarball is saved locally
+2. The hash sum of the tarball is counted in some way
+3. Check in cache if we've got a PDF for the hashsum
+4. If yes, then just return the precompiled PDF from cache
+5. If no, then extract file structure from the tarball, compile it,
+    cache the result and return it to user
+
+### 3. Given a git repo, compile it
+
+This kind of request is handled in a bit different way, as we can
+get a hashSum of the repo without cloning the entire repository.
+
+1. Using `git ls-remote` extracting `sha1` of the master branch
+3. Check in cache if we've got a PDF for the given `sha1`
+4. If yes, then just return the precompiled PDF from cache
+5. If no, then do a shallow copy of the given git repo
+6. Compile it, cache the result and return it to user
+
 ## DEPLOYMENT
 
 This part is for you if you'd like to deploy the service on your
