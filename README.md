@@ -8,25 +8,28 @@ Thanks to [@udalov](https://github.com/udalov) for deployment server
 
 ## Contents
 
-- [About](#about)
-- [Capabilities](#capabilities)
-- [API](#api)
-  * [HTTP Response Codes](#http-resonse-codes)
-  * [Compile single file](#Compile-single-file)
-  * [Compile git repo](#compile-git-repo)
-- [Remote Compiling](#remote-compiling)
-  * [1. Compile single file](#1-compile-single-file)
-  * [2. Compile files with dependencies](#2-compile-files-with-dependencies)
-  * [3. Compile local git repo](#3-compile-local-git-repo)
-- [How it works](#how-it-works)
-  * [1. Given a link to a .TEX file, compile it](#1-given-a-link-to-a-tex-file-compile-it)
-  * [2. Given a tarball with files structure, compile it](#2-given-a-tarball-with-files-structure-compile-it)
-  * [3. Given a git repo, compile it](#3-given-a-git-repo-compile-it)
-- [DEPLOYMENT](#deployment)
-  * [Dependencies](#dependencies)
-  * [Installation](#installation)
-  * [Running](#running)
-- [TODO list](#todo-list)
+[Latex-Online](#latex-online)
+    [Try it](#try-it)
+    [Contents](#contents)
+    [About](#about)
+    [Capabilities](#capabilities)
+    [API](#api)
+        [HTTP Response Codes](#http-response-codes)
+        [Compile single file](#compile-single-file)
+        [Compile git repo](#compile-git-repo)
+    [Remote compiling](#remote-compiling)
+        [1. Compile single file](#1-compile-single-file)
+        [2. Compile files with dependencies](#2-compile-files-with-dependencies)
+        [3. Compile local git repo](#3-compile-local-git-repo)
+    [How it works?](#how-it-works)
+        [1. Given a link to a `.TEX` file, compile it](#1-given-a-link-to-a-tex-file-compile-it)
+        [2. Given a tarball with files structure, compile it](#2-given-a-tarball-with-files-structure-compile-it)
+        [3. Given a git repo, compile it](#3-given-a-git-repo-compile-it)
+    [DEPLOYMENT](#deployment)
+        [Dependencies](#dependencies)
+        [Installation](#installation)
+        [Running](#running)
+[TODO List](#todo-list)
 
 ## About
 
@@ -200,4 +203,3 @@ Installation of `pdflatex` is beyond the scope of the document.
     - `download` if true, return file in attachment and not to the browser
     - `cache` if false, do not cache response
 * Add some statistics on API usage
-
