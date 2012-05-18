@@ -13,6 +13,8 @@
 # Options:
 #   -h HOST - use HOST instead of latex.aslushnikov.com
 #   -g - pass git tracked files instead of file1, file2, etc.
+#   -o - ouput filename or, if a directory name is given, where
+#       to put the file with a default name
 #
 # Example
 #   1. If you've got a simple tex file FOO.TEX that doesn't rely on any other files.
@@ -44,12 +46,14 @@ fi
 
 host="latex.aslushnikov.com"
 GIT_TRACKED=false
-while getopts "h:g" flag
+while getopts "h:go:" flag
 do
     if [ $flag == "h" ]; then
         host=$OPTARG
     elif [[ $flag == "g" ]]; then
         GIT_TRACKED=true
+    elif [[ $flag == "o" ]]; then
+        OUTPUT=$OPTARG
     fi
 done
 
@@ -59,6 +63,15 @@ shift
 base=$(basename $target)
 extension=${base##*.}
 pdfFileName=${base%.*}.pdf
+
+if [[ $OUTPUT ]]; then
+    # if it is a directory, then append path
+    if [[ -d $OUTPUT ]]; then
+        pdfFileName=${OUTPUT%/}/$pdfFileName
+    else
+        pdfFileName=${OUTPUT%/}
+    fi
+fi
 
 if [ $extension != "tex" ];
 then
@@ -85,6 +98,7 @@ if [[ $httpResponse != 2* ]];
 then
     echo Errors during compiling TeX document
     # if so then output is not pdfFile but plain text one with errors
+    # trap will clean the file
     cat $outputFile >&2
     exit 1
     # and we should remove it after
