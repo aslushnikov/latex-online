@@ -2,7 +2,7 @@
 #
 # Use the tool to remotely compile .TEX files.
 # Example usage:
-#   bash remote-compile.sh [-h host] main.tex [file1] [file2]...
+#   bash remote-compile.sh [-h host] [-o output] [-g] main.tex [file1] [file2]...
 #
 # This will produce main.pdf in the current folder.
 # Files file1, file2 etc are treated as a supporting files
@@ -40,7 +40,7 @@ function cleanup {
 trap cleanup EXIT
 
 if [[ $# < 1 ]]; then
-    echo "Usage: bash remote-compile.sh [-h host] foo.tex"
+   echo "Usage: bash remote-compile.sh [-h host] [-o output] [-g] main.tex [file1] [file2]..." >&2
     exit 1
 fi
 
