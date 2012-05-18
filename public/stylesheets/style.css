@@ -1,5 +1,4 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -7,14 +6,20 @@ a {
     color: #00B7FF;
 }
 
+#wrap {
+    width: 900px;
+    margin: 0 auto;
+}
 
-#header {
+#title {
+    font-size: 45pt;
     display: inline-block;
     vertical-align: middle;
 }
 
 #slogan {
     margin-left: 1em;
+    font-size: 12pt;
     vertical-align: middle;
     color: gray;
 }
@@ -42,17 +47,19 @@ a:hover {
 
 #middle {
     padding-top: 1em;
-
 }
 
 #left {
     float: left;
+    width: 450px;
     padding-right: 1em;
     margin-right: 1em;
     border-right: 1px solid lightgray;
 }
 
 #right {
+    width: 400px;
+    float: right;
 }
 
 #twitter {
