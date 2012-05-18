@@ -35,30 +35,36 @@ app.get('/', function(req, res) {
     res.render('index.jade');
 });
 
-app.get('/compile', function(req, res) {
-    function processCallback(err, data) {
-        if (err) {
-            res.writeHead(500, {'content-type': 'text/plain'});
-            res.write(err.toString());
-            res.end();
-        } else {
-            res.writeHead(200, {
-                'content-type': 'application/pdf',
-                'content-length': data.length
-            });
-            res.write(data);
-            res.end();
-        }
-    }
-    if (req.query['git'] && req.query['target']) {
-        processor.processGit(req.query['git'], req.query['target'], processCallback);
+function success(req, res, next) {
+    if (req.latexOnline.err) {
+        res.writeHead(400, {'content-type': 'text/plain'});
+        res.write(req.latexOnline.err.toString());
+        res.end();
     } else {
-        processor.processUrl(req.query['url'], processCallback);
+        res.writeHead(200, {
+            'content-type': 'application/pdf',
+            'content-length': req.latexOnline.data.length
+        });
+        res.write(req.latexOnline.data);
+        res.end();
     }
+}
 
-});
+function computeCompilation(req, res, next) {
+    if (req.query['git'] && req.query['target']) {
+        processor.processGit(req.query['git'], req.query['target'], function(err, data) {
+            req.latexOnline = {err: err, data: data};
+            next();
+        });
+    } else {
+        processor.processUrl(req.query['url'], function(err, data) {
+            req.latexOnline = {err: err, data: data};
+            next();
+        });
+    }
+}
 
-app.post('/data', function(req, res) {
+function checkUtilityCompatability(req, res, next) {
     if (!req.query['target']) {
         res.writeHead(412, {'content-type': 'text/plain'});
         res.write("You're using old remote-compile.sh tool\n");
@@ -66,21 +72,18 @@ app.post('/data', function(req, res) {
         res.end();
         return;
     }
-    processor.processFile(req.files['file'].path, req.query['target'], function(err, data) {
-        if (err) {
-            res.writeHead(400, {'content-type': 'text/plain'});
-            res.write(err.toString());
-            res.end();
-        } else {
-            res.writeHead(200, {
-                'content-type': 'application/pdf',
-                'content-length': data.length
+    next();
+}
+
+app.get('/compile', computeCompilation, success);
+
+app.post('/data', checkUtilityCompatability, function(req, res, next) {
+    processor.processFile(req.files['file'].path,
+            req.query['target'], function(err, data) {
+                req.latexOnline = {err: err, data:data};
+                next();
             });
-            res.write(data);
-            res.end();
-        }
-    });
-});
+}, success);
 
 app.listen(2700);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
