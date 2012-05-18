@@ -61,6 +61,29 @@ function RequestProcessor(options, callback) {
         });
     }
 
+    this.memcacheGet = function(key, getFailedCallback) {
+        self.memcached.get(key, function(err, data) {
+            if (err || !data) {
+                if (err) {
+                    console.log("Memcached GET " + key + " error: " + err.message);
+                } else {
+                    console.log("Memcached GET " + key + " didn't return any value");
+                }
+                getFailedCallback();
+            } else {
+                console.log("fetched " + data.length + " bytes from memcache for KEY " + key);
+                self.finishProcessing(null, data);
+            }
+        });
+    }
+
+    this.memcacheStore = function(key, data) {
+        self.memcached.store(key, data, function(err, resp) {
+            self.finishProcessing(null, data);
+            console.log("Memcache store response: " + resp);
+        });
+    }
+
     this.mkTempDir = function(callback) {
         this.execShellScript("bash shells/mkTempDir.sh tmp", callback);
     }
@@ -76,6 +99,14 @@ function RequestProcessor(options, callback) {
         }
         cmd += entity;
         this.execShellScript(cmd, callback);
+    }
+
+    this.hashAndGet = function(type, entity, failCallback) {
+        self.hashSum(type, entity, function(hash) {
+            self.memcacheGet(hash, function() {
+                failCallback(hash);
+            });
+        });
     }
 
     this.fetch = function(type, entity, callback) {
@@ -105,66 +136,58 @@ function RequestProcessor(options, callback) {
         });
     }
 
-    this.process = function(target) {
+    this.processUrl = function() {
+
+        function fetchCallback(fetchedFile) {
+            self.hashAndGet("file", self.tmpdir + "/" + fetchedFile, function(hash) {
+                self.compile(self.tmpdir, fetchedFile, function(data) {
+                    self.memcached.store(hash, data, function(err, resp) {
+                        self.finishProcessing(null, data);
+                        console.log("Memcache store response: " + resp);
+                    });
+                });
+            });
+        }
+
+        self.mkTempDir(function(tmpDir) {
+            self.tmpdir = tmpDir;
+            self.fetch(self.options.type, self.options.entity, fetchCallback);
+        });
+    }
+
+    this.processFileUpload = function() {
+
+        function fetchCallback() {
+            self.compile(self.tmpdir, self.options.target, function(data) {
+                self.memcacheStore(self.hash, data);
+            });
+        }
+
         function mkTempDirCallback(tmpDir) {
             self.tmpdir = tmpDir;
             self.fetch(self.options.type, self.options.entity, fetchCallback);
         }
 
-        function fetchCallback(fetchedFile) {
-            target = target || fetchedFile;
-            self.hashSum("file", self.tmpdir + "/" + target, function(hash) {
-                console.log('Hash sum for ' + target + ' = ' + hash);
-                self.memcached.get(hash, function(err, data) {
-                    if (err || !data) {
-                        if (err) {
-                            console.log("Memcached GET error: " + err.message);
-                        }
-                        self.compile(self.tmpdir, target, function(data) {
-                            self.memcached.store(hash, data, function(err, resp) {
-                                self.finishProcessing(null, data);
-                                console.log("Memcache store response: " + resp);
-                            });
-                        });
-                    } else {
-                        console.log("fetched " + data.length + " bytes from memcache for KEY " + hash);
-                        self.finishProcessing(null, data);
-                    }
-                });
-            });
-        }
-
-        self.mkTempDir(mkTempDirCallback);
+        self.hashAndGet("file", self.options.entity, function(hash) {
+            self.hash = hash;
+            self.mkTempDir(mkTempDirCallback);
+        });
     }
 
     this.processGit = function() {
         function mkTempDirCallback(tmpDir) {
             self.tmpdir = tmpDir;
-            self.hashSum("git", self.options.entity, hashSumCallback);
+            self.hashAndGet("git", self.options.entity, hashAndGetCallback);
         }
 
-        function hashSumCallback(hash) {
-            console.log('Hash sum for ' + self.options.entity + ' = ' + hash);
-            self.hashSum = hash;
-            self.memcached.get(hash, function(err, data) {
-                if (err || !data) {
-                    if (err) {
-                        console.log("Memcached GET error: " + err.message);
-                    }
-                    self.fetch(self.options.type, self.options.entity, fetchCallback);
-                } else {
-                    console.log("fetched " + data.length + " bytes from memcache for KEY " + hash);
-                    self.finishProcessing(null, data);
-                }
-            });
+        function hashAndGetCallback(hash) {
+            self.hash = hash;
+            self.fetch(self.options.type, self.options.entity, fetchCallback);
         }
 
         function fetchCallback(gitDir) {
             self.compile(self.tmpdir + "/" + gitDir, self.options.target, function(data) {
-                self.memcached.store(self.hashSum, data, function(err, resp) {
-                    self.finishProcessing(null, data);
-                    console.log("Memcache store response: " + resp);
-                });
+                self.memcacheStore(self.hash, data);
             });
         }
 
@@ -175,9 +198,10 @@ function RequestProcessor(options, callback) {
 function processFile(file, target, callback) {
     var rp = new RequestProcessor({
         type: "file",
-        entity: file
+        entity: file,
+        target: target
     }, callback);
-    rp.process(target);
+    rp.processFileUpload();
 }
 
 function processUrl(url, callback) {
@@ -186,7 +210,7 @@ function processUrl(url, callback) {
         entity: url
     }
     , callback);
-    rp.process();
+    rp.processUrl();
 }
 
 function processGit(git, target, callback) {

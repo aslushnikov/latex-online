@@ -72,7 +72,7 @@ if [[ $GIT_TRACKED == true ]]; then
 else
     supportingFiles=$@
 fi
-tar -cz $target $supportingFiles > $tarball
+tar -cj $target $supportingFiles > $tarball
 
 # create tmp file for headers
 dumpHeaders=`mktemp latexCurlHeaders-XXXXXX`
