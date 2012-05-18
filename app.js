@@ -17,7 +17,6 @@ app.configure(function(){
   app.set('view engine', 'jade');
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });
@@ -60,9 +59,6 @@ app.get('/compile', function(req, res) {
 });
 
 app.post('/data', function(req, res) {
-     // connect-form adds the req.form object
-  // we can (optionally) define onComplete, passing
-  // the exception (if any) fields parsed, and files parsed
     if (!req.query['target']) {
         res.writeHead(412, {'content-type': 'text/plain'});
         res.write("You're using old remote-compile.sh tool\n");
@@ -85,7 +81,6 @@ app.post('/data', function(req, res) {
         }
     });
 });
-
 
 app.listen(2700);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
