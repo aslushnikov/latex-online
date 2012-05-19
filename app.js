@@ -6,9 +6,13 @@
 var express = require('express')
   , fs = require('fs')
   // pass false to disable use of memcached
-  , Processor = require('./process.js').RequestProcessor;
+  , Processor = require('./process.js').RequestProcessor
+  , GoogleAnalytics = require('ga')
 
 var app = module.exports = express.createServer();
+
+var ga = new GoogleAnalytics('UA-31467918-1', 'latex.aslushnikov.com');
+//ga.trackPage('testing/1');
 
 // Configuration
 
@@ -17,6 +21,12 @@ app.configure(function(){
   app.set('view engine', 'jade');
   app.use(express.bodyParser());
   app.use(express.methodOverride());
+  app.use(function(req, res, next){
+      if (!/favicon/.test(req.url))  {
+          ga.trackPage(req.url);
+      }
+      next();
+  });
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });
