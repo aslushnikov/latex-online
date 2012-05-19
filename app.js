@@ -46,7 +46,7 @@ function success(req, res, next) {
             'content-length': req.latexOnline.data.length
         };
         if (req.query['download']) {
-            headers['content-disposition'] = 'attachment; filename="latex-online.pdf"';
+            headers['content-disposition'] = 'attachment; filename="' + req.query['download']+ '"';
         }
         res.writeHead(200, headers);
         res.write(req.latexOnline.data);
