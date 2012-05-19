@@ -6,7 +6,7 @@
 var express = require('express')
   , fs = require('fs')
   // pass false to disable use of memcached
-  , processor = require('./process.js')
+  , Processor = require('./process.js').RequestProcessor;
 
 var app = module.exports = express.createServer();
 
@@ -51,17 +51,20 @@ function success(req, res, next) {
 }
 
 function computeCompilation(req, res, next) {
-    if (req.query['git'] && req.query['target']) {
-        processor.processGit(req.query['git'], req.query['target'], function(err, data) {
-            req.latexOnline = {err: err, data: data};
-            next();
-        });
-    } else {
-        processor.processUrl(req.query['url'], function(err, data) {
-            req.latexOnline = {err: err, data: data};
-            next();
-        });
+    var opts = {
+        entity: req.query['git'] || req.query['url'],
+        target: req.query['target'],
     }
+    var types = ["git", "url"];
+    for(var i = 0; i < types.length; i++) {
+        if (req.query[types[i]]) {
+            opts.type = types[i];
+        }
+    }
+    new Processor(opts, function(err, data) {
+        req.latexOnline = {err: err, data: data};
+        next();
+    });
 }
 
 function checkUtilityCompatability(req, res, next) {
@@ -78,11 +81,11 @@ function checkUtilityCompatability(req, res, next) {
 app.get('/compile', computeCompilation, success);
 
 app.post('/data', checkUtilityCompatability, function(req, res, next) {
-    processor.processFile(req.files['file'].path,
-            req.query['target'], function(err, data) {
-                req.latexOnline = {err: err, data:data};
-                next();
-            });
+    new Processor({ type: "file", entity: req.files['file'].path,
+            target: req.query['target']}, function(err, data) {
+        req.latexOnline = {err: err, data:data};
+        next();
+    });
 }, success);
 
 app.listen(2700);

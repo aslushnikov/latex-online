@@ -16,12 +16,38 @@ var mockMemcached = {
     }
 }
 
+function validateOptions(opts) {
+    console.log(JSON.stringify(opts));
+    if (!opts.entity) {
+        throw new Error("No entity is given for processing!");
+    }
+    if (!opts.type) {
+        throw new Error("Type must be declared for processing!");
+    }
+
+    if (opts.type != "file" && opts.type != "git" && opts.type != "url") {
+        throw new Error("Type must be one of FILE, GIT, URL");
+    }
+
+    if (opts.type == "url") {
+        return;
+    }
+
+    if (!opts.target) {
+        throw new Error("Target must be specified!");
+    }
+
+}
+
 function RequestProcessor(options, callback) {
     var self = this;
 
     options = options || {};
     options.disableCaching = options.disableCaching || false;
     this.options = options;
+
+    validateOptions(this.options);
+
     if (!options.disableCaching) {
         self.memcached = memcached;
     } else {
@@ -193,6 +219,19 @@ function RequestProcessor(options, callback) {
 
         self.mkTempDir(mkTempDirCallback);
     }
+
+
+    if (self.options.type == "file") {
+        self.processFileUpload();
+    } else
+    if (self.options.type == "url") {
+        self.processUrl();
+    } else
+    if (self.options.type == "git") {
+        self.processGit();
+    } else {
+        throw new Error("Unknown processing type requested");
+    }
 }
 
 function processFile(file, target, callback) {
@@ -224,6 +263,3 @@ function processGit(git, target, callback) {
 
 module.exports = {};
 module.exports.RequestProcessor = RequestProcessor;
-module.exports.processFile = processFile;
-module.exports.processUrl = processUrl;
-module.exports.processGit = processGit;
