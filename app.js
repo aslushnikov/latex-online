@@ -12,6 +12,7 @@ var express = require('express')
 var app = module.exports = express.createServer();
 
 var ga = new GoogleAnalytics('UA-31467918-1', 'latex.aslushnikov.com');
+var excludeTrack = [/^\/$/, /^\/favicon/, /^\/stylesheets/];
 //ga.trackPage('testing/1');
 
 // Configuration
@@ -22,10 +23,15 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(function(req, res, next){
-      if (!/favicon/.test(req.url))  {
-          ga.trackPage(req.url);
-      }
-      next();
+    var exclude = false;
+    for(var i = 0; i < excludeTrack.length; i++) {
+      exclude = exclude || excludeTrack[i].test(req.url);
+    }
+    if (!exclude)  {
+      ga.trackPage(req.url);
+      console.log("Google Analytics track " + req.url);
+    }
+    next();
   });
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
