@@ -15,6 +15,7 @@
 #   -g - pass git tracked files instead of file1, file2, etc.
 #   -o - ouput filename or, if a directory name is given, where
 #       to put the file with a default name
+#   -f - force compiling. Will recompile file not relying on cache
 #
 # Example
 #   1. If you've got a simple tex file FOO.TEX that doesn't rely on any other files.
@@ -46,7 +47,7 @@ fi
 
 host="latex.aslushnikov.com"
 GIT_TRACKED=false
-while getopts "h:go:" flag
+while getopts "fh:go:" flag
 do
     if [ $flag == "h" ]; then
         host=$OPTARG
@@ -54,6 +55,8 @@ do
         GIT_TRACKED=true
     elif [[ $flag == "o" ]]; then
         OUTPUT=$OPTARG
+    elif [[ $flag == "f" ]]; then
+        FORCE=true
     fi
 done
 
@@ -90,7 +93,7 @@ tar -cj $target $supportingFiles > $tarball
 # create tmp file for headers
 dumpHeaders=`mktemp latexCurlHeaders-XXXXXX`
 outputFile=`mktemp latexCurlOutput-XXXXXX`
-curl -D $dumpHeaders -F file=@$tarball $host/data?target=$target > $outputFile
+curl -D $dumpHeaders -F file=@$tarball "$host/data?target=$target&force=$FORCE" > $outputFile
 
 httpResponse=`cat $dumpHeaders | grep ^HTTP | tail -1 | cut -f 2 -d ' '`
 

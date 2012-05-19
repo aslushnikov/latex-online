@@ -41,10 +41,14 @@ function success(req, res, next) {
         res.write(req.latexOnline.err.toString());
         res.end();
     } else {
-        res.writeHead(200, {
+        var headers = {
             'content-type': 'application/pdf',
             'content-length': req.latexOnline.data.length
-        });
+        };
+        if (req.query['download']) {
+            headers['content-disposition'] = 'attachment; filename="latex-online.pdf"';
+        }
+        res.writeHead(200, headers);
         res.write(req.latexOnline.data);
         res.end();
     }
@@ -54,6 +58,7 @@ function computeCompilation(req, res, next) {
     var opts = {
         entity: req.query['git'] || req.query['url'],
         target: req.query['target'],
+        disableCaching: !!req.query['force'],
     }
     var types = ["git", "url"];
     for(var i = 0; i < types.length; i++) {
@@ -81,11 +86,16 @@ function checkUtilityCompatability(req, res, next) {
 app.get('/compile', computeCompilation, success);
 
 app.post('/data', checkUtilityCompatability, function(req, res, next) {
-    new Processor({ type: "file", entity: req.files['file'].path,
-            target: req.query['target']}, function(err, data) {
+    function callback(err, data) {
         req.latexOnline = {err: err, data:data};
         next();
-    });
+    };
+    new Processor({
+        type: "file",
+        entity: req.files['file'].path,
+        target: req.query['target'],
+        disableCaching: !!req.query['force'],
+    }, callback);
 }, success);
 
 app.listen(2700);
