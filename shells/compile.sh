@@ -15,16 +15,6 @@
 # F U N C T I O N S #
 #####################
 
-function compile {
-    opts="-interaction nonstopmode"
-    if [[ "$1" == "draft" ]]; then
-        pdflatex $opts -draftmode $target >/dev/null
-    else
-        pdflatex $opts ${target} >&2
-        #pdflatex $opts ${target} >/dev/null
-    fi
-}
-
 ##############
 # START HERE #
 ##############
@@ -39,13 +29,7 @@ rootdir=${1%/}
 target=$2
 
 cd $rootdir
-has_toc=`grep -l '\tableofcontents' $target | wc -l`
-if [[ ${has_toc// /} -gt 0 ]]; then
-    compile "draft"
-    compile
-else
-    compile
-fi
+rubber -d $target
 cd - > /dev/null
 
 # if no PDF created, then exitcode 1
