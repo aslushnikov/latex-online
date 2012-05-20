@@ -187,6 +187,7 @@ own machine
 - `npm` to install node dependencies
 - `memcached` for caching compiled documents
 - `md5` or `md5sum` utility to hash documents according to their value
+- `rubber` latex build system is used to build files
 
 ### Installation
 
@@ -202,12 +203,9 @@ Installation of `pdflatex` is beyond the scope of the document.
 1. `node app.js` - runs node server
 2. `memcached` - runs local memcached instance
 
-
 # TODO List
 
 * Add optional query arguments
     - `strict-mode` if true, then return PDF if and only if it doesn't have
       errors
-    - `download` if true, return file in attachment and not to the browser
-    - `cache` if false, do not cache response
 * Add some statistics on API usage
