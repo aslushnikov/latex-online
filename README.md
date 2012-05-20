@@ -32,7 +32,9 @@ Thanks to [@udalov](https://github.com/udalov) for deployment server
 ## About
 
 This is a small service developed to
-compile latex documents online. You give it a link, it gives you a PDF.
+compile latex documents online. The slogan is: "You give it a link, it gives you
+a PDF.", but the service has evolved and thus you can give it a git repo to
+build as well.
 
 Additionally the service could be used for *remote compiling* of latex documents.
 See "usage" section for a bit more information.
@@ -46,21 +48,21 @@ See "usage" section for a bit more information.
 
 ## API
 
-### HTTP Response Codes
+**HTTP Response Codes**
 
 The service will return HTTP.2xx on success and compiled PDF file. Otherwise
 a HTTP.4xx code will be returned with a compilation error log in response body.
 
-### Compile single file
+### Compile url
 
 ```/compile?url=<url to tex file>```
 
-*Example:*
+**Example:**
 ```
 latex.aslushnikov.com/compile?url=https://raw.github.com/aslushnikov/latex-online/master/sample/sample.tex
 ```
 
-*Limitation:* this command will ignore all includes during compiling
+**Limitation:** this command will ignore all includes during compiling
 
 ### Compile git repo
 
@@ -69,10 +71,18 @@ This will fetch git `repo` and compile the `target`.
 
 `target` should be a relative path to the target file in your git repo.
 
-*Example:*
+**Example:**
 ```
 latex.aslushnikov.com/compile?git=https://github.com/aslushnikov/diplom-latex&target=diplom.tex
 ```
+
+### Optional request arguments
+
+For every request for compiling you can pass the following additional arguments:
+
+- `force=true` This will force recompiling the document
+- `download=sample.pdf` This will initiate downloading of the resulting PDF
+    into the file with the name "sample.pdf"
 
 ## Remote compiling
 
