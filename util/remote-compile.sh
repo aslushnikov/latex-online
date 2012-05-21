@@ -1,6 +1,17 @@
 #!/bin/bash
 #
-# Use the tool to remotely compile .TEX files.
+#  _          _                  ___        _ _
+# | |    __ _| |_ _____  __     / _ \ _ __ | (_)_ __   ___
+# | |   / _` | __/ _ \ \/ /____| | | | '_ \| | | '_ \ / _ \
+# | |___ (_| | |_  __/>  <_____| |_| | | | | | | | | |  __/
+# |_____\__,_|\__\___/_/\_\     \___/|_| |_|_|_|_| |_|\___|
+#
+# WEB Site: latex.aslushnikov.com
+#
+#
+# Use the tool to remotely compile .TEX files with the help of
+# latex-online web-service.
+#
 # Example usage:
 #   bash remote-compile.sh [-h host] [-o output] [-g] main.tex [file1] [file2]...
 #
@@ -30,6 +41,7 @@
 #       bash remote-compile.sh -g DIPLOMA.TEX
 #
 # Tool is written by Andrey Lushnikov
+# My homepage: aslushnikov.com
 #
 
 function cleanup {
