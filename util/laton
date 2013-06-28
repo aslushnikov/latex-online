@@ -36,14 +36,14 @@ Options:
 Examples:
   1. If you've got a simple tex file FOO.TEX that doesn't rely on any other files.
   You can compile it via command
-      bash remote-compile.sh FOO.TEX
+      laton FOO.TEX
 
   2. If you're including image MY_KITTY.JPG in FOO.TEX
-      bash remote-compile.sh FOO.TEX MY_KITTY.JPG
+      laton FOO.TEX MY_KITTY.JPG
 
   3. If you've got a git repo that includes plenty of different
   images/tex/other files, and main file like DIPLOMA.TEX, then
-      bash remote-compile.sh -g DIPLOMA.TEX
+      laton -g DIPLOMA.TEX
 
 Please file all questions, bugs and feature requests to https://github.com/aslushnikov/latex-online
 ">&2

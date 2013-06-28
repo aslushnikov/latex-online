@@ -91,7 +91,7 @@ function computeCompilation(req, res, next) {
 function checkUtilityCompatability(req, res, next) {
     if (!req.query['target']) {
         res.writeHead(412, {'content-type': 'text/plain'});
-        res.write("You're using old remote-compile.sh tool\n");
+        res.write("You're using old script for command-line access\n");
         res.write("Upgrade at https://github.com/aslushnikov/latex-online");
         res.end();
         return;
