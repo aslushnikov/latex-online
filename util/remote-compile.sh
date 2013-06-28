@@ -7,41 +7,9 @@
 # |_____\__,_|\__\___/_/\_\     \___/|_| |_|_|_|_| |_|\___|
 #
 # WEB Site: latex.aslushnikov.com
+# Issues/bugs: https://github.com/aslushnikov/latex-online
 #
-#
-# Use the tool to remotely compile .TEX files with the help of
-# latex-online web-service.
-#
-# Example usage:
-#   bash remote-compile.sh [-h host] [-o output] [-g] main.tex [file1] [file2]...
-#
-# This will produce main.pdf in the current folder.
-# Files file1, file2 etc are treated as a supporting files
-# for the tex file, like images, other tex files etc
-#
-# NOTE The first file must be .TEX
-#
-# Options:
-#   -h HOST - use HOST instead of latex.aslushnikov.com
-#   -g - pass git tracked files instead of file1, file2, etc.
-#   -o - ouput filename or, if a directory name is given, where
-#       to put the file with a default name
-#   -f - force compiling. Will recompile file not relying on cache
-#
-# Example
-#   1. If you've got a simple tex file FOO.TEX that doesn't rely on any other files.
-#   You can compile it via command
-#       bash remote-compile.sh FOO.TEX
-#
-#   2. If you're including image MY_KITTY.JPG in FOO.TEX
-#       bash remote-compile.sh FOO.TEX MY_KITTY.JPG
-#
-#   3. If you've got a big paper that includes plenty of different
-#   files like images/tex/other, and main file like DIPLOMA.TEX, then
-#       bash remote-compile.sh -g DIPLOMA.TEX
-#
-# Tool is written by Andrey Lushnikov
-# My homepage: aslushnikov.com
+# Command-line interface for latex-online service
 #
 
 function cleanup {
@@ -50,18 +18,54 @@ function cleanup {
     rm $tarball 2>/dev/null
 }
 
+function usage {
+   echo "Usage:
+  bash $0 [-h host] [-o output] [-g] main.tex [file1] [file2]...
+
+Description:
+  This is a command line interface for Latex-Online service.
+
+Options:
+  -d HOST - use HOST instead of latex.aslushnikov.com
+  -h, --help - show this help
+  -g - pass git tracked files instead of file1, file2, etc.
+  -o - ouput filename or, if a directory name is given, where
+      to put the file with a default name
+  -f - force compiling. Will recompile file not relying on cache
+
+Examples:
+  1. If you've got a simple tex file FOO.TEX that doesn't rely on any other files.
+  You can compile it via command
+      bash remote-compile.sh FOO.TEX
+
+  2. If you're including image MY_KITTY.JPG in FOO.TEX
+      bash remote-compile.sh FOO.TEX MY_KITTY.JPG
+
+  3. If you've got a git repo that includes plenty of different
+  images/tex/other files, and main file like DIPLOMA.TEX, then
+      bash remote-compile.sh -g DIPLOMA.TEX
+
+Please file all questions, bugs and feature requests to https://github.com/aslushnikov/latex-online
+">&2
+}
+
 trap cleanup EXIT
 
-if [[ $# < 1 ]]; then
-   echo "Usage: bash remote-compile.sh [-h host] [-o output] [-g] main.tex [file1] [file2]..." >&2
+if (( $# < 1 )); then
+    usage
     exit 1
+fi
+
+if  [[ ($1 == '-h') || ($1 == '--help') ]]; then
+    usage
+    exit 1;
 fi
 
 host="latex.aslushnikov.com"
 GIT_TRACKED=false
 while getopts "fh:go:" flag
 do
-    if [ $flag == "h" ]; then
+    if [ $flag == "d" ]; then
         host=$OPTARG
     elif [[ $flag == "g" ]]; then
         GIT_TRACKED=true
