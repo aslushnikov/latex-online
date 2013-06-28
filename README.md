@@ -15,8 +15,8 @@ Thanks to [@udalov](https://github.com/udalov) for deployment server
     - [Compile url](#compile-url)
     - [Compile git repo](#compile-git-repo)
     - [Optional request arguments](#optional-request-arguments)
-- [Remote compiling](#remote-compiling)
-    - [1. Compile single file](#1-compile-single-file)
+- [Command-line interface](#ccommand-line-interface)
+    - [1. Compile local single file](#1-compile-local-single-file)
     - [2. Compile files with dependencies](#2-compile-files-with-dependencies)
     - [3. Compile local git repo](#3-compile-local-git-repo)
 - [How it works?](#how-it-works)
@@ -35,15 +35,16 @@ This is a small service developed to
 compile latex documents online. The slogan is: "You give it a link, it gives you
 PDF.", but the service evolved and now you can give it a git repo as well.
 
-Additionally the service could be used for *remote compiling* of latex documents.
-See "usage" section for a bit more information.
+Additionally the service has a command-line utility that allows you for compiling
+local documents.
+See "usage" section for more information.
 
 ## Capabilities
 
 - Compile `.TEX` file via link. (Limitation: includes will be ignored)
 - Compile GIT repo via link.
-- Compile local files or git repo with the help of `remote-compile.sh` tool.
-- REST API for compiling
+- Compile local files or git repo via command-line interface.
+- REST API for compiling.
 
 ## API
 
@@ -54,9 +55,14 @@ a HTTP.4xx code will be returned with a compilation error log in response body.
 
 ### Compile url
 
-```/compile?url=<url to tex file>```
+**Format:**
+
+```
+/compile?url=<url to tex file>
+```
 
 **Example:**
+
 ```
 latex.aslushnikov.com/compile?url=https://raw.github.com/aslushnikov/latex-online/master/sample/sample.tex
 ```
@@ -65,66 +71,76 @@ latex.aslushnikov.com/compile?url=https://raw.github.com/aslushnikov/latex-onlin
 
 ### Compile git repo
 
-```/compile?git=<repo>&target=<target file>```
-This will fetch git `repo` and compile the `target`.
+**Format:**
 
-`target` should be a relative path to the target file in your git repo.
+```
+/compile?git=<repo>&target=<target file>
+```
+
+This will fetch git `repo` and compile the `target`. `target` should be a relative path to the repository root.
 
 **Example:**
+
 ```
 latex.aslushnikov.com/compile?git=https://github.com/aslushnikov/diplom-latex&target=diplom.tex
 ```
 
 ### Optional request arguments
 
-For every request for compiling you can pass the following additional arguments:
+For every compilation request you can pass the following additional arguments:
 
-- `force=true` This will force recompiling the document
+- `force=true` This will force cache skipping and document recompilation
 - `download=sample.pdf` This will initiate downloading of the resulting PDF
     into the file with the name "sample.pdf"
 
-## Remote compiling
+## Command-line interface
 
-Suppose you're writing a paper in tex and wish to compile it, but
-you're too lazy to install all this TeX-related stuff. Fine, you can use the
-service to compile your document!
+The command-line interface makes it possible to edit TeX documents in
+`vim`/`emacs` and compile them whenever you want from the command-line. To do so, you will
+need a tool called `laton`.
 
-To do so, you will need a tool called `remote-compile.sh`. You can obtain it
-[here](https://raw.github.com/aslushnikov/latex-online/master/util/remote-compile.sh)
+### Installation
 
-For convenience, you can make the script executeable with the command
+
 ```
-chmod 755 remote-compile.sh
+curl https://raw.github.com/aslushnikov/latex-online/master/util/laton > laton && chmod 755 laton
 ```
 
-### 1. Compile single file
+This command will result in a `laton` script created in a current directory. Put it somewhere
+your $PATH references to make it available around the system.
+
+### Example 1: compile single file
 
 If you've got a single file (say `main.tex`) that doesn't have any includes,
 then you can compile it like this:
+
 ```
-bash remote-compile.sh main.tex
+laton main.tex
 ```
+
 After compiling file `main.pdf` will be created in the current dir
 
-### 2. Compile files with dependencies
+### Example 2: compile files with dependencies
 
 If your paper includes some files, you have to declare them to the
-`remote-tool.sh`.
+`laton`.
 
 ```
-bash remote-compile.sh main.tex some-image.jpg some-cool-file.tex
+laton main.tex some-image.jpg some-cool-file.tex
 ```
 
 *NB* The first file should be the file you want to compile, all others are
 supporting files.
 
-### 3. Compile local git repo
+### Example 3: compile local git repo
 
 In case you store all your `.tex` and supporting files in a git repo, you
 can compile the project with the command
+
 ```
-bash remote-compile.sh -g main.tex
+laton -g main.tex
 ```
+
 The script will behave as if `main.tex` includes each file stored in your git repo.
 
 ## How it works?
@@ -132,6 +148,7 @@ The script will behave as if `main.tex` includes each file stored in your git re
 In this section a brief description of the service from the inside is given.
 
 Generally speaking the service is made out of two parts
+
 - `Node.js` part which with the help of `express.js` provides the REST API, and
   with the help of `mc` bridges the gap with `memcached` instance
 - `Bash` scripts which handle all the jobs related to the service (fetching
