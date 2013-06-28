@@ -36,11 +36,20 @@ else
     exit 1
 fi
 
-if [ -d ../tmp ]; then
-    echo TMP dir: YES
+if command -v rubber >/dev/null; then
+    echo rubber: YES
 else
-    mkdir ../tmp
-    echo TMP dir: NO. Created.
+    echo rubber: NO
+    echo Install rubber to use the application
+    exit 1
+fi
+
+BASEDIR=`dirname $0`
+if [ -d $BASEDIR/../tmp ]; then
+    echo "TMP dir($BASEDIR/../tmp): YES"
+else
+    mkdir $BASEDIR/../tmp
+    echo "TMP dir($BASEDIR/../tmp): NO. Created."
 fi
 
 echo \\nChecking recommended utils..
