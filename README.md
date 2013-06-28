@@ -33,8 +33,7 @@ Thanks to [@udalov](https://github.com/udalov) for deployment server
 
 This is a small service developed to
 compile latex documents online. The slogan is: "You give it a link, it gives you
-a PDF.", but the service has evolved and thus you can give it a git repo to
-build as well.
+PDF.", but the service evolved and now you can give it a git repo as well.
 
 Additionally the service could be used for *remote compiling* of latex documents.
 See "usage" section for a bit more information.
