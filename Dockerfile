@@ -47,7 +47,7 @@ run apt-get install -y \
         biblatex
 
 WORKDIR /var/www
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["./dockerEntryPoint.sh"]
 
 EXPOSE 2700
 

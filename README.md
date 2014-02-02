@@ -193,11 +193,24 @@ get a hashSum of the repo without cloning the entire repository.
 ## DEPLOYMENT
 
 This part is for you if you'd like to deploy the service on your
-own machine
+own machine. There are two ways to do it:
+- easy one, with the help of awesome project [Docker](http://www.docker.io/)
+- the hard one - to do everything manually.
 
-### Dependencies
+### Deploy with Docker
+
+Recently a Dockerfile was added which you can just build and run.
+
+1. `docker build -t latex .`
+2. `docker run -d -p 2700:2700 -t latex`
+
+### Deploy manually
+
+
+#### Dependencies
 
 - `pdflatex` command to compile documents
+- `bc` to estimate some values in scripts
 - `curl` to fetch documents from web
 - `node.js` to run server
 - `npm` to install node dependencies
@@ -205,7 +218,7 @@ own machine
 - `md5` or `md5sum` utility to hash documents according to their value
 - `rubber` latex build system is used to build files
 
-### Installation
+#### Installation
 
 1. `git clone git@github.com:aslushnikov/latex-online.git` to clone repo
 2. `sh util/check.sh` to check if all dependencies are satisfied and create
@@ -214,14 +227,8 @@ own machine
 
 Installation of `pdflatex` is beyond the scope of the document.
 
-### Running
+#### Running
 
 1. `node app.js` - runs node server
 2. `memcached` - runs local memcached instance
 
-# TODO List
-
-* Add optional query arguments
-    - `strict-mode` if true, then return PDF if and only if it doesn't have
-      errors
-* Add some statistics on API usage
