@@ -38,6 +38,8 @@ run apt-get install -y \
         texlive-latex-base \
         texlive-xetex \
         latex-xcolor \
+        preview-latex-style \
+        texlive-science \
         texlive-math-extra \
         texlive-latex-extra \
         texlive-fonts-extra \
