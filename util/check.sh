@@ -28,6 +28,22 @@ else
     exit 1
 fi
 
+if command -v bc >/dev/null; then
+    echo bc: YES
+else
+    echo bc: NO
+    echo Install BC to use the application
+    exit 1
+fi
+
+if command -v git >/dev/null; then
+    echo git: YES
+else
+    echo git: NO
+    echo Install GIT to use the application
+    exit 1
+fi
+
 if command -v pdflatex >/dev/null; then
     echo pdflatex: YES
 else
@@ -52,7 +68,7 @@ else
     echo "TMP dir($BASEDIR/../tmp): NO. Created."
 fi
 
-echo \\nChecking recommended utils..
+echo Checking recommended utils..
 if command -v memcached >/dev/null; then
     echo memcached: YES
 else
@@ -61,5 +77,5 @@ else
     echo Install memcached to get all features
 fi
 
-echo \\nSUCCESS!
+echo SUCCESS!
 echo Don\'t forget to run "npm install" to update all node dependencies of the app
