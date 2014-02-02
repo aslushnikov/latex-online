@@ -8,26 +8,30 @@ Thanks to [@udalov](https://github.com/udalov) for deployment server
 
 ## Contents
 
-- [Try it](#try-it)
-- [About](#about)
-- [Capabilities](#capabilities)
-- [API](#api)
-    - [Compile url](#compile-url)
-    - [Compile git repo](#compile-git-repo)
-    - [Optional request arguments](#optional-request-arguments)
-- [Command-line interface](#ccommand-line-interface)
-    - [1. Compile local single file](#1-compile-local-single-file)
-    - [2. Compile files with dependencies](#2-compile-files-with-dependencies)
-    - [3. Compile local git repo](#3-compile-local-git-repo)
-- [How it works?](#how-it-works)
-    - [1. Given a link to a `.TEX` file, compile it](#1-given-a-link-to-a-tex-file-compile-it)
-    - [2. Given a tarball with files structure, compile it](#2-given-a-tarball-with-files-structure-compile-it)
-    - [3. Given a git repo, compile it](#3-given-a-git-repo-compile-it)
-- [DEPLOYMENT](#deployment)
-    - [Dependencies](#dependencies)
-    - [Installation](#installation)
-    - [Running](#running)
-- [TODO List](#todo-list)
+- [Latex-Online](#latex-online)
+    - [Try it](#try-it)
+    - [Contents](#contents)
+    - [About](#about)
+    - [Capabilities](#capabilities)
+    - [API](#api)
+        - [Compile url](#compile-url)
+        - [Compile git repo](#compile-git-repo)
+        - [Optional request arguments](#optional-request-arguments)
+    - [Command-line interface](#command-line-interface)
+        - [Installation](#installation)
+        - [Example 1: compile single file](#example-1-compile-single-file)
+        - [Example 2: compile files with dependencies](#example-2-compile-files-with-dependencies)
+        - [Example 3: compile local git repo](#example-3-compile-local-git-repo)
+    - [How it works?](#how-it-works)
+        - [1. Given a link to a `.TEX` file, compile it](#1-given-a-link-to-a-tex-file-compile-it)
+        - [2. Given a tarball with files structure, compile it](#2-given-a-tarball-with-files-structure-compile-it)
+        - [3. Given a git repo, compile it](#3-given-a-git-repo-compile-it)
+    - [DEPLOYMENT](#deployment)
+        - [Deploy with Docker](#deploy-with-docker)
+        - [Deploy manually](#deploy-manually)
+            - [Dependencies](#dependencies)
+            - [Installation](#installation)
+            - [Running](#running)
 
 ## About
 
@@ -231,4 +235,3 @@ Installation of `pdflatex` is beyond the scope of the document.
 
 1. `node app.js` - runs node server
 2. `memcached` - runs local memcached instance
-
