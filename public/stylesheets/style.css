@@ -71,5 +71,9 @@ a:hover {
     clear: both;
 }
 
-
-
+#version {
+    font-family: monospace;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+}

@@ -48,7 +48,9 @@ app.configure('production', function(){
 // Routes
 
 app.get('/', function(req, res) {
-    res.render('index.jade');
+    res.render('index.jade', {
+        version: process.env.VERSION.substr(0, 9)
+    });
 });
 
 function success(req, res, next) {
