@@ -10,6 +10,7 @@ var express = require('express')
   , GoogleAnalytics = require('ga')
 
 var VERSION = process.env.VERSION || "undef";
+VERSION = VERSION.substr(0, 9);
 
 var app = module.exports = express.createServer();
 
