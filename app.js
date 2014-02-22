@@ -9,6 +9,8 @@ var express = require('express')
   , Processor = require('./process.js').RequestProcessor
   , GoogleAnalytics = require('ga')
 
+var VERSION = process.env.VERSION || "undef";
+
 var app = module.exports = express.createServer();
 
 var ga = new GoogleAnalytics('UA-31467918-1', 'latex.aslushnikov.com');
@@ -49,7 +51,7 @@ app.configure('production', function(){
 
 app.get('/', function(req, res) {
     res.render('index.jade', {
-        version: process.env.VERSION.substr(0, 9)
+        version: VERSION
     });
 });
 
@@ -118,3 +120,4 @@ app.post('/data', checkUtilityCompatability, function(req, res, next) {
 
 app.listen(2700);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+console.log("Running version SHA: " + VERSION);
