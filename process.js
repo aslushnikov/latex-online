@@ -203,7 +203,7 @@ function RequestProcessor(options, callback) {
     this.processGit = function() {
         function mkTempDirCallback(tmpDir) {
             self.tmpdir = tmpDir;
-	    self.hashAndGet("git", self.options.entity + "/" + self.options.target, hashAndGetCallback);
+            self.hashAndGet("git", self.options.entity, hashAndGetCallback);
         }
 
         function hashAndGetCallback(hash) {
