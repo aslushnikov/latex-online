@@ -1,6 +1,7 @@
 var Memcached = require('./memcached.js')
   , fs = require('fs')
   , exec  = require('child_process').exec
+  , crypto = require('crypto')
 
 var memcached = new Memcached();
 memcached.connect();
@@ -135,6 +136,17 @@ function RequestProcessor(options, callback) {
         });
     }
 
+    // Hash for git repository is a combination of SHA of its master branch
+    // and target file
+    this.hashAndGetGit = function(entity, target, failCallback) {
+        self.hashSum("git", entity, function(hash) {
+            hash = crypto.createHash('md5').update(hash + target).digest('hex');
+            self.memcacheGet(hash, function() {
+                failCallback(hash);
+            });
+        });
+    };
+
     this.fetch = function(type, entity, callback) {
         var cmd = 'bash shells/fetch.sh ' + self.tmpdir + " ";
         if (type == "file") {
@@ -203,7 +215,7 @@ function RequestProcessor(options, callback) {
     this.processGit = function() {
         function mkTempDirCallback(tmpDir) {
             self.tmpdir = tmpDir;
-            self.hashAndGet("git", self.options.entity, hashAndGetCallback);
+            self.hashAndGetGit(self.options.entity, self.options.target, hashAndGetCallback);
         }
 
         function hashAndGetCallback(hash) {
