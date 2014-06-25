@@ -68,7 +68,7 @@ a HTTP.4xx code will be returned with a compilation error log in response body.
 **Example:**
 
 ```
-latex.aslushnikov.com/compile?url=https://raw.github.com/aslushnikov/latex-online/master/sample/sample.tex
+latex.aslushnikov.com/compile?url=https://raw.githubusercontent.com/aslushnikov/latex-online/master/sample/sample.tex
 ```
 
 **Limitation:** this command will ignore all includes during compiling
