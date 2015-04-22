@@ -10,7 +10,7 @@ MAINTAINER Andrey Lushnikov aslushnikov@gmail.com
 # install node and memcached
 RUN echo "deb http://us.archive.ubuntu.com/ubuntu/ precise universe" >> /etc/apt/sources.list
 RUN apt-get update
-RUN apt-get install -y python-software-properties python python-setuptools ruby rubygems
+RUN apt-get install -y software-properties-common python-software-properties python python-setuptools ruby
 RUN apt-get install -y memcached
 #Add node repository to sources.list and update apt
 RUN add-apt-repository ppa:chris-lea/node.js && apt-get update
@@ -24,9 +24,6 @@ RUN cd /var/www ; npm install
 ENV NODE_ENV production
 
 # LaTeX 2012
-run add-apt-repository -y ppa:texlive-backports/ppa
-run apt-get update
-
 # Utilities which are used by Latex.Online
 run apt-get install -y bc
 run apt-get install -y curl
@@ -47,6 +44,7 @@ run apt-get install -y \
         biblatex
 
 WORKDIR /var/www
+RUN sh util/check.sh
 ENTRYPOINT ["./dockerEntryPoint.sh"]
 
 EXPOSE 2700
