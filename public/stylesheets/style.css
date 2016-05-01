@@ -77,3 +77,11 @@ a:hover {
     right: 0;
     bottom: 0;
 }
+
+.facebook-like {
+    float: left;
+}
+
+.paypal-donation {
+    float: right;
+}
