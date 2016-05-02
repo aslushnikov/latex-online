@@ -26,11 +26,11 @@ function validateOptions(opts) {
         throw new Error("Type must be declared for processing!");
     }
 
-    if (opts.type != "file" && opts.type != "git" && opts.type != "url") {
-        throw new Error("Type must be one of FILE, GIT, URL");
+    if (opts.type != "file" && opts.type != "git" && opts.type != "url" && opts.type != "text") {
+        throw new Error("Type must be one of FILE, GIT, URL, TEXT");
     }
 
-    if (opts.type == "url") {
+    if (opts.type == "url" || opts.type == "text") {
         return;
     }
 
@@ -193,6 +193,29 @@ function RequestProcessor(options, callback) {
         });
     }
 
+    this.processText = function() {
+
+      function fetchCallback(fetchedFile) {
+          self.hashAndGet("file", self.tmpdir + "/" + fetchedFile, function(hash) {
+              self.compile(self.tmpdir, fetchedFile, function(data) {
+                  self.memcached.store(hash, data, function(err, resp) {
+                      self.finishProcessing(null, data);
+                      console.log("Memcache store response: " + resp);
+                  });
+              });
+          });
+      }
+
+      self.mkTempDir(function(tmpDir) {
+        self.tmpdir = tmpDir;
+        var cmd = "cat > " + tmpDir + "/" + "source.tex <<HEREDOC && echo source.tex\n";
+        cmd += self.options.entity;
+        cmd += "\nHEREDOC";
+
+        self.execShellScript(cmd, fetchCallback);
+      });
+    }
+
     this.processFileUpload = function() {
 
         function fetchCallback() {
@@ -241,6 +264,9 @@ function RequestProcessor(options, callback) {
     } else
     if (self.options.type == "git") {
         self.processGit();
+    } else
+    if (self.options.type == "text") {
+        self.processText();
     } else {
         throw new Error("Unknown processing type requested");
     }

@@ -77,11 +77,11 @@ function success(req, res, next) {
 
 function computeCompilation(req, res, next) {
     var opts = {
-        entity: req.query['git'] || req.query['url'],
+        entity: req.query['git'] || req.query['url'] || req.query['text'],
         target: req.query['target'],
         disableCaching: !!req.query['force'],
     }
-    var types = ["git", "url"];
+    var types = ["git", "url", "text"];
     for(var i = 0; i < types.length; i++) {
         if (req.query[types[i]]) {
             opts.type = types[i];
