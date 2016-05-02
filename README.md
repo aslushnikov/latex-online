@@ -15,6 +15,7 @@ Thanks to [@udalov](https://github.com/udalov) for deployment server
     - [Capabilities](#capabilities)
     - [API](#api)
         - [Compile url](#compile-url)
+        - [Compile text](#compile-text)
         - [Compile git repo](#compile-git-repo)
         - [Optional request arguments](#optional-request-arguments)
     - [Command-line interface](#command-line-interface)
@@ -24,8 +25,9 @@ Thanks to [@udalov](https://github.com/udalov) for deployment server
         - [Example 3: compile local git repo](#example-3-compile-local-git-repo)
     - [How it works?](#how-it-works)
         - [1. Given a link to a `.TEX` file, compile it](#1-given-a-link-to-a-tex-file-compile-it)
-        - [2. Given a tarball with files structure, compile it](#2-given-a-tarball-with-files-structure-compile-it)
-        - [3. Given a git repo, compile it](#3-given-a-git-repo-compile-it)
+        - [2. Given a `.TEX` file content, compile it](#2-given-a-tex-file-content-compile-it)
+        - [3. Given a tarball with files structure, compile it](#3-given-a-tarball-with-files-structure-compile-it)
+        - [4. Given a git repo, compile it](#4-given-a-git-repo-compile-it)
     - [DEPLOYMENT](#deployment)
         - [Deploy with Docker](#deploy-with-docker)
         - [Deploy manually](#deploy-manually)
@@ -72,6 +74,19 @@ latex.aslushnikov.com/compile?url=https://raw.githubusercontent.com/aslushnikov/
 ```
 
 **Limitation:** this command will ignore all includes during compiling
+
+### Compile text
+
+**Format:**
+
+```
+/compile?text=<tex file content>
+```
+
+**Example:**
+```
+latex.aslushnikov.com/compile?text=%5Cdocumentclass%5B%5D%7Barticle%7D%0A%5Cusepackage%5BT1%5D%7Bfontenc%7D%0A%5Cusepackage%7Blmodern%7D%0A%5Cusepackage%7Bamssymb%2Camsmath%7D%0A%5Cusepackage%7Bifxetex%2Cifluatex%7D%0A%5Cusepackage%7Bfixltx2e%7D%20%25%20provides%20%5Ctextsubscript%0A%25%20use%20microtype%20if%20available%0A%5CIfFileExists%7Bmicrotype.sty%7D%7B%5Cusepackage%7Bmicrotype%7D%7D%7B%7D%0A%5Cifnum%200%5Cifxetex%201%5Cfi%5Cifluatex%201%5Cfi%3D0%20%25%20if%20pdftex%0A%20%20%5Cusepackage%5Butf8%5D%7Binputenc%7D%0A%5Celse%20%25%20if%20luatex%20or%20xelatex%0A%20%20%5Cusepackage%7Bfontspec%7D%0A%20%20%5Cifxetex%0A%20%20%20%20%5Cusepackage%7Bxltxtra%2Cxunicode%7D%0A%20%20%5Cfi%0A%20%20%5Cdefaultfontfeatures%7BMapping%3Dtex-text%2CScale%3DMatchLowercase%7D%0A%20%20%5Cnewcommand%7B%5Ceuro%7D%7B%E2%82%AC%7D%0A%5Cfi%0A%5Cusepackage%5Ba4paper%5D%7Bgeometry%7D%0A%5Cifxetex%0A%20%20%5Cusepackage%5Bsetpagesize%3Dfalse%2C%20%25%20page%20size%20defined%20by%20xetex%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20unicode%3Dfalse%2C%20%25%20unicode%20breaks%20when%20used%20with%20xetex%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20xetex%5D%7Bhyperref%7D%0A%5Celse%0A%20%20%5Cusepackage%5Bunicode%3Dtrue%5D%7Bhyperref%7D%0A%5Cfi%0A%5Chypersetup%7Bbreaklinks%3Dtrue%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20bookmarks%3Dtrue%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20pdfauthor%3D%7B%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20pdftitle%3D%7B%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20colorlinks%3Dtrue%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20urlcolor%3Dblue%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20linkcolor%3Dmagenta%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20pdfborder%3D%7B0%200%200%7D%7D%0A%5Csetlength%7B%5Cparindent%7D%7B0pt%7D%0A%5Csetlength%7B%5Cparskip%7D%7B6pt%20plus%202pt%20minus%201pt%7D%0A%5Csetlength%7B%5Cemergencystretch%7D%7B3em%7D%20%20%25%20prevent%20overfull%20lines%0A%5Csetcounter%7Bsecnumdepth%7D%7B0%7D%0A%0A%5Cauthor%7B%7D%0A%5Cdate%7B%7D%0A%0A%5Cbegin%7Bdocument%7D%0A%5Csection%7BHello%20World%7D%5Clabel%7Bhello-world%7D%0A%0AThis%20is%20your%20first%20%5Cemph%7BC%7D%20program%3A%0A%0A%5Cbegin%7Bverbatim%7D%0A%23include%20%3Cstdio.h%3E%0A%0Aint%20main(void)%20%0A%7B%0A%20%20printf(%22hello%2C%20world%5Cn%22)%3B%0A%20%20return%200%3B%0A%7D%0A%5Cend%7Bverbatim%7D%0A%0ALet's%20write%20some%20math%3A%0A%5C%5B%20%5Cfrac%7Bdf(x)%7D%7Bdx%7D%3D%5Clim_%7Bh%20%5Cto%200%7D%7B%5Cfrac%7Bf(x%2Bh)-f(x)%7D%7Bh%7D%7D%20%5C%5D%0A%5Cend%7Bdocument%7D
+```
 
 ### Compile git repo
 
@@ -174,7 +189,15 @@ Every request is handled in a bit special way
 4. If yes, then just return the precompiled PDF from cache
 5. If no, then compile the file, cache the result and return it to user
 
-### 2. Given a tarball with files structure, compile it
+### 2. Given a `.TEX` file content, compile it
+
+1. Given content is saved locally
+2. The hash sum of the file in counted in some way
+3. Check in cache if we've got a PDF for the hashsum
+4. If yes, then just return the precompiled PDF from cache
+5. If no, then compile the file, cache the result and return it to user
+
+### 3. Given a tarball with files structure, compile it
 
 1. The tarball is saved locally
 2. The hash sum of the tarball is counted in some way
@@ -183,7 +206,7 @@ Every request is handled in a bit special way
 5. If no, then extract file structure from the tarball, compile it,
     cache the result and return it to user
 
-### 3. Given a git repo, compile it
+### 4. Given a git repo, compile it
 
 This kind of request is handled in a bit different way, as we can
 get a hashSum of the repo without cloning the entire repository.
