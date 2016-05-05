@@ -112,7 +112,7 @@ function RequestProcessor(options, callback) {
     }
 
     this.mkTempDir = function(callback) {
-        this.execShellScript("bash shells/mkTempDir.sh tmp", callback);
+        this.execShellScript("bash shells/mkTempDir.sh /tmp", callback);
     }
 
     this.hashSum = function(type, entity, callback) {
