@@ -3,49 +3,34 @@
 # VERSION       1
 
 # use the ubuntu base image provided by dotCloud
-FROM ubuntu
+FROM node:argon
 
 MAINTAINER Andrey Lushnikov aslushnikov@gmail.com
 
-# install node and memcached
-RUN echo "deb http://us.archive.ubuntu.com/ubuntu/ precise universe" >> /etc/apt/sources.list
-RUN apt-get update
-RUN apt-get install -y software-properties-common python-software-properties python python-setuptools ruby
-RUN apt-get install -y memcached
-#Add node repository to sources.list and update apt
-RUN add-apt-repository ppa:chris-lea/node.js && apt-get update
-RUN apt-get install -y nodejs
+# Sorted list of used packages.
+run apt-get update && apt-get install -y \
+    bc \
+    biber \
+    curl \
+    fontconfig \
+    git-core \
+    latex-xcolor \
+    memcached \
+    preview-latex-style \
+    rubber \
+    texlive-bibtex-extra \
+    texlive-fonts-extra \
+    texlive-lang-cyrillic \
+    texlive-latex-base \
+    texlive-latex-extra \
+    texlive-math-extra \
+    texlive-science \
+    texlive-xetex
 
-# copy latex.online source files into sandbox
-ADD . /var/www
-RUN cd /var/www ; npm install
+COPY ./util/check.sh /
+RUN sh /check.sh
 
-# we want to run in production mode
-ENV NODE_ENV production
-
-# LaTeX 2012
-# Utilities which are used by Latex.Online
-run apt-get install -y bc
-run apt-get install -y curl
-run apt-get install -y git-core
-RUN apt-get install -y rubber
-# install packages
-run apt-get install -y \
-        fontconfig \
-        texlive-latex-base \
-        texlive-xetex \
-        latex-xcolor \
-        preview-latex-style \
-        texlive-science \
-        texlive-math-extra \
-        texlive-latex-extra \
-        texlive-fonts-extra \
-        texlive-lang-cyrillic \
-        biblatex
-
-WORKDIR /var/www
-RUN sh util/check.sh
-ENTRYPOINT ["./dockerEntryPoint.sh"]
-
+COPY ./docker-entrypoint.sh /
 EXPOSE 2700
+CMD ["./docker-entrypoint.sh"]
 
