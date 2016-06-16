@@ -20,6 +20,7 @@ run apt-get update && apt-get install -y \
     rubber \
     texlive-bibtex-extra \
     texlive-fonts-extra \
+    texlive-generic-extra \
     texlive-lang-cyrillic \
     texlive-latex-base \
     texlive-latex-extra \
