@@ -243,7 +243,7 @@ Recently a Dockerfile was added which you can just build and run.
 - `npm` to install node dependencies
 - `memcached` for caching compiled documents
 - `md5` or `md5sum` utility to hash documents according to their value
-- `rubber` latex build system is used to build files
+- `python3` to run the `latexrun` build system
 
 #### Installation
 
