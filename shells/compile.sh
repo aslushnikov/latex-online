@@ -36,7 +36,7 @@ cd - > /dev/null
 basename=`basename $target`
 pdfCreated=$rootdir/${basename%.*}.pdf
 if [[ ! -e $pdfCreated ]]; then
-    echo $OUTPUT
+    >&2 echo $OUTPUT
     exit 1
 else
     echo $pdfCreated
