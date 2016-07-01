@@ -52,11 +52,11 @@ else
     exit 1
 fi
 
-if command -v rubber >/dev/null; then
-    echo rubber: YES
+if command -v python3 >/dev/null; then
+    echo python3: YES
 else
-    echo rubber: NO
-    echo Install rubber to use the application
+    echo python3: NO
+    echo Install python3 to use the application
     exit 1
 fi
 
