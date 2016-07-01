@@ -17,7 +17,7 @@ run apt-get update && apt-get install -y \
     latex-xcolor \
     memcached \
     preview-latex-style \
-    rubber \
+    python3.4 \
     texlive-bibtex-extra \
     texlive-fonts-extra \
     texlive-generic-extra \
