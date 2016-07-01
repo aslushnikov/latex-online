@@ -226,10 +226,10 @@ own machine. There are two ways to do it:
 
 ### Deploy with Docker
 
-Recently a Dockerfile was added which you can just build and run.
+A Docker image is hosted and auto-updated on [hub.docker.com](https://hub.docker.com/r/aslushnikov/latex-online/)
 
-1. `docker build -t latex .`
-2. `docker run -d -p 2700:2700 -t latex`
+1. `docker pull aslushnikov/latex-online`
+2. `docker run -d -p 2700:2700 -t aslushnikov/latex-online`
 
 ### Deploy manually
 
