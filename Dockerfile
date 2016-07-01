@@ -22,6 +22,8 @@ run apt-get update && apt-get install -y \
     texlive-fonts-extra \
     texlive-generic-extra \
     texlive-lang-cyrillic \
+    texlive-lang-french \
+    texlive-lang-spanish \
     texlive-latex-base \
     texlive-latex-extra \
     texlive-math-extra \
