@@ -23,6 +23,7 @@ run apt-get update && apt-get install -y \
     texlive-generic-extra \
     texlive-lang-cyrillic \
     texlive-lang-french \
+    texlive-lang-german \
     texlive-lang-spanish \
     texlive-latex-base \
     texlive-latex-extra \
