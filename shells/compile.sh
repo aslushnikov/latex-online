@@ -29,12 +29,12 @@ rootdir=${1%/}
 target=$2
 
 cd $rootdir
-OUTPUT=$(latexrun -Wall $target)
-cd - > /dev/null
+cd $(dirname $target)
+basename=`basename $target`
+OUTPUT=$(latexrun -Wall $basename)
 
 # if no PDF created, then exitcode 1
-basename=`basename $target`
-pdfCreated=$rootdir/${basename%.*}.pdf
+pdfCreated=$(pwd)/${basename%.*}.pdf
 if [[ ! -e $pdfCreated ]]; then
     >&2 echo $OUTPUT
     exit 1
