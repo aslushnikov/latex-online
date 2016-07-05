@@ -25,6 +25,7 @@ run apt-get update && apt-get install -y \
     texlive-lang-french \
     texlive-lang-german \
     texlive-lang-spanish \
+    texlive-lang-swedish \
     texlive-latex-base \
     texlive-latex-extra \
     texlive-math-extra \
