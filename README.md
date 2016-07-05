@@ -1,4 +1,16 @@
-# Latex-Online
+<!-- links to social media icons -->
+<!-- icons with padding -->
+[1.1]: http://i.imgur.com/tXSoThF.png (twitter icon with padding)
+<!-- icons without padding -->
+[1.2]: http://i.imgur.com/wWzX9uB.png (twitter icon without padding)
+<!-- links to your social media accounts -->
+[1]: http://www.twitter.com/latex_online
+<!-- Please don't remove this: Grab your social icons from https://github.com/carlsednaoui/gitsocial -->
+
+# Latex-Online [![alt text][1.1]][1]
+
+Follow Latex-Online on [twitter](http://www.twitter.com/latex_online)! I'll post
+latest news/updates there to keep you up-to-date.
 
 ## Try it
 
