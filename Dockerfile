@@ -21,10 +21,7 @@ run apt-get update && apt-get install -y \
     texlive-bibtex-extra \
     texlive-fonts-extra \
     texlive-generic-extra \
-    texlive-lang-cyrillic \
-    texlive-lang-french \
-    texlive-lang-german \
-    texlive-lang-spanish \
+    texlive-lang-all \
     texlive-lang-swedish \
     texlive-latex-base \
     texlive-latex-extra \
