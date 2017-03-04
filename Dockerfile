@@ -11,6 +11,7 @@ MAINTAINER Andrey Lushnikov aslushnikov@gmail.com
 run apt-get update && apt-get install -y \
     bc \
     biber \
+    cm-super \
     curl \
     fontconfig \
     git-core \
