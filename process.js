@@ -66,7 +66,7 @@ function RequestProcessor(options, callback) {
     }
 
     this.execShellScript = function(cmd, callback) {
-        var timeout = 1000*60*2;// no more than 2 minutes evaluation
+        var timeout = 1000*60*5;// no more than 5 minutes evaluation
         exec(cmd, {timeout: timeout}, function(error, stdout, stderr) {
             if (error) {
                 console.error("Script '" + cmd + "' exec error: " + stderr);
