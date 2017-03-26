@@ -119,6 +119,6 @@ app.post('/data', checkUtilityCompatability, function(req, res, next) {
     }, callback);
 }, success);
 
-app.listen(2700);
+app.listen(process.env.PORT || 2700);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 console.log("Running version SHA: " + VERSION);

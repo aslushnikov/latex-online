@@ -1,11 +1,14 @@
 {
-    "name": "application-name"
-  , "version": "0.0.1"
-  , "private": true
-  , "dependencies": {
-      "express": "2.5.1"
-    , "jade": ">= 0.0.1"
-    , "mc": ">=0.0.1"
-    , "ga": ">=0.0.1"
+  "name": "application-name",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "2.5.1",
+    "jade": ">= 0.0.1",
+    "mc": ">=0.0.1",
+    "ga": ">=0.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
   }
 }
