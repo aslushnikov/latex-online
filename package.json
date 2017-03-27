@@ -1,12 +1,10 @@
 {
-  "name": "application-name",
-  "version": "0.0.1",
+  "name": "latex-online",
+  "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "express": "2.5.1",
-    "jade": ">= 0.0.1",
-    "mc": ">=0.0.1",
-    "ga": ">=0.0.1"
+    "compression": "^1.6.2",
+    "express": "^4.15.2"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"

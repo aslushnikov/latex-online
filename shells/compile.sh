@@ -19,26 +19,28 @@
 # START HERE #
 ##############
 
-if [[ $# != 2 ]]; then
+if [[ $# != 3 ]]; then
     echo "Not enough arguments!" >&2
-    echo "Usage: bash compile.sh [rootdir] [target]" >&2
+    echo "Usage: bash compile.sh [rootdir] [target] [output]" >&2
     exit 1
 fi
 
 rootdir=${1%/}
 target=$2
+output=$3
 
 cd $rootdir
 cd $(dirname $target)
 basename=`basename $target`
-OUTPUT=$(latexrun -Wall $basename)
+latexrun -Wall $basename
 
 # if no PDF created, then exitcode 1
 pdfCreated=$(pwd)/${basename%.*}.pdf
 if [[ ! -e $pdfCreated ]]; then
-    >&2 echo $OUTPUT
+    echo "ERROR: failed to locate PDF file."
     exit 1
 else
-    echo $pdfCreated
+    echo "SUCCESS: created $pdfCreated"
+    mv $pdfCreated $output
 fi
 

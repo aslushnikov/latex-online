@@ -1,124 +1,70 @@
+var Downloader = require('./lib/Downloader');
+var FileSystemStorage = require('./lib/FileSystemStorage');
+var LatexOnline = require('./lib/LatexOnline');
 
-/**
- * Module dependencies.
- */
+// Will be initialized later.
+var latex;
 
-var express = require('express')
-  , fs = require('fs')
-  // pass false to disable use of memcached
-  , Processor = require('./process.js').RequestProcessor
-  , GoogleAnalytics = require('ga')
+// initialize server.
+var express = require('express');
+var compression = require('compression');
+var app = express();
+app.use(compression());
 
-var VERSION = process.env.VERSION || "undef";
-VERSION = VERSION.substr(0, 9);
-
-var app = module.exports = express.createServer();
-
-var ga = new GoogleAnalytics('UA-31467918-1', 'latex.aslushnikov.com');
-var excludeTrack = [/^\/$/, /^\/favicon/, /^\/stylesheets/];
-//ga.trackPage('testing/1');
-
-// Configuration
-
-app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(function(req, res, next){
-    var exclude = false;
-    for(var i = 0; i < excludeTrack.length; i++) {
-      exclude = exclude || excludeTrack[i].test(req.url);
-    }
-    if (!exclude)  {
-      ga.trackPage(req.url);
-      console.log("Google Analytics track " + req.url);
-    }
-    next();
-  });
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
-});
-
-app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
-
-app.configure('production', function(){
-  app.use(express.errorHandler());
-});
-
-// Routes
-
-app.get('/', function(req, res) {
-    res.render('index.jade', {
-        version: VERSION
-    });
-});
-
-function success(req, res, next) {
-    if (req.latexOnline.err) {
-        res.writeHead(400, {'content-type': 'text/plain'});
-        res.write(req.latexOnline.err.toString());
-        res.end();
-    } else {
-        var headers = {
-            'content-type': 'application/pdf',
-            'content-length': req.latexOnline.data.length
-        };
-        if (req.query['download']) {
-            headers['content-disposition'] = 'attachment; filename="' + req.query['download']+ '"';
+app.get('/compile', async (req, res) => {
+    var compilation;
+    try {
+        if (req.query.text) {
+            compilation = await latex.compileText(req.query.text);
         }
-        res.writeHead(200, headers);
-        res.write(req.latexOnline.data);
-        res.end();
-    }
-}
-
-function computeCompilation(req, res, next) {
-    var opts = {
-        entity: req.query['git'] || req.query['url'] || req.query['text'],
-        target: req.query['target'],
-        disableCaching: !!req.query['force'],
-    }
-    var types = ["git", "url", "text"];
-    for(var i = 0; i < types.length; i++) {
-        if (req.query[types[i]]) {
-            opts.type = types[i];
-        }
-    }
-    new Processor(opts, function(err, data) {
-        req.latexOnline = {err: err, data: data};
-        next();
-    });
-}
-
-function checkUtilityCompatability(req, res, next) {
-    if (!req.query['target']) {
-        res.writeHead(412, {'content-type': 'text/plain'});
-        res.write("You're using old script for command-line access\n");
-        res.write("Upgrade at https://github.com/aslushnikov/latex-online");
-        res.end();
+    } catch (e) {
+        res.set('Content-Type', 'text/plain');
+        res.status(500).send('Exception during handling: ' + e.stack);
         return;
     }
-    next();
+    if (!compilation) {
+        res.status(500).send('Failed to do something meaningful.')
+        return;
+    }
+    if (!!req.query.log || compilation.status === Compilation.Status.Running
+            || compilation.status === Compilation.Status.Fail) {
+        res.sendFile(compilation.logPath());
+        return;
+    }
+    if (compilation.status === Compilation.Status.Success) {
+        res.sendFile(compilation.outputPath());
+        return;
+    }
+    res.status(500).send('Server is panicing. Unexpected behavior!')
+});
+
+// Initialize service dependencies.
+Promise.all([
+    FileSystemStorage.create('/tmp/storage/'),
+    Downloader.create('/tmp/downloads/'),
+]).then(onInitialized)
+.catch(onFailed);
+
+function onInitialized(instances) {
+    var storage = instances[0];
+    var downloader = instances[1];
+
+    latex = new LatexOnline(storage, downloader);
+    var port = process.env.PORT || 2700;
+    var listener = app.listen(port, () => {
+        console.log("Express server started:");
+        console.log("    PORT = " + listener.address().port);
+        console.log("    ENV = " + app.settings.env);
+    });
+
+    var VERSION = process.env.VERSION || "undef";
+    VERSION = VERSION.substr(0, 9);
+    console.log("Running version SHA: " + VERSION);
 }
 
-app.get('/compile', computeCompilation, success);
+function onFailed(err) {
+    console.error('ERROR: failed to initialize systems - ' + err);
+}
 
-app.post('/data', checkUtilityCompatability, function(req, res, next) {
-    function callback(err, data) {
-        req.latexOnline = {err: err, data:data};
-        next();
-    };
-    new Processor({
-        type: "file",
-        entity: req.files['file'].path,
-        target: req.query['target'],
-        disableCaching: !!req.query['force'],
-    }, callback);
-}, success);
 
-app.listen(process.env.PORT || 2700);
-console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
-console.log("Running version SHA: " + VERSION);
+
