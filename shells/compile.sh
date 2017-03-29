@@ -32,15 +32,13 @@ output=$3
 cd $rootdir
 cd $(dirname $target)
 basename=`basename $target`
-latexrun -Wall $basename
+latexrun -Wall -o $output $basename
 
 # if no PDF created, then exitcode 1
-pdfCreated=$(pwd)/${basename%.*}.pdf
-if [[ ! -e $pdfCreated ]]; then
+if [[ ! -e $output ]]; then
     echo "ERROR: failed to locate PDF file."
     exit 1
 else
-    echo "SUCCESS: created $pdfCreated"
-    mv $pdfCreated $output
+    echo "SUCCESS: created $output"
 fi
 

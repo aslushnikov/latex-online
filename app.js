@@ -16,6 +16,8 @@ app.get('/compile', async (req, res) => {
     try {
         if (req.query.text) {
             compilation = await latex.compileText(req.query.text);
+        } else if (req.query.url) {
+            compilation = await latex.compileURL(req.query.url);
         }
     } catch (e) {
         res.set('Content-Type', 'text/plain');
@@ -48,6 +50,7 @@ Promise.all([
 function onInitialized(instances) {
     var storage = instances[0];
     var downloader = instances[1];
+    downloader.disableCleanupForDebugging();
 
     latex = new LatexOnline(storage, downloader);
     var port = process.env.PORT || 2700;

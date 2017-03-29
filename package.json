@@ -4,7 +4,8 @@
   "private": true,
   "dependencies": {
     "compression": "^1.6.2",
-    "express": "^4.15.2"
+    "express": "^4.15.2",
+    "request": "^2.81.0"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"
