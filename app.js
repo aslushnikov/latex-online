@@ -13,21 +13,26 @@ app.use(compression());
 
 app.get('/compile', async (req, res) => {
     var compilation;
+    var result;
     try {
         if (req.query.text) {
-            compilation = await latex.compileText(req.query.text);
+            result = await latex.compileText(req.query.text);
         } else if (req.query.url) {
-            compilation = await latex.compileURL(req.query.url);
+            result = await latex.compileURL(req.query.url);
         }
     } catch (e) {
         res.set('Content-Type', 'text/plain');
         res.status(500).send('Exception during handling: ' + e.stack);
         return;
     }
-    if (!compilation) {
-        res.status(500).send('Failed to do something meaningful.')
+    if (!result || !result.compilation) {
+        var statusCode = result && result.userError ? 400 : 500;
+        var errorMessage = result ? result.userError : null;
+        errorMessage = errorMessage || 'Internal Server Error.';
+        res.status(statusCode).send(errorMessage)
         return;
     }
+    var compilation = result.compilation;
     if (!!req.query.log || compilation.status === Compilation.Status.Running
             || compilation.status === Compilation.Status.Fail) {
         res.sendFile(compilation.logPath());
