@@ -8,6 +8,7 @@ var latex;
 // initialize server.
 var express = require('express');
 var compression = require('compression');
+
 var app = express();
 app.use(compression());
 
@@ -44,6 +45,32 @@ app.get('/compile', async (req, res) => {
         res.sendFile(compilation.outputPath());
         return;
     }
+    res.status(500).send('Server is panicing. Unexpected behavior!')
+});
+
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/' })
+app.post('/data', upload.single('tarball'), async (req, res) => {
+    var result;
+    try {
+        result = await latex.compileTarball(req.file.tarball, req.query.target, true);
+    } catch (e) {
+        res.set('Content-Type', 'text/plain');
+        res.status(500).send('Exception during handling: ' + e.stack);
+        return;
+    }
+    if (!result || !result.compilation) {
+        var statusCode = result && result.userError ? 400 : 500;
+        var errorMessage = result ? result.userError : null;
+        errorMessage = errorMessage || 'Internal Server Error.';
+        res.status(statusCode).send(errorMessage)
+        return;
+    }
+    var compilation = result.compilation;
+    if (compilation.status === Compilation.Status.Success)
+        res.sendFile(compilation.outputPath());
+    else
+        res.status(400).sendFile(compilation.logPath());
     res.status(500).send('Server is panicing. Unexpected behavior!')
 });
 
