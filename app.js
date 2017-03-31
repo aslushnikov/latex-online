@@ -19,6 +19,8 @@ app.get('/compile', async (req, res) => {
             result = await latex.compileText(req.query.text);
         } else if (req.query.url) {
             result = await latex.compileURL(req.query.url);
+        } else if (req.query.git) {
+            result = await latex.compileGit(req.query.git, req.query.target, 'master');
         }
     } catch (e) {
         res.set('Content-Type', 'text/plain');
