@@ -50,7 +50,7 @@ Promise.all([
 function onInitialized(instances) {
     var storage = instances[0];
     var downloader = instances[1];
-    downloader.disableCleanupForDebugging();
+    //downloader.disableCleanupForDebugging();
 
     latex = new LatexOnline(storage, downloader);
     var port = process.env.PORT || 2700;
