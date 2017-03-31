@@ -1,6 +1,7 @@
 var Downloader = require('./lib/Downloader');
 var FileSystemStorage = require('./lib/FileSystemStorage');
 var LatexOnline = require('./lib/LatexOnline');
+var utils = require('./lib/utilities');
 
 // Will be initialized later.
 var latex;
@@ -15,13 +16,14 @@ app.use(compression());
 app.get('/compile', async (req, res) => {
     var compilation;
     var result;
+    var forceCompile = req.query && !!req.query.force;
     try {
         if (req.query.text) {
-            result = await latex.compileText(req.query.text);
+            result = await latex.compileText(req.query.text, forceCompile);
         } else if (req.query.url) {
-            result = await latex.compileURL(req.query.url);
+            result = await latex.compileURL(req.query.url, forceCompile);
         } else if (req.query.git) {
-            result = await latex.compileGit(req.query.git, req.query.target, 'master');
+            result = await latex.compileGit(req.query.git, req.query.target, 'master', forceCompile);
         }
     } catch (e) {
         res.set('Content-Type', 'text/plain');
@@ -38,7 +40,10 @@ app.get('/compile', async (req, res) => {
     var compilation = result.compilation;
     if (!!req.query.log || compilation.status === Compilation.Status.Running
             || compilation.status === Compilation.Status.Fail) {
-        res.sendFile(compilation.logPath());
+        if (await utils.exists(compilation.logPath()))
+            res.sendFile(compilation.logPath());
+        else
+            res.send('Starting compilation...');
         return;
     }
     if (compilation.status === Compilation.Status.Success) {
@@ -49,20 +54,29 @@ app.get('/compile', async (req, res) => {
 });
 
 var multer  = require('multer')
-var upload = multer({ dest: 'uploads/' })
-app.post('/data', upload.single('tarball'), async (req, res) => {
+var upload = multer({ dest: '/tmp/file-uploads/' })
+app.post('/data', upload.any(), async (req, res) => {
+    if (!req.files || req.files.length !== 1) {
+        res.set('Content-Type', 'text/plain');
+        res.status(400).send('Error: files are not uploaded to server.');
+        return;
+    }
     var result;
+    var file = req.files[0];
     try {
-        result = await latex.compileTarball(req.file.tarball, req.query.target, true);
+        result = await latex.compileTarball(file.path, req.query.target, true /* forceCompilation */);
     } catch (e) {
         res.set('Content-Type', 'text/plain');
         res.status(500).send('Exception during handling: ' + e.stack);
         return;
+    } finally {
+        utils.unlink(file.path);
     }
     if (!result || !result.compilation) {
         var statusCode = result && result.userError ? 400 : 500;
         var errorMessage = result ? result.userError : null;
         errorMessage = errorMessage || 'Internal Server Error.';
+        res.set('Content-Type', 'text/plain');
         res.status(statusCode).send(errorMessage)
         return;
     }
@@ -71,7 +85,6 @@ app.post('/data', upload.single('tarball'), async (req, res) => {
         res.sendFile(compilation.outputPath());
     else
         res.status(400).sendFile(compilation.logPath());
-    res.status(500).send('Server is panicing. Unexpected behavior!')
 });
 
 // Initialize service dependencies.
