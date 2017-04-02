@@ -21,25 +21,26 @@ function sendResponse(res, latexResult) {
     if (res.req_filepath)
         utils.unlink(res.req_filepath);
     var {requestId, compilation, userError} = latexResult;
+    console.assert(compilation.finished, 'ERROR: attempt to send response for non-finished compilation!');
     if (!compilation) {
         var statusCode = userError ? 400 : 500;
         var error = userError || 'Internal Server Error';
         res.status(statusCode).send(error)
         return;
     }
-    if (compilation.status === Compilation.Status.Success) {
+    if (compilation.success) {
         res.sendFile(compilation.outputPath());
-    } else if (compilation.status === Compilation.Status.Fail) {
-        res.sendFile(compilation.logPath());
     } else {
-        res.status(500).send('Internal Server Error: unknown compilation status.')
+        res.sendFile(compilation.logPath());
     }
 }
 
 async function onCompilationFinished(latexResult) {
     var responses = requestIdToResponses.get(latexResult.requestId);
-    if (!responses)
+    if (!responses) {
+        console.log('no responses! ' + latexResult.requestId);
         return;
+    }
     requestIdToResponses.delete(latexResult.requestId);
     for (var res of responses)
         sendResponse(res, latexResult);
@@ -56,12 +57,14 @@ app.get('/compile', async (req, res) => {
         result = await latex.compileGit(req.query.git, req.query.target, 'master', forceCompile);
     }
     var requestId = result ? result.requestId : null;
+    console.log('r: ' + requestId);
     if (!requestId) {
         sendResponse(res, result);
         return;
     }
     var responsesArray = requestIdToResponses.get(requestId);
     if (!responsesArray) {
+        console.log(' -- populating array: ' + requestId);
         responsesArray = [];
         requestIdToResponses.set(requestId, responsesArray);
     }
