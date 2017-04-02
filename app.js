@@ -1,5 +1,5 @@
-var StorageJanitor = require('./lib/StorageJanitor');
 var LatexOnline = require('./lib/LatexOnline');
+var Janitor = require('./lib/Janitor');
 var utils = require('./lib/utilities');
 
 // Will be initialized later.
@@ -11,8 +11,6 @@ var compression = require('compression');
 
 var app = express();
 app.use(compression());
-
-var requestIdToResponses = new Map();
 
 function sendError(res, userError) {
     res.set('Content-Type', 'text/plain');
@@ -83,7 +81,7 @@ function onInitialized(latexOnline) {
     // Initialize janitor to clean up stale storage.
     var expiry = utils.hours(24);
     var cleanupTimeout = utils.minutes(5);
-    var janitor = new StorageJanitor(latex, expiry, cleanupTimeout);
+    var janitor = new Janitor(latex, expiry, cleanupTimeout);
 
     var port = process.env.PORT || 2700;
     var listener = app.listen(port, () => {
