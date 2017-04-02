@@ -2,6 +2,9 @@ var LatexOnline = require('./lib/LatexOnline');
 var Janitor = require('./lib/Janitor');
 var utils = require('./lib/utilities');
 
+var VERSION = process.env.VERSION || "master";
+VERSION = VERSION.substr(0, 9);
+
 // Will be initialized later.
 var latexOnline;
 
@@ -24,8 +27,6 @@ function onInitialized(latex) {
     // Launch server.
     var port = process.env.PORT || 2700;
     var listener = app.listen(port, () => {
-        var VERSION = process.env.VERSION || "undef";
-        VERSION = VERSION.substr(0, 9);
         console.log("Express server started:");
         console.log("    PORT = " + listener.address().port);
         console.log("    ENV = " + app.settings.env);
@@ -39,6 +40,7 @@ var compression = require('compression');
 
 var app = express();
 app.use(compression());
+app.use(express.static(__dirname + '/public'));
 
 function sendError(res, userError) {
     res.set('Content-Type', 'text/plain');
@@ -63,6 +65,13 @@ async function handleResult(res, latexResult) {
         res.status(400).sendFile(compilation.logPath());
     }
 }
+
+app.get('/version', (req, res) => {
+    res.json({
+        version: VERSION,
+        link: `http://github.com/aslushnikov/latex-online/commit/${VERSION}`
+    });
+});
 
 app.get('/compile', async (req, res) => {
     var forceCompilation = req.query && !!req.query.force;
