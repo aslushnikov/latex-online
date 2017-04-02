@@ -1,6 +1,5 @@
 var StorageJanitor = require('./lib/StorageJanitor');
 var LatexOnline = require('./lib/LatexOnline');
-var Compiler = require('./lib/Compiler');
 var utils = require('./lib/utilities');
 
 // Will be initialized later.
@@ -16,15 +15,14 @@ app.use(compression());
 var requestIdToResponses = new Map();
 
 function sendError(res, userError) {
+    res.set('Content-Type', 'text/plain');
     var statusCode = userError ? 400 : 500;
     var error = userError || 'Internal Server Error';
     res.status(statusCode).send(error)
 }
 
-function sendResponse(res, compilation) {
+async function onCompilationFinished(res, compilation) {
     // Cleanup file uploade.
-    if (res.req_filepath)
-        utils.unlink(res.req_filepath);
     if (compilation.userError) {
         sendError(res, compilation ? compilation.userError : null);
     } else if (compilation.success) {
@@ -34,64 +32,41 @@ function sendResponse(res, compilation) {
     }
 }
 
-async function onCompilationFinished(compilation) {
-    var requestId = compilation.requestId;
-    var responses = requestIdToResponses.get(requestId);
-    if (!responses)
-        return;
-    requestIdToResponses.delete(requestId);
-    for (var res of responses)
-        sendResponse(res, compilation);
-}
-
 app.get('/compile', async (req, res) => {
+    var forceCompilation = req.query && !!req.query.force;
     var result;
     if (req.query.text) {
-        result = await latex.compileText(req.query.text);
+        result = await latex.compileText(req.query.text, forceCompilation);
     } else if (req.query.url) {
-        result = await latex.compileURL(req.query.url);
+        result = await latex.compileURL(req.query.url, forceCompilation);
     } else if (req.query.git) {
-        result = await latex.compileGit(req.query.git, req.query.target, 'master');
+        result = await latex.compileGit(req.query.git, req.query.target, 'master', forceCompilation);
     }
-    var {compiler, requestId, userError} = result;
-    if (!compiler) {
+    var {compilation, userError} = result;
+    if (!compilation) {
         sendError(res, userError);
         return;
     }
-    var responsesArray = requestIdToResponses.get(requestId);
-    if (!responsesArray) {
-        responsesArray = [];
-        requestIdToResponses.set(requestId, responsesArray);
-    }
-    responsesArray.push(res);
-    var forceCompile = req.query && !!req.query.force;
-    compiler.run(forceCompile);
+    compilation.run().then(() => onCompilationFinished(res, compilation));
 });
 
 var multer  = require('multer')
 var upload = multer({ dest: '/tmp/file-uploads/' })
 app.post('/data', upload.any(), async (req, res) => {
     if (!req.files || req.files.length !== 1) {
-        res.set('Content-Type', 'text/plain');
-        res.status(400).send('Error: files are not uploaded to server.');
+        sendError(res, 'ERROR: files are not uploaded to server.');
         return;
     }
-    var result;
     var file = req.files[0];
-    result = await latex.compileTarball(file.path, req.query.target);
-    res.req_filepath = file.path;
-    var {compiler, requestId, userError} = result;
-    if (!compiler) {
+    var {compilation, userError} = await latex.compileTarball(file.path, req.query.target);
+    if (!compilation) {
         sendError(res, userError);
         return;
     }
-    var responsesArray = requestIdToResponses.get(requestId);
-    if (!responsesArray) {
-        responsesArray = [];
-        requestIdToResponses.set(requestId, responsesArray);
-    }
-    responsesArray.push(res);
-    compiler.run(true /* forceCompilation */);
+    compilation.run().then(() => {
+        onCompilationFinished(res, compilation);
+        utils.unlink(file.path);
+    });
 });
 
 // Initialize service dependencies.
@@ -104,12 +79,11 @@ function onInitialized(latexOnline) {
         return;
     }
     latex = latexOnline;
-    latex.on(LatexOnline.Events.CompilationFinished, onCompilationFinished);
 
     // Initialize janitor to clean up stale storage.
     var expiry = utils.hours(24);
     var cleanupTimeout = utils.minutes(5);
-    var janitor = new StorageJanitor(latex.storage(), expiry, cleanupTimeout);
+    var janitor = new StorageJanitor(latex, expiry, cleanupTimeout);
 
     var port = process.env.PORT || 2700;
     var listener = app.listen(port, () => {
