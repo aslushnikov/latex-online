@@ -25,19 +25,17 @@ function sendResponse(res, compilation) {
     // Cleanup file uploade.
     if (res.req_filepath)
         utils.unlink(res.req_filepath);
-    if (!compilation || compilation.userError) {
+    if (compilation.userError) {
         sendError(res, compilation ? compilation.userError : null);
-        return;
     } else if (compilation.success) {
-        res.sendFile(compilation.outputPath());
+        res.status(200).sendFile(compilation.outputPath());
     } else {
-        res.sendFile(compilation.logPath());
+        res.status(400).sendFile(compilation.logPath());
     }
 }
 
-async function onCompilationFinished(requestId, compilation) {
-    if (compilation && !compilation.finished)
-        return;
+async function onCompilationFinished(compilation) {
+    var requestId = compilation.requestId;
     var responses = requestIdToResponses.get(requestId);
     if (!responses)
         return;
@@ -66,7 +64,6 @@ app.get('/compile', async (req, res) => {
         requestIdToResponses.set(requestId, responsesArray);
     }
     responsesArray.push(res);
-    compiler.once(Compiler.Events.Finished, onCompilationFinished);
     var forceCompile = req.query && !!req.query.force;
     compiler.run(forceCompile);
 });
@@ -94,17 +91,20 @@ app.post('/data', upload.any(), async (req, res) => {
         requestIdToResponses.set(requestId, responsesArray);
     }
     responsesArray.push(res);
-    compiler.once(Compiler.Events.Finished, onCompilationFinished);
     compiler.run(true /* forceCompilation */);
 });
 
 // Initialize service dependencies.
 LatexOnline.create('/tmp/downloads/', '/tmp/storage/')
     .then(onInitialized)
-    .catch(onFailed);
 
 function onInitialized(latexOnline) {
+    if (!latexOnline) {
+        console.error('ERROR: failed to initialize latexOnline');
+        return;
+    }
     latex = latexOnline;
+    latex.on(LatexOnline.Events.CompilationFinished, onCompilationFinished);
 
     // Initialize janitor to clean up stale storage.
     var expiry = utils.hours(24);
@@ -122,10 +122,3 @@ function onInitialized(latexOnline) {
     VERSION = VERSION.substr(0, 9);
     console.log("Running version SHA: " + VERSION);
 }
-
-function onFailed(err) {
-    console.error('ERROR: failed to initialize systems - ' + err);
-}
-
-
-
