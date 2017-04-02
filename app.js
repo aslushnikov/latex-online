@@ -1,4 +1,4 @@
-var Downloader = require('./lib/Downloader');
+var DownloadManager = require('./lib/DownloadManager');
 var FileSystemStorage = require('./lib/FileSystemStorage');
 var StorageJanitor = require('./lib/StorageJanitor');
 var LatexOnline = require('./lib/LatexOnline');
@@ -14,44 +14,58 @@ var compression = require('compression');
 var app = express();
 app.use(compression());
 
-app.get('/compile', async (req, res) => {
-    var compilation;
-    var result;
-    var forceCompile = req.query && !!req.query.force;
-    try {
-        if (req.query.text) {
-            result = await latex.compileText(req.query.text, forceCompile);
-        } else if (req.query.url) {
-            result = await latex.compileURL(req.query.url, forceCompile);
-        } else if (req.query.git) {
-            result = await latex.compileGit(req.query.git, req.query.target, 'master', forceCompile);
-        }
-    } catch (e) {
-        res.set('Content-Type', 'text/plain');
-        res.status(500).send('Exception during handling: ' + e.stack);
-        return;
-    }
-    if (!result || !result.compilation) {
-        var statusCode = result && result.userError ? 400 : 500;
-        var errorMessage = result ? result.userError : null;
-        errorMessage = errorMessage || 'Internal Server Error.';
-        res.status(statusCode).send(errorMessage)
-        return;
-    }
-    var compilation = result.compilation;
-    if (!!req.query.log || compilation.status === Compilation.Status.Running
-            || compilation.status === Compilation.Status.Fail) {
-        if (await utils.exists(compilation.logPath()))
-            res.sendFile(compilation.logPath());
-        else
-            res.send('Starting compilation...');
+var requestIdToResponses = new Map();
+
+function sendResponse(res, latexResult) {
+    // Cleanup file uploade.
+    if (res.req_filepath)
+        utils.unlink(res.req_filepath);
+    var {requestId, compilation, userError} = latexResult;
+    if (!compilation) {
+        var statusCode = userError ? 400 : 500;
+        var error = userError || 'Internal Server Error';
+        res.status(statusCode).send(error)
         return;
     }
     if (compilation.status === Compilation.Status.Success) {
         res.sendFile(compilation.outputPath());
+    } else if (compilation.status === Compilation.Status.Fail) {
+        res.sendFile(compilation.logPath());
+    } else {
+        res.status(500).send('Internal Server Error: unknown compilation status.')
+    }
+}
+
+async function onCompilationFinished(latexResult) {
+    var responses = requestIdToResponses.get(latexResult.requestId);
+    if (!responses)
+        return;
+    requestIdToResponses.delete(latexResult.requestId);
+    for (var res of responses)
+        sendResponse(res, latexResult);
+}
+
+app.get('/compile', async (req, res) => {
+    var result;
+    var forceCompile = req.query && !!req.query.force;
+    if (req.query.text) {
+        result = await latex.compileText(req.query.text, forceCompile);
+    } else if (req.query.url) {
+        result = await latex.compileURL(req.query.url, forceCompile);
+    } else if (req.query.git) {
+        result = await latex.compileGit(req.query.git, req.query.target, 'master', forceCompile);
+    }
+    var requestId = result ? result.requestId : null;
+    if (!requestId) {
+        sendResponse(res, result);
         return;
     }
-    res.status(500).send('Server is panicing. Unexpected behavior!')
+    var responsesArray = requestIdToResponses.get(requestId);
+    if (!responsesArray) {
+        responsesArray = [];
+        requestIdToResponses.set(requestId, responsesArray);
+    }
+    responsesArray.push(res);
 });
 
 var multer  = require('multer')
@@ -64,47 +78,39 @@ app.post('/data', upload.any(), async (req, res) => {
     }
     var result;
     var file = req.files[0];
-    try {
-        result = await latex.compileTarball(file.path, req.query.target, true /* forceCompilation */);
-    } catch (e) {
-        res.set('Content-Type', 'text/plain');
-        res.status(500).send('Exception during handling: ' + e.stack);
-        return;
-    } finally {
-        utils.unlink(file.path);
-    }
-    if (!result || !result.compilation) {
-        var statusCode = result && result.userError ? 400 : 500;
-        var errorMessage = result ? result.userError : null;
-        errorMessage = errorMessage || 'Internal Server Error.';
-        res.set('Content-Type', 'text/plain');
-        res.status(statusCode).send(errorMessage)
+    result = await latex.compileTarball(file.path, req.query.target, true /* forceCompilation */);
+    res.req_filepath = file.path;
+    var requestId = result ? result.requestId : null;
+    if (!requestId) {
+        sendResponse(res, result);
         return;
     }
-    var compilation = result.compilation;
-    if (compilation.status === Compilation.Status.Success)
-        res.sendFile(compilation.outputPath());
-    else
-        res.status(400).sendFile(compilation.logPath());
+    var responsesArray = requestIdToResponses.get(requestId);
+    if (!responsesArray) {
+        responsesArray = [];
+        requestIdToResponses.set(requestId, responsesArray);
+    }
+    responsesArray.push(res);
 });
 
 // Initialize service dependencies.
 Promise.all([
     FileSystemStorage.create('/tmp/storage/'),
-    Downloader.create('/tmp/downloads/'),
+    DownloadManager.create('/tmp/downloads/'),
 ]).then(onInitialized)
 .catch(onFailed);
 
 function onInitialized(instances) {
     var storage = instances[0];
-    var downloader = instances[1];
+    var downloadManager = instances[1];
 
     // Initialize janitor to clean up stale storage.
     var expiry = utils.hours(24);
     var cleanupTimeout = utils.minutes(5);
     var janitor = new StorageJanitor(storage, expiry, cleanupTimeout);
 
-    latex = new LatexOnline(storage, downloader);
+    latex = new LatexOnline(storage, downloadManager);
+    latex.on(LatexOnline.Events.CompilationFinished, onCompilationFinished);
     var port = process.env.PORT || 2700;
     var listener = app.listen(port, () => {
         console.log("Express server started:");
