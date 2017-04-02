@@ -2,6 +2,7 @@ var DownloadManager = require('./lib/DownloadManager');
 var FileSystemStorage = require('./lib/FileSystemStorage');
 var StorageJanitor = require('./lib/StorageJanitor');
 var LatexOnline = require('./lib/LatexOnline');
+var Compiler = require('./lib/Compiler');
 var utils = require('./lib/utilities');
 
 // Will be initialized later.
@@ -16,59 +17,59 @@ app.use(compression());
 
 var requestIdToResponses = new Map();
 
-function sendResponse(res, latexResult) {
+function sendError(res, userError) {
+    var statusCode = userError ? 400 : 500;
+    var error = userError || 'Internal Server Error';
+    res.status(statusCode).send(error)
+}
+
+function sendResponse(res, compilation) {
     // Cleanup file uploade.
     if (res.req_filepath)
         utils.unlink(res.req_filepath);
-    var {requestId, compilation, userError} = latexResult;
     console.assert(compilation.finished, 'ERROR: attempt to send response for non-finished compilation!');
-    if (!compilation) {
-        var statusCode = userError ? 400 : 500;
-        var error = userError || 'Internal Server Error';
-        res.status(statusCode).send(error)
+    if (!compilation || compilation.userError) {
+        sendError(res, compilation ? compilation.userError : null);
         return;
-    }
-    if (compilation.success) {
+    } else if (compilation.success) {
         res.sendFile(compilation.outputPath());
     } else {
         res.sendFile(compilation.logPath());
     }
 }
 
-async function onCompilationFinished(latexResult) {
-    var responses = requestIdToResponses.get(latexResult.requestId);
-    if (!responses) {
-        console.log('no responses! ' + latexResult.requestId);
+async function onCompilationFinished(requestId, compilation) {
+    var responses = requestIdToResponses.get(requestId);
+    if (!responses)
         return;
-    }
-    requestIdToResponses.delete(latexResult.requestId);
+    requestIdToResponses.delete(requestId);
     for (var res of responses)
-        sendResponse(res, latexResult);
+        sendResponse(res, compilation);
 }
 
 app.get('/compile', async (req, res) => {
     var result;
-    var forceCompile = req.query && !!req.query.force;
     if (req.query.text) {
-        result = await latex.compileText(req.query.text, forceCompile);
+        result = await latex.compileText(req.query.text);
     } else if (req.query.url) {
-        result = await latex.compileURL(req.query.url, forceCompile);
+        result = await latex.compileURL(req.query.url);
     } else if (req.query.git) {
-        result = await latex.compileGit(req.query.git, req.query.target, 'master', forceCompile);
+        result = await latex.compileGit(req.query.git, req.query.target, 'master');
     }
-    var requestId = result ? result.requestId : null;
-    console.log('r: ' + requestId);
-    if (!requestId) {
-        sendResponse(res, result);
+    var {compiler, requestId, userError} = result;
+    if (!compiler) {
+        sendError(res, userError);
         return;
     }
     var responsesArray = requestIdToResponses.get(requestId);
     if (!responsesArray) {
-        console.log(' -- populating array: ' + requestId);
         responsesArray = [];
         requestIdToResponses.set(requestId, responsesArray);
     }
     responsesArray.push(res);
+    compiler.once(Compiler.Events.Finished, onCompilationFinished);
+    var forceCompile = req.query && !!req.query.force;
+    compiler.run(forceCompile);
 });
 
 var multer  = require('multer')
@@ -83,9 +84,9 @@ app.post('/data', upload.any(), async (req, res) => {
     var file = req.files[0];
     result = await latex.compileTarball(file.path, req.query.target, true /* forceCompilation */);
     res.req_filepath = file.path;
-    var requestId = result ? result.requestId : null;
-    if (!requestId) {
-        sendResponse(res, result);
+    var {compiler, requestId, userError} = result;
+    if (!compiler) {
+        sendError(res, userError);
         return;
     }
     var responsesArray = requestIdToResponses.get(requestId);
@@ -94,6 +95,9 @@ app.post('/data', upload.any(), async (req, res) => {
         requestIdToResponses.set(requestId, responsesArray);
     }
     responsesArray.push(res);
+    compiler.once(Compiler.Events.Finished, onCompilationFinished);
+    var forceCompile = req.query && !!req.query.force;
+    compiler.run(forceCompile);
 });
 
 // Initialize service dependencies.
@@ -113,7 +117,6 @@ function onInitialized(instances) {
     var janitor = new StorageJanitor(storage, expiry, cleanupTimeout);
 
     latex = new LatexOnline(storage, downloadManager);
-    latex.on(LatexOnline.Events.CompilationFinished, onCompilationFinished);
     var port = process.env.PORT || 2700;
     var listener = app.listen(port, () => {
         console.log("Express server started:");
