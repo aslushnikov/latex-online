@@ -3,9 +3,37 @@ var Janitor = require('./lib/Janitor');
 var utils = require('./lib/utilities');
 
 // Will be initialized later.
-var latex;
+var latexOnline;
 
-// initialize server.
+// Initialize service dependencies.
+LatexOnline.create('/tmp/downloads/', '/tmp/storage/')
+    .then(onInitialized)
+
+function onInitialized(latex) {
+    latexOnline = latex;
+    if (!latexOnline) {
+        console.error('ERROR: failed to initialize latexOnline');
+        return;
+    }
+
+    // Initialize janitor to clean up stale storage.
+    var expiry = utils.hours(24);
+    var cleanupTimeout = utils.minutes(5);
+    var janitor = new Janitor(latexOnline, expiry, cleanupTimeout);
+
+    // Launch server.
+    var port = process.env.PORT || 2700;
+    var listener = app.listen(port, () => {
+        var VERSION = process.env.VERSION || "undef";
+        VERSION = VERSION.substr(0, 9);
+        console.log("Express server started:");
+        console.log("    PORT = " + listener.address().port);
+        console.log("    ENV = " + app.settings.env);
+        console.log("    SHA = " + VERSION);
+    });
+}
+
+// Initialize server.
 var express = require('express');
 var compression = require('compression');
 
@@ -19,10 +47,16 @@ function sendError(res, userError) {
     res.status(statusCode).send(error)
 }
 
-async function onCompilationFinished(res, compilation) {
+async function handleResult(res, latexResult) {
+    var {compilation, userError} = latexResult;
+    if (!compilation) {
+        sendError(res, userError);
+        return;
+    }
+    await compilation.run();
     // Cleanup file uploade.
     if (compilation.userError) {
-        sendError(res, compilation ? compilation.userError : null);
+        sendError(res, compilation.userError);
     } else if (compilation.success) {
         res.status(200).sendFile(compilation.outputPath());
     } else {
@@ -34,18 +68,16 @@ app.get('/compile', async (req, res) => {
     var forceCompilation = req.query && !!req.query.force;
     var result;
     if (req.query.text) {
-        result = await latex.compileText(req.query.text, forceCompilation);
+        result = await latexOnline.compileText(req.query.text, forceCompilation);
     } else if (req.query.url) {
-        result = await latex.compileURL(req.query.url, forceCompilation);
+        result = await latexOnline.compileURL(req.query.url, forceCompilation);
     } else if (req.query.git) {
-        result = await latex.compileGit(req.query.git, req.query.target, 'master', forceCompilation);
+        result = await latexOnline.compileGit(req.query.git, req.query.target, 'master', forceCompilation);
     }
-    var {compilation, userError} = result;
-    if (!compilation) {
-        sendError(res, userError);
-        return;
-    }
-    compilation.run().then(() => onCompilationFinished(res, compilation));
+    if (result)
+        handleResult(res, result);
+    else
+        sendError(res, 'ERROR: failed to parse request: ' + JSON.stringify(req.query));
 });
 
 var multer  = require('multer')
@@ -56,41 +88,7 @@ app.post('/data', upload.any(), async (req, res) => {
         return;
     }
     var file = req.files[0];
-    var {compilation, userError} = await latex.compileTarball(file.path, req.query.target);
-    if (!compilation) {
-        sendError(res, userError);
-        return;
-    }
-    compilation.run().then(() => {
-        onCompilationFinished(res, compilation);
-        utils.unlink(file.path);
-    });
+    var latexResult = await latexOnline.compileTarball(file.path, req.query.target);
+    utils.unlink(file.path);
+    handleResult(res, latexResult);
 });
-
-// Initialize service dependencies.
-LatexOnline.create('/tmp/downloads/', '/tmp/storage/')
-    .then(onInitialized)
-
-function onInitialized(latexOnline) {
-    if (!latexOnline) {
-        console.error('ERROR: failed to initialize latexOnline');
-        return;
-    }
-    latex = latexOnline;
-
-    // Initialize janitor to clean up stale storage.
-    var expiry = utils.hours(24);
-    var cleanupTimeout = utils.minutes(5);
-    var janitor = new Janitor(latex, expiry, cleanupTimeout);
-
-    var port = process.env.PORT || 2700;
-    var listener = app.listen(port, () => {
-        console.log("Express server started:");
-        console.log("    PORT = " + listener.address().port);
-        console.log("    ENV = " + app.settings.env);
-    });
-
-    var VERSION = process.env.VERSION || "undef";
-    VERSION = VERSION.substr(0, 9);
-    console.log("Running version SHA: " + VERSION);
-}
