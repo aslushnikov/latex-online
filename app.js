@@ -1,5 +1,3 @@
-var DownloadManager = require('./lib/DownloadManager');
-var FileSystemStorage = require('./lib/FileSystemStorage');
 var StorageJanitor = require('./lib/StorageJanitor');
 var LatexOnline = require('./lib/LatexOnline');
 var Compiler = require('./lib/Compiler');
@@ -27,7 +25,6 @@ function sendResponse(res, compilation) {
     // Cleanup file uploade.
     if (res.req_filepath)
         utils.unlink(res.req_filepath);
-    console.assert(compilation.finished, 'ERROR: attempt to send response for non-finished compilation!');
     if (!compilation || compilation.userError) {
         sendError(res, compilation ? compilation.userError : null);
         return;
@@ -39,6 +36,8 @@ function sendResponse(res, compilation) {
 }
 
 async function onCompilationFinished(requestId, compilation) {
+    if (compilation && !compilation.finished)
+        return;
     var responses = requestIdToResponses.get(requestId);
     if (!responses)
         return;
@@ -82,7 +81,7 @@ app.post('/data', upload.any(), async (req, res) => {
     }
     var result;
     var file = req.files[0];
-    result = await latex.compileTarball(file.path, req.query.target, true /* forceCompilation */);
+    result = await latex.compileTarball(file.path, req.query.target);
     res.req_filepath = file.path;
     var {compiler, requestId, userError} = result;
     if (!compiler) {
@@ -96,27 +95,22 @@ app.post('/data', upload.any(), async (req, res) => {
     }
     responsesArray.push(res);
     compiler.once(Compiler.Events.Finished, onCompilationFinished);
-    var forceCompile = req.query && !!req.query.force;
-    compiler.run(forceCompile);
+    compiler.run(true /* forceCompilation */);
 });
 
 // Initialize service dependencies.
-Promise.all([
-    FileSystemStorage.create('/tmp/storage/'),
-    DownloadManager.create('/tmp/downloads/'),
-]).then(onInitialized)
-.catch(onFailed);
+LatexOnline.create('/tmp/downloads/', '/tmp/storage/')
+    .then(onInitialized)
+    .catch(onFailed);
 
-function onInitialized(instances) {
-    var storage = instances[0];
-    var downloadManager = instances[1];
+function onInitialized(latexOnline) {
+    latex = latexOnline;
 
     // Initialize janitor to clean up stale storage.
     var expiry = utils.hours(24);
     var cleanupTimeout = utils.minutes(5);
-    var janitor = new StorageJanitor(storage, expiry, cleanupTimeout);
+    var janitor = new StorageJanitor(latex.storage(), expiry, cleanupTimeout);
 
-    latex = new LatexOnline(storage, downloadManager);
     var port = process.env.PORT || 2700;
     var listener = app.listen(port, () => {
         console.log("Express server started:");
