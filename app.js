@@ -1,5 +1,6 @@
 var Downloader = require('./lib/Downloader');
 var FileSystemStorage = require('./lib/FileSystemStorage');
+var StorageJanitor = require('./lib/StorageJanitor');
 var LatexOnline = require('./lib/LatexOnline');
 var utils = require('./lib/utilities');
 
@@ -97,7 +98,11 @@ Promise.all([
 function onInitialized(instances) {
     var storage = instances[0];
     var downloader = instances[1];
-    //downloader.disableCleanupForDebugging();
+
+    // Initialize janitor to clean up stale storage.
+    var expiry = utils.hours(24);
+    var cleanupTimeout = utils.minutes(5);
+    var janitor = new StorageJanitor(storage, expiry, cleanupTimeout);
 
     latex = new LatexOnline(storage, downloader);
     var port = process.env.PORT || 2700;
