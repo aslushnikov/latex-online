@@ -1,3 +1,4 @@
+var path = require('path');
 var LatexOnline = require('./lib/LatexOnline');
 var Janitor = require('./lib/Janitor');
 var utils = require('./lib/utilities');
@@ -73,7 +74,25 @@ app.get('/version', (req, res) => {
     });
 });
 
+app.get('/pending', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'pending.html'));
+});
+
+var pendingTrackIds = new Set();
 app.get('/compile', async (req, res) => {
+    var trackId = req.query.trackId;
+    if (!trackId || !pendingTrackIds.has(trackId)) {
+        trackId = Date.now() + '';
+        pendingTrackIds.add(trackId);
+        var query = Object.assign({}, req.query);
+        query.trackId = trackId;
+
+        var search = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
+        res.redirect(`/pending?${search}`);
+        return;
+    }
+    pendingTrackIds.delete(trackId);
+
     var forceCompilation = req.query && !!req.query.force;
     var result;
     if (req.query.text) {
