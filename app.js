@@ -38,9 +38,11 @@ function onInitialized(latex) {
 // Initialize server.
 var express = require('express');
 var compression = require('compression');
+var useragent = require('express-useragent');
 
 var app = express();
 app.use(compression());
+app.use(useragent.express());
 app.use(express.static(__dirname + '/public'));
 
 function sendError(res, userError) {
@@ -81,14 +83,15 @@ app.get('/pending', (req, res) => {
 var pendingTrackIds = new Set();
 app.get('/compile', async (req, res) => {
     var trackId = req.query.trackId;
-    if (!trackId || !pendingTrackIds.has(trackId)) {
+    var isBrowser = !req.useragent.isBot;
+    if (isBrowser && (!trackId || !pendingTrackIds.has(trackId))) {
         trackId = Date.now() + '';
         pendingTrackIds.add(trackId);
         var query = Object.assign({}, req.query);
         query.trackId = trackId;
 
         var search = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
-        res.redirect(`/pending?${search}`);
+        res.redirect(307, `/pending?${search}`);
         return;
     }
     pendingTrackIds.delete(trackId);

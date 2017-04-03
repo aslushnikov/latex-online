@@ -11,7 +11,7 @@ ga('send', 'pageview', {
         var redirect = location.search.substring(1);
         if (!redirect)
             return;
-        location.href = '/compile?' + redirect;
+        document.location.replace('/compile?' + redirect);
     }
 });
 </script>
