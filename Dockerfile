@@ -9,14 +9,11 @@ MAINTAINER Andrey Lushnikov aslushnikov@gmail.com
 
 # Sorted list of used packages.
 run apt-get update && apt-get install -y \
-    bc \
     biber \
     cm-super \
-    curl \
     fontconfig \
     git-core \
     latex-xcolor \
-    memcached \
     preview-latex-style \
     python3 \
     texlive-bibtex-extra \
@@ -29,9 +26,6 @@ run apt-get update && apt-get install -y \
     texlive-math-extra \
     texlive-science \
     texlive-xetex
-
-COPY ./util/check.sh /
-RUN sh /check.sh
 
 COPY ./docker-entrypoint.sh /
 EXPOSE 2700

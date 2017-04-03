@@ -63,7 +63,7 @@ fi
 
 host="latex.aslushnikov.com"
 GIT_TRACKED=false
-while getopts "fh:go:" flag
+while getopts "fd:go:" flag
 do
     if [ $flag == "d" ]; then
         host=$OPTARG

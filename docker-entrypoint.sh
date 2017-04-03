@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-# Run memcached
-memcached -u daemon&
 # Cleanup www folder
 rm -rf /var/www
 # Copy and install the latest & greatest Latex-Online

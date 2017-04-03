@@ -1,124 +1,129 @@
+var path = require('path');
+var LatexOnline = require('./lib/LatexOnline');
+var Janitor = require('./lib/Janitor');
+var utils = require('./lib/utilities');
 
-/**
- * Module dependencies.
- */
-
-var express = require('express')
-  , fs = require('fs')
-  // pass false to disable use of memcached
-  , Processor = require('./process.js').RequestProcessor
-  , GoogleAnalytics = require('ga')
-
-var VERSION = process.env.VERSION || "undef";
+var VERSION = process.env.VERSION || "master";
 VERSION = VERSION.substr(0, 9);
 
-var app = module.exports = express.createServer();
+// Will be initialized later.
+var latexOnline;
 
-var ga = new GoogleAnalytics('UA-31467918-1', 'latex.aslushnikov.com');
-var excludeTrack = [/^\/$/, /^\/favicon/, /^\/stylesheets/];
-//ga.trackPage('testing/1');
+// Initialize service dependencies.
+LatexOnline.create('/tmp/downloads/', '/tmp/storage/')
+    .then(onInitialized)
 
-// Configuration
-
-app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(function(req, res, next){
-    var exclude = false;
-    for(var i = 0; i < excludeTrack.length; i++) {
-      exclude = exclude || excludeTrack[i].test(req.url);
-    }
-    if (!exclude)  {
-      ga.trackPage(req.url);
-      console.log("Google Analytics track " + req.url);
-    }
-    next();
-  });
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
-});
-
-app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
-
-app.configure('production', function(){
-  app.use(express.errorHandler());
-});
-
-// Routes
-
-app.get('/', function(req, res) {
-    res.render('index.jade', {
-        version: VERSION
-    });
-});
-
-function success(req, res, next) {
-    if (req.latexOnline.err) {
-        res.writeHead(400, {'content-type': 'text/plain'});
-        res.write(req.latexOnline.err.toString());
-        res.end();
-    } else {
-        var headers = {
-            'content-type': 'application/pdf',
-            'content-length': req.latexOnline.data.length
-        };
-        if (req.query['download']) {
-            headers['content-disposition'] = 'attachment; filename="' + req.query['download']+ '"';
-        }
-        res.writeHead(200, headers);
-        res.write(req.latexOnline.data);
-        res.end();
-    }
-}
-
-function computeCompilation(req, res, next) {
-    var opts = {
-        entity: req.query['git'] || req.query['url'] || req.query['text'],
-        target: req.query['target'],
-        disableCaching: !!req.query['force'],
-    }
-    var types = ["git", "url", "text"];
-    for(var i = 0; i < types.length; i++) {
-        if (req.query[types[i]]) {
-            opts.type = types[i];
-        }
-    }
-    new Processor(opts, function(err, data) {
-        req.latexOnline = {err: err, data: data};
-        next();
-    });
-}
-
-function checkUtilityCompatability(req, res, next) {
-    if (!req.query['target']) {
-        res.writeHead(412, {'content-type': 'text/plain'});
-        res.write("You're using old script for command-line access\n");
-        res.write("Upgrade at https://github.com/aslushnikov/latex-online");
-        res.end();
+function onInitialized(latex) {
+    latexOnline = latex;
+    if (!latexOnline) {
+        console.error('ERROR: failed to initialize latexOnline');
         return;
     }
-    next();
+
+    // Initialize janitor to clean up stale storage.
+    var expiry = utils.hours(24);
+    var cleanupTimeout = utils.minutes(5);
+    var janitor = new Janitor(latexOnline, expiry, cleanupTimeout);
+
+    // Launch server.
+    var port = process.env.PORT || 2700;
+    var listener = app.listen(port, () => {
+        console.log("Express server started:");
+        console.log("    PORT = " + listener.address().port);
+        console.log("    ENV = " + app.settings.env);
+        console.log("    SHA = " + VERSION);
+    });
 }
 
-app.get('/compile', computeCompilation, success);
+// Initialize server.
+var express = require('express');
+var compression = require('compression');
+var useragent = require('express-useragent');
 
-app.post('/data', checkUtilityCompatability, function(req, res, next) {
-    function callback(err, data) {
-        req.latexOnline = {err: err, data:data};
-        next();
-    };
-    new Processor({
-        type: "file",
-        entity: req.files['file'].path,
-        target: req.query['target'],
-        disableCaching: !!req.query['force'],
-    }, callback);
-}, success);
+var app = express();
+app.use(compression());
+app.use(useragent.express());
+app.use(express.static(__dirname + '/public'));
 
-app.listen(process.env.PORT || 2700);
-console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
-console.log("Running version SHA: " + VERSION);
+function sendError(res, userError) {
+    res.set('Content-Type', 'text/plain');
+    var statusCode = userError ? 400 : 500;
+    var error = userError || 'Internal Server Error';
+    res.status(statusCode).send(error)
+}
+
+async function handleResult(res, latexResult) {
+    var {compilation, userError} = latexResult;
+    if (!compilation) {
+        sendError(res, userError);
+        return;
+    }
+    await compilation.run();
+    // Cleanup file uploade.
+    if (compilation.userError) {
+        sendError(res, compilation.userError);
+    } else if (compilation.success) {
+        res.status(200).sendFile(compilation.outputPath());
+    } else {
+        res.status(400).sendFile(compilation.logPath());
+    }
+}
+
+app.get('/version', (req, res) => {
+    res.json({
+        version: VERSION,
+        link: `http://github.com/aslushnikov/latex-online/commit/${VERSION}`
+    });
+});
+
+app.get('/pending', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'pending.html'));
+});
+
+var pendingTrackIds = new Set();
+app.get('/compile', async (req, res) => {
+    // Do not leak too much memory if clients drop connections on redirect.
+    if (pendingTrackIds.size > 10000)
+        pendingTrackIds.clear();
+    var trackId = req.query.trackId;
+    var isBrowser = !req.useragent.isBot;
+    // Redirect browser to the page with analytics code.
+    if (isBrowser && (!trackId || !pendingTrackIds.has(trackId))) {
+        trackId = Date.now() + '';
+        pendingTrackIds.add(trackId);
+        var query = Object.assign({}, req.query);
+        query.trackId = trackId;
+
+        var search = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
+        res.redirect(307, `/pending?${search}`);
+        return;
+    }
+    pendingTrackIds.delete(trackId);
+
+    var forceCompilation = req.query && !!req.query.force;
+    var result;
+    if (req.query.text) {
+        result = await latexOnline.compileText(req.query.text, forceCompilation);
+    } else if (req.query.url) {
+        result = await latexOnline.compileURL(req.query.url, forceCompilation);
+    } else if (req.query.git) {
+        result = await latexOnline.compileGit(req.query.git, req.query.target, 'master', forceCompilation);
+    }
+    if (result)
+        handleResult(res, result);
+    else
+        sendError(res, 'ERROR: failed to parse request: ' + JSON.stringify(req.query));
+});
+
+var multer  = require('multer')
+var upload = multer({ dest: '/tmp/file-uploads/' })
+app.post('/data', upload.any(), async (req, res) => {
+    if (!req.files || req.files.length !== 1) {
+        sendError(res, 'ERROR: files are not uploaded to server.');
+        return;
+    }
+    var file = req.files[0];
+    var latexResult = await latexOnline.compileTarball(file.path, req.query.target);
+    utils.unlink(file.path);
+    handleResult(res, latexResult);
+});
