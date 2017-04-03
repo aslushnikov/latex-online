@@ -82,8 +82,12 @@ app.get('/pending', (req, res) => {
 
 var pendingTrackIds = new Set();
 app.get('/compile', async (req, res) => {
+    // Do not leak too much memory if clients drop connections on redirect.
+    if (pendingTrackIds.size > 10000)
+        pendingTrackIds.clear();
     var trackId = req.query.trackId;
     var isBrowser = !req.useragent.isBot;
+    // Redirect browser to the page with analytics code.
     if (isBrowser && (!trackId || !pendingTrackIds.has(trackId))) {
         trackId = Date.now() + '';
         pendingTrackIds.add(trackId);
