@@ -5,15 +5,22 @@
 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-ga('create', 'UA-31467918-1', 'auto');
-ga('send', 'pageview', {
-    'hitCallback': function() {
-        var redirect = location.search.substring(1);
-        if (!redirect)
-            return;
-        document.location.replace('/compile?' + redirect);
-    }
-});
+// Track virtual page view.
+if (location.search.length >= 1) {
+    var redirectURL = '/compile?' + location.search.substr(1);
+    // filter out trackingId
+    var virtualPageURL = redirectURL.split("&")
+            .filter(component => !component.startsWith('trackId'))
+            .join('&');
+
+    ga('create', 'UA-31467918-1', 'auto');
+    ga('set', 'page', virtualPageURL);
+    ga('send', 'pageview', {
+        'hitCallback': function() {
+            document.location.replace(redirectURL);
+        }
+    });
+}
 </script>
 <!-- End Google Analytics -->
 
