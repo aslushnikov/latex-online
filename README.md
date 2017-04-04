@@ -16,8 +16,6 @@ latest news/updates there to keep you up-to-date.
 
 [Latex-Online](http://latex.aslushnikov.com)
 
-Thanks to [@udalov](https://github.com/udalov) for deployment server
-
 ## Contents
 
 - [Latex-Online](#latex-online)
