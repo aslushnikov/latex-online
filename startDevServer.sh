@@ -5,7 +5,7 @@ if [[ $relativePath != "." ]]; then
     echo "ERROR: startDevServer.sh should be launched from its directory only!"
     exit 1;
 fi
-docker pull aslushnikov/latex-online
+# docker pull aslushnikov/latex-online
 MY_PATH=$(pwd)
 docker run \
     -ti                         `: # attach pseudo-tty and interactive mode. Make Ctrl-C exit container` \
