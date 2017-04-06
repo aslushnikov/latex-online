@@ -63,9 +63,9 @@ async function handleResult(res, latexResult) {
     if (compilation.userError) {
         sendError(res, compilation.userError);
     } else if (compilation.success) {
-        res.status(200).sendFile(compilation.outputPath());
+        res.status(200).sendFile(compilation.outputPath(), {acceptRanges: false});
     } else {
-        res.status(400).sendFile(compilation.logPath());
+        res.status(400).sendFile(compilation.logPath(), {acceptRanges: false});
     }
 }
 
