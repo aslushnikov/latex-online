@@ -3,7 +3,7 @@ var fs = require('fs');
 var path = require('path');
 var request = require('request');
 
-var baseUrl = 'http://latex.aslushnikov.com';
+var baseUrl = 'http://localhost:2701';
 
 describe('/compile', function() {
     this.timeout(5000);

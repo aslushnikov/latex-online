@@ -59,7 +59,6 @@ async function handleResult(res, latexResult) {
         return;
     }
     await compilation.run();
-    // Cleanup file uploade.
     if (compilation.userError) {
         sendError(res, compilation.userError);
     } else if (compilation.success) {
