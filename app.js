@@ -94,7 +94,7 @@ app.get('/compile', async (req, res) => {
         var query = Object.assign({}, req.query);
         query.trackId = trackId;
 
-        var search = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
+        var search = Object.keys(query).map(key => `${key}=${encodeURIComponent(query[key])}`).join('&');
         res.redirect(307, `/pending?${search}`);
         return;
     }
@@ -124,6 +124,9 @@ app.post('/data', upload.any(), async (req, res) => {
     }
     var file = req.files[0];
     var latexResult = await latexOnline.compileTarball(file.path, req.query.target);
-    utils.unlink(file.path);
+    if (latexResult.compilation)
+        latexResult.compilation.run().then(() => utils.unlink(file.path));
+    else
+        utils.unlink(file.path);
     handleResult(res, latexResult);
 });
