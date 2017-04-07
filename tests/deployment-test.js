@@ -3,7 +3,8 @@ var fs = require('fs');
 var path = require('path');
 var request = require('request');
 
-var baseUrl = 'http://latex.aslushnikov.com';
+//var baseUrl = 'http://latex.aslushnikov.com';
+var baseUrl = 'http://localhost:2701';
 
 describe('/compile', function() {
     this.timeout(5000);
@@ -58,15 +59,9 @@ describe('/compile', function() {
 describe('/data', function() {
     this.timeout(5000);
     this.slow(2000);
-    it.skip('cli-good-simple', async function() {
+    it('cli-good', async function() {
         var filePath = path.join(__dirname, 'resources', 'good.tar.gz');
         var target = 'short.tex';
-        var request = createUploadRequest(filePath, target);
-        await expectPdf(request);
-    });
-    it('cli-good-nested', async function() {
-        var filePath = path.join(__dirname, 'resources', 'ggg.tar.gz');
-        var target = 'resources/short.tex';
         var request = createUploadRequest(filePath, target);
         await expectPdf(request);
     });
@@ -75,6 +70,15 @@ describe('/data', function() {
         var target = 'short.tex';
         var request = createUploadRequest(filePath, target);
         await expectError(request);
+    });
+    it('cli-cache-busting', async function() {
+        var filePath = path.join(__dirname, 'resources', 'good.tar.gz');
+        var target = 'nonexistent.tex';
+        var request = createUploadRequest(filePath, target);
+        await expectError(request);
+        target = 'short.tex';
+        request = createUploadRequest(filePath, target);
+        await expectPdf(request);
     });
 });
 

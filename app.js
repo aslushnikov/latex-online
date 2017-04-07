@@ -123,7 +123,7 @@ app.post('/data', upload.any(), async (req, res) => {
         return;
     }
     var file = req.files[0];
-    var latexResult = await latexOnline.compileTarball(file.path, req.query.target);
+    var latexResult = await latexOnline.compileTarball(file.path, req.query.target, true);
     if (latexResult.compilation)
         latexResult.compilation.run().then(() => utils.unlink(file.path));
     else
