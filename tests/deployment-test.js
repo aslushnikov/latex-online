@@ -3,92 +3,93 @@ var fs = require('fs');
 var path = require('path');
 var request = require('request');
 
-var baseUrl = 'http://localhost:2701';
-//var baseUrl = 'http://latex.aslushnikov.com';
+var baseUrl = 'http://latex.aslushnikov.com';
+if (process.argv[process.argv.length - 1] === '--local')
+    baseUrl = 'http://localhost:2701';
 
-describe('/compile', function() {
-    this.timeout(5000);
-    this.slow(2000);
-    describe('git', function() {
-        it('https://github.com/aslushnikov/diplom-latex&target=diplom.tex', async function() {
-            var url = baseUrl +  '/compile?git=git%3A%2F%2Fgithub.com%2Faslushnikov%2Fdiplom-latex.git&target=diplom.tex';
-            var request = createGetRequest(url);
-            await expectPdf(request);
+describe(baseUrl, function() {
+    this.timeout(30000);
+    this.slow(10000);
+    describe('/compile', function() {
+        describe('git', function() {
+            it('https://github.com/aslushnikov/diplom-latex&target=diplom.tex', async function() {
+                var url = baseUrl +  '/compile?git=git%3A%2F%2Fgithub.com%2Faslushnikov%2Fdiplom-latex.git&target=diplom.tex';
+                var request = createGetRequest(url);
+                await expectPdf(request);
+            });
+        });
+        describe('xelatex command', function() {
+            it('https://github.com/posquit0/Awesome-CV&target=examples/resume.tex&command=xelatex', async function() {
+                var url = baseUrl +  '/compile?git=https%3A%2F%2Fgithub.com%2Fposquit0%2FAwesome-CV&target=examples%2Fresume.tex&command=xelatex';
+                var request = createGetRequest(url);
+                await expectPdf(request);
+            });
+        });
+        describe('text', function() {
+            it('goodText', async function() {
+                var goodText = [
+                    '\\documentclass{article}',
+                    '\\begin{document}',
+                    'Correct document.',
+                    '\\end{document}'
+                ].join('\n');
+                var url = baseUrl + '/compile?text=' + encodeURIComponent(goodText);
+                var request = createGetRequest(url);
+                await expectPdf(request);
+            });
+
+            it('badText', async function() {
+                var badText = [
+                    '\\documentclass{article}',
+                    '\\begin{document}',
+                    'Does not compile!'
+                ].join('\n');
+                var url = baseUrl + '/compile?text=' + encodeURIComponent(badText);
+                var request = createGetRequest(url);
+                await expectError(request);
+            });
+        });
+        describe('url', function() {
+            it('goodURL', async function() {
+                var goodURL = 'https://raw.githubusercontent.com/aslushnikov/latex-online/master/sample/sample.tex';
+                var url = baseUrl + '/compile?url=' + encodeURIComponent(goodURL);
+                var request = createGetRequest(url);
+                await expectPdf(request);
+            });
+            it('badURL', async function() {
+                var badURL = 'https://raw.githubusercontent.com/aslushnikov/latex-online/master/sample/bad.tex';
+                var url = baseUrl + '/compile?url=' + encodeURIComponent(badURL);
+                var request = createGetRequest(url);
+                await expectError(request);
+            });
         });
     });
-    describe('xelatex command', function() {
-        it('https://github.com/posquit0/Awesome-CV&target=examples/resume.tex&command=xelatex', async function() {
-            var url = baseUrl +  '/compile?git=https%3A%2F%2Fgithub.com%2Fposquit0%2FAwesome-CV&target=examples%2Fresume.tex&command=xelatex';
-            var request = createGetRequest(url);
-            await expectPdf(request);
-        });
-    });
-    describe('text', function() {
-        it('goodText', async function() {
-            var goodText = [
-                '\\documentclass{article}',
-                '\\begin{document}',
-                'Correct document.',
-                '\\end{document}'
-            ].join('\n');
-            var url = baseUrl + '/compile?text=' + encodeURIComponent(goodText);
-            var request = createGetRequest(url);
-            await expectPdf(request);
-        });
 
-        it('badText', async function() {
-            var badText = [
-                '\\documentclass{article}',
-                '\\begin{document}',
-                'Does not compile!'
-            ].join('\n');
-            var url = baseUrl + '/compile?text=' + encodeURIComponent(badText);
-            var request = createGetRequest(url);
+    describe('/data', function() {
+        it('cli-good', async function() {
+            var filePath = path.join(__dirname, 'resources', 'good.tar.gz');
+            var target = 'short.tex';
+            var request = createUploadRequest(filePath, target);
+            await expectPdf(request);
+        });
+        it('cli-bad', async function() {
+            var filePath = path.join(__dirname, 'resources', 'bad.tar.gz');
+            var target = 'short.tex';
+            var request = createUploadRequest(filePath, target);
             await expectError(request);
         });
-    });
-    describe('url', function() {
-        it('goodURL', async function() {
-            var goodURL = 'https://raw.githubusercontent.com/aslushnikov/latex-online/master/sample/sample.tex';
-            var url = baseUrl + '/compile?url=' + encodeURIComponent(goodURL);
-            var request = createGetRequest(url);
+        it('cli-cache-busting', async function() {
+            var filePath = path.join(__dirname, 'resources', 'good.tar.gz');
+            var target = 'nonexistent.tex';
+            var request = createUploadRequest(filePath, target);
+            await expectError(request);
+            target = 'short.tex';
+            request = createUploadRequest(filePath, target);
             await expectPdf(request);
         });
-        it('badURL', async function() {
-            var badURL = 'https://raw.githubusercontent.com/aslushnikov/latex-online/master/sample/bad.tex';
-            var url = baseUrl + '/compile?url=' + encodeURIComponent(badURL);
-            var request = createGetRequest(url);
-            await expectError(request);
-        });
     });
-});
 
-describe('/data', function() {
-    this.timeout(5000);
-    this.slow(2000);
-    it('cli-good', async function() {
-        var filePath = path.join(__dirname, 'resources', 'good.tar.gz');
-        var target = 'short.tex';
-        var request = createUploadRequest(filePath, target);
-        await expectPdf(request);
-    });
-    it('cli-bad', async function() {
-        var filePath = path.join(__dirname, 'resources', 'bad.tar.gz');
-        var target = 'short.tex';
-        var request = createUploadRequest(filePath, target);
-        await expectError(request);
-    });
-    it('cli-cache-busting', async function() {
-        var filePath = path.join(__dirname, 'resources', 'good.tar.gz');
-        var target = 'nonexistent.tex';
-        var request = createUploadRequest(filePath, target);
-        await expectError(request);
-        target = 'short.tex';
-        request = createUploadRequest(filePath, target);
-        await expectPdf(request);
-    });
 });
-
 /**
  * @param {!Request} request
  */
