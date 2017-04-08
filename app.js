@@ -104,13 +104,15 @@ app.get('/compile', async (req, res) => {
     pendingTrackIds.delete(trackId);
 
     var forceCompilation = req.query && !!req.query.force;
+    var command = req.query && req.query.command ? req.query.command : 'pdflatex';
+    command = command.trim().toLowerCase();
     var preparation;
     if (req.query.text) {
-        preparation = await latexOnline.prepareTextCompilation(req.query.text);
+        preparation = await latexOnline.prepareTextCompilation(req.query.text, command);
     } else if (req.query.url) {
-        preparation = await latexOnline.prepareURLCompilation(req.query.url);
+        preparation = await latexOnline.prepareURLCompilation(req.query.url, command);
     } else if (req.query.git) {
-        preparation = await latexOnline.prepareGitCompilation(req.query.git, req.query.target, 'master');
+        preparation = await latexOnline.prepareGitCompilation(req.query.git, req.query.target, 'master', command);
     }
     if (preparation)
         handleResult(res, preparation, forceCompilation);
@@ -125,8 +127,10 @@ app.post('/data', upload.any(), async (req, res) => {
         sendError(res, 'ERROR: files are not uploaded to server.');
         return;
     }
+    var command = req.query && req.query.command ? req.query.command : 'pdflatex';
+    command = command.trim().toLowerCase();
     var file = req.files[0];
-    var preparation = await latexOnline.prepareTarballCompilation(file.path, req.query.target);
+    var preparation = await latexOnline.prepareTarballCompilation(file.path, req.query.target, command);
     if (preparation)
         await handleResult(res, preparation, true /* force */);
     else

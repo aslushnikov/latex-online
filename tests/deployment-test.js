@@ -16,6 +16,13 @@ describe('/compile', function() {
             await expectPdf(request);
         });
     });
+    describe('xelatex command', function() {
+        it('https://github.com/posquit0/Awesome-CV&target=examples/resume.tex&command=xelatex', async function() {
+            var url = baseUrl +  '/compile?git=https%3A%2F%2Fgithub.com%2Fposquit0%2FAwesome-CV&target=examples%2Fresume.tex&command=xelatex';
+            var request = createGetRequest(url);
+            await expectPdf(request);
+        });
+    });
     describe('text', function() {
         it('goodText', async function() {
             var goodText = [
