@@ -3,6 +3,8 @@ var LatexOnline = require('./lib/LatexOnline');
 var Janitor = require('./lib/Janitor');
 var utils = require('./lib/utilities');
 
+var logger = utils.logger('app.js');
+
 var VERSION = process.env.VERSION || "master";
 VERSION = VERSION.substr(0, 9);
 
@@ -16,7 +18,7 @@ LatexOnline.create('/tmp/downloads/', '/tmp/storage/')
 function onInitialized(latex) {
     latexOnline = latex;
     if (!latexOnline) {
-        console.error('ERROR: failed to initialize latexOnline');
+        logger.error('ERROR: failed to initialize latexOnline');
         return;
     }
 
@@ -28,10 +30,11 @@ function onInitialized(latex) {
     // Launch server.
     var port = process.env.PORT || 2700;
     var listener = app.listen(port, () => {
-        console.log("Express server started:");
-        console.log("    PORT = " + listener.address().port);
-        console.log("    ENV = " + app.settings.env);
-        console.log("    SHA = " + VERSION);
+        logger.info("Express server started", {
+            port: listener.address().port,
+            env: app.settings.env,
+            sha: VERSION
+        });
     });
 }
 
