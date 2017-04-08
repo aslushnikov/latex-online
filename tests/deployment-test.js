@@ -8,8 +8,8 @@ if (process.argv[process.argv.length - 1] === '--local')
     baseUrl = 'http://localhost:2701';
 
 describe(baseUrl, function() {
-    this.timeout(30000);
-    this.slow(10000);
+    this.timeout(60000);
+    this.slow(20000);
     describe('/compile', function() {
         describe('git', function() {
             it('https://github.com/aslushnikov/diplom-latex&target=diplom.tex', async function() {
