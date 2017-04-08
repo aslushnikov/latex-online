@@ -52,12 +52,16 @@ function sendError(res, userError) {
     res.status(statusCode).send(error)
 }
 
-async function handleResult(res, latexResult) {
-    var {compilation, userError} = latexResult;
-    if (!compilation) {
+async function handleResult(res, preparation, force) {
+    var {request, downloader, userError} = preparation;
+    if (!request) {
         sendError(res, userError);
         return;
     }
+    var compilation = latexOnline.compilationWithFingerprint(request.fingerprint);
+    if (force && compilation)
+        latexOnline.removeCompilation(compilation);
+    compilation = latexOnline.getOrCreateCompilation(request, downloader);
     await compilation.run();
     if (compilation.userError) {
         sendError(res, compilation.userError);
@@ -100,16 +104,16 @@ app.get('/compile', async (req, res) => {
     pendingTrackIds.delete(trackId);
 
     var forceCompilation = req.query && !!req.query.force;
-    var result;
+    var preparation;
     if (req.query.text) {
-        result = await latexOnline.compileText(req.query.text, forceCompilation);
+        preparation = await latexOnline.prepareTextCompilation(req.query.text);
     } else if (req.query.url) {
-        result = await latexOnline.compileURL(req.query.url, forceCompilation);
+        preparation = await latexOnline.prepareURLCompilation(req.query.url);
     } else if (req.query.git) {
-        result = await latexOnline.compileGit(req.query.git, req.query.target, 'master', forceCompilation);
+        preparation = await latexOnline.prepareGitCompilation(req.query.git, req.query.target, 'master');
     }
-    if (result)
-        handleResult(res, result);
+    if (preparation)
+        handleResult(res, preparation, forceCompilation);
     else
         sendError(res, 'ERROR: failed to parse request: ' + JSON.stringify(req.query));
 });
@@ -122,10 +126,10 @@ app.post('/data', upload.any(), async (req, res) => {
         return;
     }
     var file = req.files[0];
-    var latexResult = await latexOnline.compileTarball(file.path, req.query.target, true);
-    if (latexResult.compilation)
-        latexResult.compilation.run().then(() => utils.unlink(file.path));
+    var preparation = await latexOnline.prepareTarballCompilation(file.path, req.query.target);
+    if (preparation)
+        await handleResult(res, preparation, true /* force */);
     else
-        utils.unlink(file.path);
-    handleResult(res, latexResult);
+        sendError(res, 'ERROR: failed to process file upload!');
+    utils.unlink(file.path);
 });

@@ -4,6 +4,7 @@ var path = require('path');
 var request = require('request');
 
 var baseUrl = 'http://localhost:2701';
+//var baseUrl = 'http://latex.aslushnikov.com';
 
 describe('/compile', function() {
     this.timeout(5000);
