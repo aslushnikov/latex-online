@@ -43,7 +43,7 @@
                 <form action="/compile" method="get">
                     <label for="url-field">URL of TeX document</label>
                     <input type="url" name="url" id="url-field" size="100"/>
-                    <input type="submit"/>
+                    <input type="submit" onClick="ga(‘send’, ‘event’, ‘SubmitButton’, ‘Click’, ‘MainPage’)"/>
                 </form>
             </div>
             <p id="hint">
