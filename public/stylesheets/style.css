@@ -6,6 +6,10 @@ a {
     color: #00B7FF;
 }
 
+h2, h3 {
+    margin-top: 0.83em;
+    margin-bottom: 0.5em;
+}
 #wrap {
     width: 900px;
     margin: 0 auto;
