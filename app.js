@@ -1,6 +1,7 @@
 var path = require('path');
 var LatexOnline = require('./lib/LatexOnline');
 var Janitor = require('./lib/Janitor');
+var HealthMonitor = require('./lib/HealthMonitor');
 var utils = require('./lib/utilities');
 
 var logger = utils.logger('app.js');
@@ -10,6 +11,7 @@ VERSION = VERSION.substr(0, 9);
 
 // Will be initialized later.
 var latexOnline;
+var healthMonitor;
 
 // Initialize service dependencies.
 LatexOnline.create('/tmp/downloads/', '/tmp/storage/')
@@ -26,6 +28,9 @@ function onInitialized(latex) {
     var expiry = utils.hours(24);
     var cleanupTimeout = utils.minutes(5);
     var janitor = new Janitor(latexOnline, expiry, cleanupTimeout);
+
+    // Initialize health monitor
+    healthMonitor = new HealthMonitor(latexOnline);
 
     // Launch server.
     var port = process.env.PORT || 2700;
@@ -80,6 +85,22 @@ app.get('/version', (req, res) => {
         version: VERSION,
         link: `http://github.com/aslushnikov/latex-online/commit/${VERSION}`
     });
+});
+
+app.get('/health.json', (req, res) => {
+    if (!healthMonitor) {
+        sendError(res, 'ERROR: health monitor is not initialized.');
+        return;
+    }
+    var result = {
+        uptime: healthMonitor.uptime(),
+        health: healthMonitor.healthPoints()
+    };
+    res.json(result);
+});
+
+app.get('/health', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'health.html'));
 });
 
 app.get('/pending', (req, res) => {
