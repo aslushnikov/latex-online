@@ -5,7 +5,7 @@ var request = require('request');
 
 var baseUrl = 'http://latex.aslushnikov.com';
 if (process.argv[process.argv.length - 1] === '--local')
-    baseUrl = 'http://localhost:2701';
+    baseUrl = 'http://localhost:2700';
 
 describe(baseUrl, function() {
     this.timeout(60000);
