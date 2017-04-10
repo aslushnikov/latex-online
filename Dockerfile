@@ -27,7 +27,7 @@ run apt-get update && apt-get install -y \
     texlive-science \
     texlive-xetex
 
-COPY ./docker-entrypoint.sh /
+COPY ./util/docker-entrypoint.sh /
 EXPOSE 2700
 CMD ["./docker-entrypoint.sh"]
 

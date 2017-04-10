@@ -8,7 +8,9 @@ git clone https://github.com/aslushnikov/latex-online /var/www
 cd /var/www
 npm install .
 
-npm install -g forever
 export NODE_ENV=production
 export VERSION=$(git rev-parse HEAD)
+
+# use forever to manage service
+npm install -g forever
 forever app.js
