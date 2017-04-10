@@ -35,7 +35,8 @@ cd $rootdir
 cd $(dirname $target)
 basename=`basename $target`
 
-PYTHONUNBUFFERED=true latexrun --verbose-cmd --latex-cmd=${command} -Wall -o $outputFile $basename &>$logFile
+LATEXRUN="$(dirname $0)"/../latexrun/latexrun
+PYTHONUNBUFFERED=true $LATEXRUN --verbose-cmd --latex-cmd=${command} -Wall -o $outputFile $basename &>$logFile
 
 # if no PDF created, then exitcode 1
 if [[ ! -e $outputFile ]]; then
