@@ -3,9 +3,9 @@ var fs = require('fs');
 var path = require('path');
 var request = require('request');
 
-var baseUrl = 'http://latex.aslushnikov.com';
-if (process.argv[process.argv.length - 1] === '--local')
-    baseUrl = 'http://localhost:2700';
+var baseUrl = 'http://localhost:2700';
+if (process.env.LATEXHOST)
+    baseUrl = process.env.LATEXHOST;
 
 describe(baseUrl, function() {
     this.timeout(60000);
