@@ -9,4 +9,7 @@ git clone https://github.com/aslushnikov/latex-online /var/www
 ln -sf /var/www/latexrun/latexrun /usr/local/bin/latexrun
 cd /var/www
 npm install .
-export NODE_ENV=production && export VERSION=$(git rev-parse HEAD) && node app.js
+npm install -g forever
+export NODE_ENV=production
+export VERSION=$(git rev-parse HEAD)
+forever app.js
