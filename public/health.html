@@ -11,16 +11,18 @@ ga('send', 'pageview');
 <!-- End Google Analytics -->
 
 <script>
-document.addEventListener('DOMContentLoaded', onLoaded);
+Promise.all([
+    fetchHealthData(),
+    new Promise(fulfill => document.addEventListener('DOMContentLoaded', fulfill)),
+]).then(healthData => renderHealthData(healthData[0]));
 
-function onLoaded() {
-    // Poll health data every minute
-    fetchHealthData();
-}
 
 async function fetchHealthData() {
     var response = await fetch('/health.json');
-    var json = await response.json();
+    return await response.json();
+}
+
+function renderHealthData(json) {
     var uptimeElement = document.querySelector('#uptime');
     var updateTimeElement = document.querySelector('#updatetime');
     var healthElement = document.querySelector('#health');
@@ -101,11 +103,13 @@ body {
 <h2>
     Uptime:
     <span id="uptime">
+    --
     </span>
 </h2>
 <h2>
     Health data updated:
     <span id="updatetime">
+    ---
     </span> ago
 </h2>
 <div id="health">
