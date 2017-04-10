@@ -71,6 +71,11 @@ async function handleResult(res, preparation, force) {
         latexOnline.removeCompilation(compilation);
     compilation = latexOnline.getOrCreateCompilation(request, downloader);
     await compilation.run();
+
+    // In case of URL compilation and cached compilation object, the downlaoder
+    // has to be cleaned up.
+    downloader.dispose();
+
     if (compilation.userError) {
         sendError(res, compilation.userError);
     } else if (compilation.success) {
