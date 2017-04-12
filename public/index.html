@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>LaTeX online - convert your GIT repo or TeX file to PDF document.</title>
+        <title>LaTeX online - convert GIT repo or TeX file to PDF document.</title>
         <link rel="stylesheet" href="/stylesheets/style.css">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta name="ROBOTS" content="NOODP">
-        <meta name="description" content="Use your GIT repository or link to TeX file to create PDF. Compile local TeX files with command-line interface. Open source free web service.">
+        <meta name="description" content="Use GIT repository or link to TeX file to create PDF. Compile local TeX files with command-line interface. Open source free web service.">
         <link rel="author" href="https://plus.google.com/+AndreyLushnikov">
         <!-- Google Analytics -->
         <script>
@@ -52,14 +52,14 @@ me more</a>
 me more</a>
                         </li>
                         <li>
-                            Build your any <strong>local</strong>
+                            Build any <strong>local</strong>
                             tex files
 <a href="https://github.com/aslushnikov/latex-online#ccommand-line-interface">Tell
 me more</a>
                         </li>
                     </ol>
                     <h2>Parameters</h2>
-                    <p>You can specify latex command and target file as in the example above.</p>
+                    <p>You can specify a latex command and a target file as in the example above.</p>
                     <ol>
                         <li><code>&command=</code> xelatex or pdflatex</li>
                     <li><code>&target=</code> define target file in GIT repository</li>
@@ -67,51 +67,40 @@ me more</a>
                     <h2>What is going to happen</h2>
                     <ol>
                         <li>
-                            The file is fetched and saved with <code>.tex</code>
-                            extension
+                            The file is fetched and saved with a <code>.tex</code>
+                            extension.
                         </li>
-                        <li>Hash sum of the file is counted</li>
-                        <li>If we have the compiled pdf for the hash sum in our cache, then we
-return cached PDF</li>
-                        <li>
-                            Otherwise we compile the file using <code>pdflatex</code>
-                            , store the
-result in cash and return it
-                        </li>
+                        <li>The hash sum of the file is counted.</li>
+                        <li>Based on the hash sum, if we already have the PDF on file, then we return that.</li>
+                        <li>Otherwise we compile the file using <code>pdflatex</code>, store the result in cache, and return it.</li>
                     </ol>
 
 
                     <h2>Documentation</h2>
-                    <p>
-                        See documentation
-<a href="https://github.com/aslushnikov/latex-online#readme">here</a>
-                    </p>
+                    <p>See documentation <a href="https://github.com/aslushnikov/latex-online#readme">here</a>.  </p>
                 </div>
                 <div id="right">
                     <h2>Examples</h2>
                     <ol>
-                        <li>
-                            See how is it used to create "See Latest" link in my
-<a href="https://github.com/aslushnikov/diplom-latex#readme">diploma</a>
+                        <li>See how it's used to create the "See Latest" link in my
+<a href="https://github.com/aslushnikov/diplom-latex#readme">diploma</a>.
                         </li>
                         <li>
                             Click <a href="/compile?url=https://raw.githubusercontent.com/aslushnikov/latex-online/master/sample/sample.tex">here</a>
-                            to compile this <a href="https://github.com/aslushnikov/latex-online/blob/master/sample/sample.tex">source</a>
-                            code.
+                            to compile the source code for <a href="https://github.com/aslushnikov/latex-online/blob/master/sample/sample.tex">this example</a>.
                         </li>
                     </ol>
                     <h2>Command-line interface</h2>
                     <p>
-                        Check a <a href="https://github.com/aslushnikov/latex-online#command-line-interface">laton</a>
-                        to compile local documents
-with command-line.
+                        Check the <a href="https://github.com/aslushnikov/latex-online#command-line-interface">laton</a>
+                        utility to compile local documents with command line.
                     </p>
                     <h2>Contacts</h2>
                     <div>
                     <p style="display: inline-block; margin-top: 0px;">
                     <a href="https://github.com/aslushnikov/latex-online" target="_blank" onClick="ga('send', 'event', 'GitHubLink', 'Click', 'MainPage')"><img src="/GitHub.png" width="47" style="margin-right:10px;" title="Fork Latex Online on GitHub"></a></p>
                     <p style="width: 330px; display: inline-block; margin-top: 0px;">
-                        Need more? Here's the <a href="https://github.com/aslushnikov/latex-online" target="_blank">source code</a>, feel free to create a new issue or to implement it and send <code>pull request</code>.
+                        Need more? Here's the <a href="https://github.com/aslushnikov/latex-online" target="_blank">source code</a>. Feel free to file bugs and send pull requests!
                     </p>
                     </div>
                     <p>
