@@ -8,7 +8,7 @@ FROM node:7
 MAINTAINER Andrey Lushnikov aslushnikov@gmail.com
 
 # Sorted list of used packages.
-run apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y \
     biber \
     cm-super \
     fontconfig \
@@ -27,7 +27,12 @@ run apt-get update && apt-get install -y \
     texlive-science \
     texlive-xetex
 
+# Add xindy-2.2 instead of makeindex.
+ADD ./packages/xindy-2.2-rc2-linux.tar.gz /opt/xindy-2.2
+ENV PATH="/opt/xindy-2.2/bin:${PATH}"
+
 COPY ./util/docker-entrypoint.sh /
+
 EXPOSE 2700
 CMD ["./docker-entrypoint.sh"]
 
