@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y \
     texlive-xetex
 
 # Add xindy-2.2 instead of makeindex.
-ADD ./packages/xindy-2.2-rc2-linux.tar.gz /opt/xindy-2.2
+ADD ./packages/xindy-2.2-rc2-linux.tar.gz /opt
 ENV PATH="/opt/xindy-2.2/bin:${PATH}"
 
 COPY ./util/docker-entrypoint.sh /
