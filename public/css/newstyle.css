@@ -1,0 +1,66 @@
+nav {
+    padding: 2rem 0 0rem 0;
+}
+.form {
+    background-color: #366ed1;
+    padding: 3rem 0 3rem 0;
+}
+
+.form label {
+    color: white;
+}
+
+.build-section {
+    padding: 3rem 0 3rem 0;
+    background-color: whitesmoke;
+}
+
+.build-section .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.build-section-inner-container {
+    width: 80%;
+    display: flex;
+    align-items: baseline;    
+}
+
+.build-section .build-url {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    margin: 0 2rem 0 2rem;
+}
+
+.build-section .subtitle {
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: normal !important;
+    color: hsla(0, 0%, 50%, 0.77)
+}
+
+.build-section .container * {
+    white-space: nowrap;
+    margin-right: 1rem
+}
+
+.information {
+    padding: 3rem 0 3rem 0;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.footer a {
+    margin-left: 1rem;
+}

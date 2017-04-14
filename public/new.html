@@ -21,30 +21,95 @@
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/skeleton.css">
   <link rel="stylesheet" href="css/newstyle.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
 
   <!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="icon" type="image/png" href="icon.png">
 </head>
 <body>
+  <!-- Navigation
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <nav>
-    <div class='row'>
-      <div class='two columns'>LaTeX.Online</div>
-      <div class='eight columns'>smth</div>
-      <div class='two columns'>github</div>
+    <div class="container">
+      <div class='row'>
+        <h5 class='two columns'>LaTeX.Online</h5>
+        <h5 class='eight columns'></h5>
+        <h5 class='two columns'>github</h5>
+      </div>
     </div>
   </nav>
-  <!-- Primary Page Layout
+  <!-- Main Form
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <div class="container">
+  <section class="form">
+    <div class="container">
+      <label for="sourceURL">Source URL</label>
+      <div class='row' id="sourceURL">
+        <div class="nine columns">
+          <input class="u-full-width" type="search" placeholder="github.com/example/example" id="sourceURL2">
+        </div>
+        <div class="three columns">
+          <select class="u-full-width" id="examples">
+            <option value="Option 1">Examples</option>
+            <option value="Option 2">Awesome CV</option>
+            <option value="Option 3">Lusha's disploma</option>
+          </select>
+        </div>
+      </div>
+      <div class='row'>
+        <div class="six columns">
+          <label for="target">Main File</label>
+          <input class="u-full-width" type="search" placeholder="document.tex" id="target">
+        </div>
+        <div class="six columns">
+          <label for="command">Latex Command</label>
+          <select class="u-full-width" id="command">
+            <option value="Option 1">pdflatex</option>
+            <option value="Option 2">xelatex</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Generated Link
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <section class='build-section'>
+    <div class="container">
+      <h4 class='build-section-inner-container'>
+        <span>Build URL:</span>
+        <a class='build-url'>latex.aslushnikov.com/compile?git=http://github.com/RoboCupAtHome/RuleBook.git&target=Rulebook.tex</a>
+        <i class="material-icons">content_copy</i>
+        <i class="material-icons">open_in_new</i>
+      </h4>
+      <h6 class='subtitle'>
+      this url will fetch TeX files from your source URL and generate the latest version of PDF.
+      </h6>
+    </div>
+  </section>
+  <!-- Features
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <div class="container information">
     <div class="row">
-      <div class="one-half column" style="margin-top: 25%">
-        <h4>Basic Page</h4>
-        <p>This index.html page is a placeholder with the CSS, font and favicon. It's just waiting for you to add some content! If you need some help hit up the <a href="http://www.getskeleton.com">Skeleton documentation</a>.</p>
+      <div class="four columns">
+        <h4>Command-Line Interface</h4>
+        <p>It is possible to edit TeX documents locally and use LaTeX.Online to compile them from the command-line.</p>
+      </div>
+      <div class="four columns">
+        <h4>API</h4>
+        <p>The service supports RESTful API calls. The service will return HTTP.2xx and compiled PDF file on success.</p>
+      </div>
+      <div class="four columns">
+        <h4>Stand-alone version</h4>
+        <p>LaTeX.Online is hosted and auto-updated on hub.docker.com. Deploy it on your machine either manually or with project Docker.</p>
       </div>
     </div>
   </div>
-
+  <!-- Footer
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <div class="footer">
+    Contact us at <a href="mailto:info@latexonline.cc">info@latexonline.cc</a>
+  </div>
 <!-- End Document
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 </body>
