@@ -1,13 +1,41 @@
 nav {
-    padding: 2rem 0 0rem 0;
+    padding: 1rem 0 0rem 0;
 }
 .form {
     background-color: #366ed1;
     padding: 3rem 0 3rem 0;
 }
 
+.hbox {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.hbox > * {
+    flex-shrink: 0;
+}
+
+.navigation-item {
+    margin-left: 1em;
+}
+
+.navigation-item a {
+    text-decoration: none;
+}
+
+.github-stars {
+    align-self: center;
+    margin-bottom: 2rem;
+}
+
 .form label {
     color: white;
+}
+
+.right-align {
+    text-align: right;
 }
 
 .build-section {
