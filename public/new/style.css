@@ -18,11 +18,12 @@ nav {
 }
 
 .navigation-item {
-    margin-left: 1em;
+    margin-left: 2em;
 }
 
-.navigation-item a {
+nav a {
     text-decoration: none;
+    color: inherit;
 }
 
 .github-stars {
