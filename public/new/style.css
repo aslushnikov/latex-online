@@ -72,7 +72,8 @@ nav a {
     align-items: center;
     justify-content: center;
     white-space: normal !important;
-    color: hsla(0, 0%, 50%, 0.77)
+    color: hsla(0, 0%, 50%, 0.77);
+    text-align: center;
 }
 
 .build-section .container * {

@@ -1,8 +1,12 @@
-document.addEventListener('DOMContentLoaded', onLoaded);
+var BASE_URL = 'https://latexonline.cc';
 
-function onLoaded() {
+var form;
+
+document.addEventListener('DOMContentLoaded', function() {
+    form = new Form();
     populateExamples();
-}
+    document.querySelector('#build-url-button').addEventListener('click', onBuildURL);
+});
 
 var examplePresets = [
     {
@@ -22,20 +26,62 @@ function populateExamples() {
         option.textContent = example.name;
         examplesSelect.appendChild(option);
     }
-    examplesSelect.addEventListener('input', onExampleSelected);
-//            <option value="Option 1">Examples</option>
-
+    examplesSelect.addEventListener('input', onExampleSelected.bind(null, examplesSelect));
 }
 
-function onExampleSelected(event) {
-    var example = event.target.selectedOptions[0].__example;
+function onExampleSelected(examplesSelect) {
+    var example = examplesSelect.selectedOptions[0].__example;
     if (!example)
         return;
-    var sourceURLInput = document.querySelector('#source-url-input');
-    var targetInput = document.querySelector('#target-input');
-    var commandSelect = document.querySelector('#command-select');
+    form.setSourceURL(example.sourceURL);
+    form.setTarget(example.target);
+    form.setCommand(example.command);
+}
 
-    sourceURLInput.value = example.sourceURL;
-    targetInput.value = example.target;
-    commandSelect.value = example.command;
+function onBuildURL() {
+    window.open(form.generateURL());
+}
+
+// ----- Form -----
+
+function Form() {
+    this._sourceURLInput = document.querySelector('#source-url-input');
+    this._targetInput = document.querySelector('#target-input');
+    this._commandSelect = document.querySelector('#command-select');
+}
+
+Form.prototype = {
+    sourceURL: function() {
+        return this._sourceURLInput.value;
+    },
+
+    setSourceURL: function(value) {
+        this._sourceURLInput.value = value;
+    }, 
+
+    target: function() {
+        return this._targetInput.value;
+    },
+
+    setTarget: function(value) {
+        this._targetInput.value = value;
+    },
+
+    command: function() {
+        return this._commandSelect.value;  
+    },
+
+    setCommand: function(value) {
+        this._commandSelect.value = value;
+    },
+
+    generateURL: function() {
+        var components = [
+            BASE_URL + '/compile',
+            '?git=' + this.sourceURL(),
+            '&target=' + this.target(),
+            '&command=' + this.command()
+        ];
+        return components.join('');
+    }
 }
