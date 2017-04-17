@@ -11,35 +11,84 @@ document.addEventListener('DOMContentLoaded', function() {
 var examplePresets = [
     {
         name: 'Awesome CV',
+        type: 'git',
         sourceURL: 'https://github.com/posquit0/Awesome-CV',
         target: 'examples/resume.tex',
         command: 'xelatex'  
     },
+    {
+        name: 'RoboCup',
+        type: 'git',
+        sourceURL: 'http://github.com/RoboCupAtHome/RuleBook.git',
+        target: 'Rulebook.tex',
+        command: 'pdflatex'
+    }
 ];
 
 function populateExamples() {
-    var examplesSelect = document.querySelector('#examples-select');
+    var tbody = document.querySelector('.examples tbody');
     for (var i = 0; i < examplePresets.length; ++i) {
         var example = examplePresets[i];
-        var option = document.createElement('option');
-        option.__example = example;
-        option.textContent = example.name;
-        examplesSelect.appendChild(option);
-    }
-    examplesSelect.addEventListener('input', onExampleSelected.bind(null, examplesSelect));
-}
 
-function onExampleSelected(examplesSelect) {
-    var example = examplesSelect.selectedOptions[0].__example;
-    if (!example)
-        return;
-    form.setSourceURL(example.sourceURL);
-    form.setTarget(example.target);
-    form.setCommand(example.command);
+        var tr = appendRow(tbody);
+        appendColumn(tr, createLink(example.sourceURL)).classList.add('sourceurl-row');
+        appendColumn(tr, document.createTextNode(example.target)).classList.add('target-row');
+        appendColumn(tr, document.createTextNode(example.command)).classList.add('command-row');
+        appendColumn(tr, createBuildLink(example)).classList.add('buildurl-row');
+    }
+
+    function appendColumn(tr, node) {
+        var td = document.createElement('td');
+        td.appendChild(node);
+        tr.appendChild(td);
+        return td;
+    }
+
+    function appendRow(tbody) {
+        var tr = document.createElement('tr');
+        tbody.appendChild(tr);
+        return tr;
+    }
+
+    function createLink(href) {
+        var node = document.createElement('a');
+        node.textContent = href;
+        node.setAttribute('href', href);
+        node.setAttribute('target', '_blank');
+        return node;
+    }
+
+    function createBuildLink(example) {
+        var buildURL = generateURL(example);
+        var node = document.createElement('a');
+        node.textContent = 'open_in_new';
+        node.classList.add('material-icons');
+        node.classList.add('example-build-link');
+        node.setAttribute('href', buildURL);
+        node.setAttribute('target', '_blank');
+        return node;
+        //<i class="material-icons">open_in_new</i>
+    }
 }
 
 function onBuildURL() {
-    window.open(form.generateURL());
+    var parameters = {
+        sourceURL: form.sourceURL(),
+        target: form.target(),
+        command: form.command()
+    }
+    var url = generateURL(parameters);
+    window.open(url);
+}
+
+function generateURL(parameters) {
+    var components = [
+        BASE_URL + '/compile',
+        '?git=' + parameters.sourceURL,
+        '&target=' + parameters.target,
+        '&command=' + parameters.command
+    ];
+    return components.join(''); 
 }
 
 // ----- Form -----
@@ -74,14 +123,4 @@ Form.prototype = {
     setCommand: function(value) {
         this._commandSelect.value = value;
     },
-
-    generateURL: function() {
-        var components = [
-            BASE_URL + '/compile',
-            '?git=' + this.sourceURL(),
-            '&target=' + this.target(),
-            '&command=' + this.command()
-        ];
-        return components.join('');
-    }
 }

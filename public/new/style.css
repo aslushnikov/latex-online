@@ -7,6 +7,10 @@ nav {
     padding: 3rem 0 3rem 0;
 }
 
+.form label {
+    white-space: nowrap;
+}
+
 .hbox {
     display: flex;
     flex-direction: row;
@@ -27,6 +31,11 @@ nav a {
     color: inherit;
 }
 
+.example-build-link {
+    text-decoration: none;
+    color: inherit;
+}
+
 .github-stars {
     align-self: center;
     margin-bottom: 2rem;
@@ -36,20 +45,25 @@ nav a {
     color: white;
 }
 
+.examples-container {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+.examples-container .text {
+    color: white;
+    margin-right: 2rem;
+}
+
 .right-align {
     text-align: right;
 }
 
 .build-section {
-    padding: 3rem 0 3rem 0;
-    background-color: whitesmoke;
-}
-
-.build-section .container {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: stretch;
 }
 
 .build-section-inner-container {
@@ -67,19 +81,103 @@ nav a {
 }
 
 .build-section .subtitle {
-    width: 80%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    white-space: normal !important;
-    color: hsla(0, 0%, 50%, 0.77);
-    text-align: center;
+    max-width: 350px;
+    color: white;
+    margin-left: 2rem;
 }
 
 .build-section .container * {
     white-space: nowrap;
     margin-right: 1rem
 }
+
+.examples {
+    padding-top: 1rem;
+    //background-color: whitesmoke;
+}
+
+td, th {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;    
+}
+
+.sourceurl-row {
+    max-width: 200px;
+}
+
+.target-row {
+    display: none;
+    max-width: 200px;
+}
+
+.command-row {
+    display: none;
+    max-width: 100px;
+}
+
+.buildurl-row {
+    max-width: 100px;
+}
+
+/* Smaller than mobile */
+@media (max-width: 400px) {
+    .target-row {
+        display: none;
+    }
+
+    .command-row {
+        display: none;
+    }
+}
+
+/* Larger than mobile */
+@media (min-width: 400px) {
+    .target-row {
+        display: none;
+    }
+
+    .command-row {
+        display: none;
+    }
+}
+
+/* Larger than phablet */
+@media (min-width: 550px) {
+
+}
+
+/* Larger than tablet */
+@media (min-width: 750px) {
+    .target-row {
+        display: table-cell;
+        max-width: 200px;
+    }
+}
+
+/* Larger than desktop */
+@media (min-width: 1000px) {
+    .sourceurl-row {
+        max-width: 400px;
+    }
+
+    .target-row {
+        display: table-cell;
+        max-width: 400px;
+    }
+
+    .command-row {
+        display: table-cell;
+        max-width: 100px;
+    }
+
+    .buildurl-row {
+        max-width: 100px;
+    }
+}
+
+/* Larger than Desktop HD */
+@media (min-width: 1200px) {}
 
 .information {
     padding: 3rem 0 3rem 0;

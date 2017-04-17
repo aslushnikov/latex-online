@@ -50,23 +50,16 @@
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <section class="form">
     <div class="container">
-      <label for="source-url-input">Source URL</label>
       <div class='row' id="sourceURL">
-        <div class="nine columns">
+        <div class="seven columns">
+          <label for="source-url-input">Source URL</label>
           <input id='source-url-input' class="u-full-width" type="search" placeholder="github.com/example/example">
         </div>
         <div class="three columns">
-          <select id='examples-select' class="u-full-width">
-            <option value="Option 1">Examples...</option>
-          </select>
-        </div>
-      </div>
-      <div class='row'>
-        <div class="six columns">
           <label for="target-input">Main File</label>
           <input id='target-input' class="u-full-width" type="search" placeholder="document.tex">
         </div>
-        <div class="six columns">
+        <div class="two columns">
           <label for="command-select">Latex Command</label>
           <select class="u-full-width" id="command-select">
             <option value="pdflatex">pdflatex</option>
@@ -75,21 +68,28 @@
         </div>
       </div>
     </div>
+    <div class='build-section container'>
+        <div id='build-url-button' class="button button-primary">Generate Build URL</div>
+        <span class='subtitle'>
+        This url will fetch TeX files from your source URL and generate the latest version of PDF.
+        </span>
+    </div>
   </section>
-  <!-- Generated Link
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <section class='build-section'>
-    <div class="container">
-      <!--h4 class='build-section-inner-container'>
-        <span>Build URL:</span>
-        <a class='build-url'>/compile?git=http://github.com/RoboCupAtHome/RuleBook.git&target=Rulebook.tex</a>
-        <i class="material-icons">content_copy</i>
-        <i class="material-icons">open_in_new</i>
-      </h4-->
-      <div id='build-url-button' class="button button-primary">Generate Build URL</div>
-      <h6 class='subtitle'>
-      This url will fetch TeX files from your source URL and generate the latest version of PDF.
-      </h6>
+  <section class="examples">
+  <div class="container">
+    <h5>Examples</h5>
+    <table class="u-full-width">
+      <thead>
+        <tr>
+          <th class='sourceurl-row'>Source URL</th>
+          <th class='target-row'>Main File</th>
+          <th class='command-row'>Latex Command</th>
+          <th class='buildurl-row'>Build URL</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
     </div>
   </section>
   <!-- Features
