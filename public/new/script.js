@@ -22,7 +22,15 @@ var examplePresets = [
         sourceURL: 'http://github.com/RoboCupAtHome/RuleBook.git',
         target: 'Rulebook.tex',
         command: 'pdflatex'
-    }
+    },
+    {
+        name: 'Machine Learning Cheat Sheet',
+        type: 'git',
+        sourceURL: 'https://github.com/soulmachine/machine-learning-cheat-sheet',
+        target: 'machine-learning-cheat-sheet.tex',
+        command: 'xelatex'
+    },
+
 ];
 
 function populateExamples() {
