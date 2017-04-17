@@ -179,10 +179,6 @@ td, th {
 /* Larger than Desktop HD */
 @media (min-width: 1200px) {}
 
-.information {
-    padding: 3rem 0 3rem 0;
-}
-
 .footer {
     display: flex;
     align-items: center;
