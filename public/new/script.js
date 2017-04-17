@@ -17,7 +17,7 @@ var examplePresets = [
         command: 'xelatex'  
     },
     {
-        name: 'RoboCup',
+        name: 'RoboCup Rule Book',
         type: 'git',
         sourceURL: 'http://github.com/RoboCupAtHome/RuleBook.git',
         target: 'Rulebook.tex',
@@ -39,7 +39,7 @@ function populateExamples() {
         var example = examplePresets[i];
 
         var tr = appendRow(tbody);
-        appendColumn(tr, createLink(example.sourceURL)).classList.add('sourceurl-row');
+        appendColumn(tr, createLink(example.sourceURL, example.name)).classList.add('sourceurl-row');
         appendColumn(tr, document.createTextNode(example.target)).classList.add('target-row');
         appendColumn(tr, document.createTextNode(example.command)).classList.add('command-row');
         appendColumn(tr, createBuildLink(example)).classList.add('buildurl-row');
@@ -58,9 +58,9 @@ function populateExamples() {
         return tr;
     }
 
-    function createLink(href) {
+    function createLink(href, title) {
         var node = document.createElement('a');
-        node.textContent = href;
+        node.textContent = title || href;
         node.setAttribute('href', href);
         node.setAttribute('target', '_blank');
         return node;

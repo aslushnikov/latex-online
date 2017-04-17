@@ -52,15 +52,15 @@
     <div class="container">
       <div class='row' id="sourceURL">
         <div class="seven columns">
-          <label for="source-url-input">Source URL</label>
-          <input id='source-url-input' class="u-full-width" type="search" placeholder="github.com/example/example">
+          <label for="source-url-input">Git Repository URL</label>
+          <input id='source-url-input' class="u-full-width" type="search" placeholder="http://github.com/example/example">
         </div>
         <div class="three columns">
           <label for="target-input">Main File</label>
           <input id='target-input' class="u-full-width" type="search" placeholder="document.tex">
         </div>
         <div class="two columns">
-          <label for="command-select">Latex Command</label>
+          <label for="command-select">Command</label>
           <select class="u-full-width" id="command-select">
             <option value="pdflatex">pdflatex</option>
             <option value="xelatex">xelatex</option>
@@ -77,11 +77,10 @@
   </section>
   <section class="examples">
   <div class="container">
-    <h5>Examples</h5>
     <table class="u-full-width">
       <thead>
         <tr>
-          <th class='sourceurl-row'>Source URL</th>
+          <th class='sourceurl-row'>Example</th>
           <th class='target-row'>Main File</th>
           <th class='command-row'>Command</th>
           <th class='buildurl-row'>Build URL</th>
