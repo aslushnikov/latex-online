@@ -61,8 +61,6 @@ nav a {
 }
 
 .build-section {
-    display: flex;
-    flex-direction: row;
     align-items: stretch;
 }
 
@@ -81,9 +79,7 @@ nav a {
 }
 
 .build-section .subtitle {
-    max-width: 350px;
     color: white;
-    margin-left: 2rem;
 }
 
 .build-section .container * {
@@ -144,7 +140,9 @@ td, th {
 
 /* Larger than phablet */
 @media (min-width: 550px) {
-
+    #build-url-button {
+        max-width: 250px;
+    }
 }
 
 /* Larger than tablet */
