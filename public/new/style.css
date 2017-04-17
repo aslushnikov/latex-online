@@ -45,6 +45,10 @@ nav a {
     color: white;
 }
 
+.form h5 {
+    color: white;
+}
+
 .examples-container {
     text-align: center;
     display: flex;
