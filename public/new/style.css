@@ -120,6 +120,11 @@ td, th {
     text-align: center;
 }
 
+h4 {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
 /* Smaller than mobile */
 @media (max-width: 400px) {
     .target-row {
