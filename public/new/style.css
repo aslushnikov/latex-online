@@ -60,8 +60,8 @@ nav a {
     --secondary-color: #F57C00;
 }
 #documentation-button {
-    --primary-color: #0361cc;
-    --secondary-color: #0354b1;
+    --primary-color: hsla(217, 51%, 67%, 1);
+    --secondary-color: hsla(217, 51%, 57%, 1);
 }
 #documentation-div {
     margin: 0 auto 40px auto;
