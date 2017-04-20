@@ -52,15 +52,36 @@ function populateExamples() {
         var example = option.__example;
         var urlInput = document.querySelector('#source-url-input');
         var commandSelect = document.querySelector('#command-select');
-        urlInput.value = example.sourceURL;
+        urlInput.value = example.sourceURL + '/blob/master/' + example.target;
         commandSelect.value = example.command;
     }
 }
 
+function isGithub(url) {
+    var parsedURL;
+    try {
+        parsedURL = new URL(url);
+    } catch(e) {
+        return false;
+    }
+    return parsedURL && parsedURL.host === 'github.com';
+}
+
 function onBuildURL() {
+    var sourceURL = form.sourceURL();
+    if (!isGithub(sourceURL)) {
+        alert('not a github repository!');
+        return;
+    }
+    var url = new URL(sourceURL);
+    var tokens = url.pathname.split('/');
+    var github = tokens[1] + '/' + tokens[2];
+    // skip tokens 2 and 3: blob and master.
+    var relativePath = tokens.slice(5).join('/');
+
     var parameters = {
-        sourceURL: form.sourceURL(),
-        target: form.target(),
+        sourceURL: 'https://github.com/' + github,
+        target: relativePath,
         command: form.command()
     }
     var url = generateURL(parameters);
