@@ -50,9 +50,9 @@
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <section class="form">
     <div class="container">
-      <div class='row' id="sourceURL" style="display: flex; align-items: center">
-        <div class="six columns" style="display: flex; flex-direction: column">
-            <h3>Continious integration</h3>
+      <h3>Continious integration</h3>
+      <div class='row'>
+        <div class="six columns">
             <h6>
             LaTeX.Online is an open source service where anyone can build a PDF directly from GIT repository with TeX files.
             </h6>
@@ -60,23 +60,22 @@
             Each time the build URL is visited, the TeX files from your repository will be fetched to generate PDF.
             </h6>
         </div>
-        <div class="six columns" style="display: flex; flex-direction: column; height: 100%;justify-content: flex-end">
+        <div class="six columns">
             <div>
-              <label for="source-url-input">Compilation target:</label>
               <div style='display: flex'>
-                  <input style='flex-grow: 1' id='source-url-input' type="search" placeholder="http://github.com/example/example">
+                  <input style='flex-grow: 1' id='source-url-input' type="search" placeholder="Main file on GitHub">
                   <select id="command-select" style='flex-grow: 0; margin-left: 1rem;'>
                     <option value="pdflatex">pdflatex</option>
                     <option value="xelatex">xelatex</option>
                   </select>
               </div>
             </div>
-            <div style='display: flex; justify-content: space-between;align-items: baseline'>
+            <div>
                 <div id='build-url-button' class="button button-primary">generate build URL</div>
-                <h6>or check</h6>
-                <select id="examples-select" style='flex-grow: 0; margin-left: 1rem;'>
+                <select id="examples-select">
                   <option value=''>Examples</option>
                 </select>
+
             </div>
         </div>
       </div>

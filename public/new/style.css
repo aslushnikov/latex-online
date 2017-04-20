@@ -46,11 +46,12 @@ nav a {
     color: white;
 }
 
+#examples-select {
+    width: 12rem;
+}
+
 /* Larger than phablet */
 @media (min-width: 550px) {
-    #build-url-button {
-        max-width: 250px;
-    }
 }
 
 /* Larger than tablet */
