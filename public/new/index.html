@@ -50,60 +50,54 @@
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <section class="form">
     <div class="container">
-      <h5>You give it a link, it gives you PDF</h5>
-      <div class='row' id="sourceURL">
-        <div class="seven columns">
-          <label for="source-url-input">Git Repository URL</label>
-          <input id='source-url-input' class="u-full-width" type="search" placeholder="http://github.com/example/example">
+      <div class='row' id="sourceURL" style="display: flex; align-items: center">
+        <div class="six columns" style="display: flex; flex-direction: column">
+            <h3>Continious integration</h3>
+            <h6>
+            LaTeX.Online is an open source service where anyone can build a PDF directly from GIT repository with TeX files.
+            </h6>
+            <h6>
+            Each time the build URL is visited, the TeX files from your repository will be fetched to generate PDF.
+            </h6>
         </div>
-        <div class="three columns">
-          <label for="target-input">Main File</label>
-          <input id='target-input' class="u-full-width" type="search" placeholder="document.tex">
-        </div>
-        <div class="two columns">
-          <label for="command-select">Command</label>
-          <select class="u-full-width" id="command-select">
-            <option value="pdflatex">pdflatex</option>
-            <option value="xelatex">xelatex</option>
-          </select>
+        <div class="six columns" style="display: flex; flex-direction: column; height: 100%;justify-content: flex-end">
+            <div>
+              <label for="source-url-input">Compilation target:</label>
+              <div style='display: flex'>
+                  <input style='flex-grow: 1' id='source-url-input' type="search" placeholder="http://github.com/example/example">
+                  <select id="command-select" style='flex-grow: 0; margin-left: 1rem;'>
+                    <option value="pdflatex">pdflatex</option>
+                    <option value="xelatex">xelatex</option>
+                  </select>
+              </div>
+            </div>
+            <div style='display: flex; justify-content: space-between;align-items: baseline'>
+                <div id='build-url-button' class="button button-primary">generate build URL</div>
+                <h6>or check</h6>
+                <select id="command-select" style='flex-grow: 0; margin-left: 1rem;'>
+                    <option value="pdflatex">Examples</option>
+                    <option value="xelatex">Awesome CV</option>
+                </select>
+            </div>
         </div>
       </div>
-      <div class='build-section row'>
-          <div id='build-url-button' class="seven columns button button-primary">generate build URL</div>
-          <span class='subtitle five columns'>This URL will always serve up-to-date PDF.</span>
-      </div>
-    </div>
-  </section>
-  <section class="examples">
-  <div class="container">
-    <table class="u-full-width">
-      <thead>
-        <tr>
-          <th class='sourceurl-row'>Example</th>
-          <th class='target-row'>Main File</th>
-          <th class='command-row'>Command</th>
-          <th class='buildurl-row'>Build URL</th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
     </div>
   </section>
   <!-- Features
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <div class="container information">
+    <h2 style='text-align: center'>Features</h2>
     <div class="row">
       <div class="four columns">
-        <h4>Command-Line Interface</h4>
+        <h5>Command-Line Interface</h5>
         <p>It is possible to edit TeX documents locally and use LaTeX.Online to compile them from the command-line.</p>
       </div>
       <div class="four columns">
-        <h4>API</h4>
+        <h5>API</h5>
         <p>The service supports RESTful API calls. The service will return HTTP.2xx and compiled PDF file on success.</p>
       </div>
       <div class="four columns">
-        <h4>Stand-Alone Version</h4>
+        <h5>Stand-Alone Version</h5>
         <p>LaTeX.Online is hosted and auto-updated on hub.docker.com. Deploy it on your machine either manually or with project Docker.</p>
       </div>
     </div>

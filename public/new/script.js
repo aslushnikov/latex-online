@@ -35,6 +35,7 @@ var examplePresets = [
 
 function populateExamples() {
     var tbody = document.querySelector('.examples tbody');
+    return;
     for (var i = 0; i < examplePresets.length; ++i) {
         var example = examplePresets[i];
 

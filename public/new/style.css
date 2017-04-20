@@ -3,12 +3,18 @@ nav {
     margin-bottom: -1rem;
 }
 .form {
-    background-color: #366ed1;
+    background-color: rgba(38, 43, 48, 0.76);
     padding: 3rem 0 3rem 0;
+    margin-bottom: 2rem;
+    padding: 6rem 0 6rem 0;
 }
 
 .form label {
     white-space: nowrap;
+}
+
+.form h1, .form h2, .form h3, .form h4, .form h5, .form h6, .form span {
+    color: white;
 }
 
 .hbox {
@@ -120,11 +126,6 @@ td, th {
     text-align: center;
 }
 
-h4 {
-    font-size: 2rem;
-    font-weight: 600;
-}
-
 /* Smaller than mobile */
 @media (max-width: 400px) {
     .target-row {
@@ -161,7 +162,7 @@ h4 {
     }
 
     .target-row {
-        display: table-cell;
+        //display: table-cell;
         max-width: 200px;
     }
 }
@@ -173,12 +174,12 @@ h4 {
     }
 
     .target-row {
-        display: table-cell;
+        //display: table-cell;
         max-width: 400px;
     }
 
     .command-row {
-        display: table-cell;
+        //display: table-cell;
         max-width: 100px;
     }
 }
