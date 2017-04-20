@@ -4,8 +4,8 @@
   <!-- Basic Page Needs
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
-  <title>LaTeX.Online</title>
-  <meta name="description" content="">
+  <title>LaTeX.Online - online TeX compilation to PDF</title>
+  <meta name="description" content="Use GIT repository or link to TeX file to create PDF. Compile local TeX files with command-line interface. Open source free web service.">
   <meta name="author" content="">
 
   <!-- Mobile Specific Metas
@@ -40,7 +40,7 @@
       <div class='hbox'>
         <h5><a href='https://latexonline.cc'>LaTeX.Online</a></h5>
         <div class='hbox'>
-          <h6 class='navigation-item'><a href='https://github.com/aslushnikov/latex-online#latex-online-'>Documentation</a></h6>
+          <h6 class='navigation-item'><a href='https://github.com/aslushnikov/latex-online#latex-online-' onClick="ga('send', 'event', 'DocumentationTop', 'Click', 'NewMainPage')" rel="nofollow">Documentation</a></h6>
           <iframe class='github-stars navigation-item' src="https://ghbtns.com/github-btn.html?user=aslushnikov&repo=latex-online&type=star&count=true" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
         </div>
       </div>
@@ -63,7 +63,7 @@
         <div class="six columns">
             <div>
               <div style='display: flex'>
-                  <input style='flex-grow: 1' id='source-url-input' type="search" placeholder="Main file on GitHub">
+                  <input style='flex-grow: 1' id='source-url-input' type="search" placeholder="TeX file on GitHub">
                   <select id="command-select" style='flex-grow: 0; margin-left: 1rem;'>
                     <option value="pdflatex">pdflatex</option>
                     <option value="xelatex">xelatex</option>
@@ -71,8 +71,8 @@
               </div>
             </div>
             <div style='display: flex; justify-content: space-between'>
-                <div id='build-url-button' class="button button-primary">generate build URL</div>
-                <select id="examples-select">
+                <div id='build-url-button' class="button button-primary" onClick="ga('send', 'event', 'GenerateBuildUrl', 'Click', 'NewMainPage')">generate build URL</div>
+                <select id="examples-select" onClick="ga('send', 'event', 'SelectExample', 'Click', 'NewMainPage')">
                   <option value=''>Examples</option>
                 </select>
 
@@ -103,9 +103,20 @@
   <!-- Footer
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <div class="footer">
-    Contact us at <a href="mailto:info@latexonline.cc">info@latexonline.cc</a>
+    Contact us at <a href="mailto:info@latexonline.cc" onClick="ga('send', 'event', 'ContactUs', 'Click', 'NewMainPage')" target="_blank" rel="nofollow">info@latexonline.cc</a>
   </div>
 <!-- End Document
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+
+        <!-- Google Analytics -->
+        <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-31467918-1', 'auto');
+        ga('send', 'pageview');
+        </script>
 </body>
 </html>
