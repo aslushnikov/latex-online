@@ -31,6 +31,7 @@
   <!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="icon" type="image/png" href="/icon.png">
+
 </head>
 <body>
   <!-- Navigation
@@ -40,7 +41,7 @@
       <div class='hbox'>
         <h5><a href='https://latexonline.cc'>LaTeX.Online</a></h5>
         <div class='hbox'>
-          <h6 class='navigation-item'><a href='https://github.com/aslushnikov/latex-online#latex-online-' onClick="ga('send', 'event', 'DocumentationTop', 'Click', 'NewMainPage')" rel="nofollow">Documentation</a></h6>
+          <a href="https://twitter.com/latex_online" class="twitter-follow-button" rel="nofollow" onClick="ga('send', 'event', 'TwitterButton', 'Click', 'NewMainPage')" target="_blank" data-show-count="false">Follow @latex_online</a>
           <iframe class='github-stars navigation-item' src="https://ghbtns.com/github-btn.html?user=aslushnikov&repo=latex-online&type=star&count=true" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
         </div>
       </div>
@@ -52,19 +53,19 @@
     <div class="container">
       <h3>Continious Integration</h3>
       <div class='row'>
-        <div class="six columns">
+        <div class="five columns">
             <h6>
-            LaTeX.Online is an open source service where anyone can build a PDF directly from GIT repository with TeX files.
+            LaTeX.Online is an open source service where anyone can build a PDF from GIT repository with TeX files.
             </h6>
             <h6>
             Each time the build URL is visited, the TeX files from your repository will be fetched to generate PDF.
             </h6>
         </div>
-        <div class="six columns">
+        <div class="seven columns">
             <div>
               <div style='display: flex'>
                   <input style='flex-grow: 1' id='source-url-input' type="search" placeholder="TeX file on GitHub">
-                  <select id="command-select" style='flex-grow: 0; margin-left: 1rem;'>
+                  <select id="command-select" style='flex-grow: 0; margin-left: 1rem; width: 120px;'>
                     <option value="pdflatex">pdflatex</option>
                     <option value="xelatex">xelatex</option>
                   </select>
@@ -99,6 +100,11 @@
         <p>LaTeX.Online is hosted and auto-updated on hub.docker.com. Deploy it on your machine either manually or with project Docker.</p>
       </div>
     </div>
+    <div id="documentation-div">
+    <a href='https://github.com/aslushnikov/latex-online#latex-online-' onClick="ga('send', 'event', 'DocumentationButton', 'Click', 'NewMainPage')" rel="nofollow" id='documentation-button' class="button button-primary">
+      Documentation
+    </a>
+    </div>
   </div>
   <!-- Footer
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -108,15 +114,18 @@
 <!-- End Document
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 
-        <!-- Google Analytics -->
-        <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  <!-- Google Analytics -->
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-        ga('create', 'UA-31467918-1', 'auto');
-        ga('send', 'pageview');
-        </script>
+  ga('create', 'UA-31467918-1', 'auto');
+  ga('send', 'pageview');
+  </script>
+
+  <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
 </body>
 </html>

@@ -3,7 +3,7 @@ nav {
     margin-bottom: -1rem;
 }
 .form {
-    background-color: rgba(0, 46, 93, 0.76);
+    background-color: rgb(42, 76, 130);
     padding: 3rem 0 3rem 0;
     margin-bottom: 2rem;
     padding: 6rem 0 6rem 0;
@@ -58,6 +58,15 @@ nav a {
 #build-url-button {
     --primary-color: #FB8C00;
     --secondary-color: #F57C00;
+}
+#documentation-button {
+    --primary-color: #0361cc;
+    --secondary-color: #0354b1;
+}
+#documentation-div {
+    margin: 0 auto 40px auto;
+    display: block;
+    width: 200px;
 }
 
 /* Larger than phablet */
