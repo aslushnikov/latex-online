@@ -14,7 +14,7 @@ var examplePresets = [
         type: 'git',
         sourceURL: 'https://github.com/posquit0/Awesome-CV',
         target: 'examples/resume.tex',
-        command: 'xelatex'  
+        command: 'xelatex'
     },
     {
         name: 'RoboCup Rule Book',
