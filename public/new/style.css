@@ -29,7 +29,7 @@ nav {
 }
 
 .navigation-item {
-    margin-left: 2em;
+    margin-left: 1em;
 }
 
 nav a {
@@ -61,8 +61,8 @@ nav a {
 }
 
 #documentation-button {
-    --primary-color: hsla(217, 51%, 67%, 1);
-    --secondary-color: hsla(217, 51%, 57%, 1);
+    --primary-color: hsla(217, 51%, 58%, 1);
+    --secondary-color: hsla(217, 51%, 48%, 1);
 }
 
 #documentation-div {
