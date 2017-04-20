@@ -34,49 +34,26 @@ var examplePresets = [
 ];
 
 function populateExamples() {
-    var tbody = document.querySelector('.examples tbody');
-    return;
+    var examplesSelect = document.querySelector('#examples-select');
+
     for (var i = 0; i < examplePresets.length; ++i) {
         var example = examplePresets[i];
-
-        var tr = appendRow(tbody);
-        appendColumn(tr, createLink(example.sourceURL, example.name)).classList.add('sourceurl-row');
-        appendColumn(tr, document.createTextNode(example.target)).classList.add('target-row');
-        appendColumn(tr, document.createTextNode(example.command)).classList.add('command-row');
-        appendColumn(tr, createBuildLink(example)).classList.add('buildurl-row');
+        var option = document.createElement('option');
+        option.__example = example;
+        option.textContent = example.name;
+        examplesSelect.appendChild(option);
     }
+    examplesSelect.addEventListener('input', onExample);
 
-    function appendColumn(tr, node) {
-        var td = document.createElement('td');
-        td.appendChild(node);
-        tr.appendChild(td);
-        return td;
-    }
-
-    function appendRow(tbody) {
-        var tr = document.createElement('tr');
-        tbody.appendChild(tr);
-        return tr;
-    }
-
-    function createLink(href, title) {
-        var node = document.createElement('a');
-        node.textContent = title || href;
-        node.setAttribute('href', href);
-        node.setAttribute('target', '_blank');
-        return node;
-    }
-
-    function createBuildLink(example) {
-        var buildURL = generateURL(example);
-        var node = document.createElement('a');
-        node.textContent = 'open_in_new';
-        node.classList.add('material-icons');
-        node.classList.add('example-build-link');
-        node.setAttribute('href', buildURL);
-        node.setAttribute('target', '_blank');
-        return node;
-        //<i class="material-icons">open_in_new</i>
+    function onExample() {
+        var option = examplesSelect.selectedOptions[0];
+        if (!option || !option.__example)
+            return;
+        var example = option.__example;
+        var urlInput = document.querySelector('#source-url-input');
+        var commandSelect = document.querySelector('#command-select');
+        urlInput.value = example.sourceURL;
+        commandSelect.value = example.command;
     }
 }
 
