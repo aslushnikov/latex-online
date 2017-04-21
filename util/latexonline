@@ -26,7 +26,7 @@ Description:
   This is a command line interface for Latex-Online service.
 
 Options:
-  -d HOST - use HOST instead of latex.aslushnikov.com
+  -d HOST - use custom HOST instead of latexonline.cc
   -h, --help - show this help
   -g - pass git tracked files instead of file1, file2, etc.
   -o - ouput filename or, if a directory name is given, where
@@ -61,7 +61,7 @@ if  [[ ($1 == '-h') || ($1 == '--help') ]]; then
     exit 1;
 fi
 
-host="latex.aslushnikov.com"
+host="https://latexonline.cc"
 GIT_TRACKED=false
 while getopts "fd:go:" flag
 do
@@ -109,7 +109,7 @@ tar -cj $target $supportingFiles > $tarball
 # create tmp file for headers
 dumpHeaders=`mktemp latexCurlHeaders-XXXXXX`
 outputFile=`mktemp latexCurlOutput-XXXXXX`
-curl -D $dumpHeaders -F file=@$tarball "$host/data?target=$target&force=$FORCE" > $outputFile
+curl -L --post301 --post302 --post303 -D $dumpHeaders -F file=@$tarball "$host/data?target=$target&force=$FORCE" > $outputFile
 
 httpResponse=`cat $dumpHeaders | grep ^HTTP | tail -1 | cut -f 2 -d ' '`
 
