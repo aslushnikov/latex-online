@@ -1,128 +1,135 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>LaTeX online - convert GIT repo or TeX file to PDF document.</title>
-        <link rel="stylesheet" href="/css/style.css">
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <meta name="ROBOTS" content="NOODP">
-        <meta name="description" content="Use GIT repository or link to TeX file to create PDF. Compile local TeX files with command-line interface. Open source free web service.">
-        <link rel="author" href="https://plus.google.com/+AndreyLushnikov">
-        <!-- Google Analytics -->
-        <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+<html lang="en">
+<head>
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>LaTeX.Online - online TeX compilation to PDF</title>
+  <meta name="description" content="Use GIT repository or link to TeX file to create PDF. Compile local TeX files with command-line interface. Open source free web service.">
+  <meta name="author" content="">
 
-        ga('create', 'UA-31467918-1', 'auto');
-        ga('send', 'pageview');
-        </script>
-        <link rel="icon" type="image/png" href="/icon.png" />
-        <!-- End Google Analytics -->
-    </head>
-    <body>
-        <div id="wrap">
-            <div id="header">
-                <h1 id="title">LaTeX Online</h1>
-                <sup id="slogan">you give it a link, it gives you PDF</sup>
-            </div>
-            <div id="form">
-                <form action="/compile" method="get">
-                    <label for="url-field">Link to GitHub or TeX file</label>
-                    <input type="url" name="url" id="url-field" size="80"/>
-                    <input type="submit" onClick="ga('send', 'event', 'SubmitButton', 'Click', 'MainPage')"/>
-                </form>
-            </div>
-            <p id="hint">
-                Example:
-<a href="/compile?git=https://github.com/posquit0/Awesome-CV&target=examples/resume.tex&command=xelatex" target="_blank" onClick="ga('send', 'event', 'ExampleLink', 'Click', 'MainPage')">/compile?git=https://github.com/posquit0/Awesome-CV&target=examples/resume.tex&command=xelatex</a></code>
-            </p>
-            <div id="middle">
-                <div id="left">
-                    <h2>Capabilites</h2>
-                    <ol>
-                        <li>
-                            Build a file by a link
-<a href="https://github.com/aslushnikov/latex-online#compile-url">Tell
-me more</a>
-                        </li>
-                        <li>
-                            Build a public <strong>git repo</strong>
-                            <a href="https://github.com/aslushnikov/latex-online#compile-git-repo">Tell
-me more</a>
-                        </li>
-                        <li>
-                            Build any <strong>local</strong>
-                            tex files
-<a href="https://github.com/aslushnikov/latex-online#ccommand-line-interface">Tell
-me more</a>
-                        </li>
-                    </ol>
-                    <h2>Parameters</h2>
-                    <p>You can specify a latex command and a target file as in the example above.</p>
-                    <ol>
-                        <li><code>&command=</code> xelatex or pdflatex</li>
-                    <li><code>&target=</code> define target file in GIT repository</li>
-                </ol>
-                    <h2>What is going to happen</h2>
-                    <ol>
-                        <li>
-                            The file is fetched and saved with a <code>.tex</code>
-                            extension.
-                        </li>
-                        <li>The hash sum of the file is counted.</li>
-                        <li>Based on the hash sum, if we already have the PDF on file, then we return that.</li>
-                        <li>Otherwise we compile the file using <code>pdflatex</code>, store the result in cache, and return it.</li>
-                    </ol>
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
 
-                    <h2>Documentation</h2>
-                    <p>See documentation <a href="https://github.com/aslushnikov/latex-online#readme">here</a>.  </p>
-                </div>
-                <div id="right">
-                    <h2>Examples</h2>
-                    <ol>
-                        <li>See how it's used to create the "See Latest" link in my
-<a href="https://github.com/aslushnikov/diplom-latex#readme">diploma</a>.
-                        </li>
-                        <li>
-                            Click <a href="/compile?url=https://raw.githubusercontent.com/aslushnikov/latex-online/master/sample/sample.tex">here</a>
-                            to compile the source code for <a href="https://github.com/aslushnikov/latex-online/blob/master/sample/sample.tex">this example</a>.
-                        </li>
-                    </ol>
-                    <h2>Command-line interface</h2>
-                    <p>
-                        Check the <a href="https://github.com/aslushnikov/latex-online#command-line-interface">laton</a>
-                        utility to compile local documents with command line.
-                    </p>
-                    <h2>Contacts</h2>
-                    <div>
-                    <p style="display: inline-block; margin-top: 0px;">
-                    <a href="https://github.com/aslushnikov/latex-online" target="_blank" onClick="ga('send', 'event', 'GitHubLink', 'Click', 'MainPage')"><img src="/GitHub.png" width="47" style="margin-right:10px;" title="Fork Latex Online on GitHub"></a></p>
-                    <p style="width: 330px; display: inline-block; margin-top: 0px;">
-                        Need more? Here's the <a href="https://github.com/aslushnikov/latex-online" target="_blank">source code</a>. Feel free to file bugs and send pull requests!
-                    </p>
-                    </div>
-                    <p>
-                        Check out my website for contacts: <a href="http://aslushnikov.com" title="Andrey Lushnikov's website" target="_blank">aslushnikov.com</a>
-                    </p>
-                </div>
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="/normalize.css">
+  <link rel="stylesheet" href="/skeleton.css">
+  <link rel="stylesheet" href="/style.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+
+  <!-- JavaScript
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script type="text/javascript" src="script.js"></script>
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="/icon.png">
+
+</head>
+<body>
+  <!-- Navigation
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <nav>
+    <div class="container">
+      <div class='hbox'>
+        <h5><a href='https://latexonline.cc'>LaTeX.Online</a></h5>
+        <div class='hbox'>
+          <a href="https://twitter.com/latex_online" class="twitter-follow-button" rel="nofollow" onClick="ga('send', 'event', 'TwitterButton', 'Click', 'NewMainPage')" target="_blank" data-show-count="false">Follow @latex_online</a>
+          <iframe class='github-stars navigation-item' src="https://ghbtns.com/github-btn.html?user=aslushnikov&repo=latex-online&type=star&count=true" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <!-- Main Form
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <section class="form">
+    <div class="container">
+      <h3>Continious Integration</h3>
+      <div class='row'>
+        <div class="five columns">
+            <h6>
+            LaTeX.Online is an open source service where anyone can build a PDF from GIT repository with TeX files.
+            </h6>
+            <h6>
+            Each time the build URL is visited, the TeX files from your repository will be fetched to generate PDF.
+            </h6>
+        </div>
+        <div class="seven columns">
+            <div>
+              <div style='display: flex'>
+                  <input style='flex-grow: 1' id='source-url-input' type="search" placeholder="TeX file on GitHub">
+                  <select id="command-select" style='flex-grow: 0; margin-left: 1rem; width: 120px;'>
+                    <option value="pdflatex">pdflatex</option>
+                    <option value="xelatex">xelatex</option>
+                  </select>
+              </div>
             </div>
-            <div id="version">
-                <a href=""></a>
+            <div style='display: flex; justify-content: space-between'>
+                <div id='build-url-button' class="button button-primary" onClick="ga('send', 'event', 'GenerateBuildUrl', 'Click', 'NewMainPage')">generate build URL</div>
+                <select id="examples-select" onClick="ga('send', 'event', 'SelectExample', 'Click', 'NewMainPage')">
+                  <option value=''>Examples</option>
+                </select>
+
             </div>
         </div>
-    </body>
-</html>
+      </div>
+    </div>
+  </section>
+  <!-- Features
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <div class="container information">
+    <h2 style='text-align: center'>Features</h2>
+    <div class="row">
+      <div class="four columns">
+        <h5>Command-Line Interface</h5>
+        <p>Latex.Online has a convenient CLI-tool to compile local documents.
+<a onClick="ga('send', 'event', 'documentation-CLI', 'Click', 'NewMainPage')" href='https://github.com/aslushnikov/latex-online#command-line-interface'>More</a>
+        </p>
+      </div>
+      <div class="four columns">
+        <h5>API</h5>
+        <p>Latex.Online REST API allows to compile git repositories, urls and plain text. The service returns HTTP.2xx and compiled PDF file on success.
+<a onClick="ga('send', 'event', 'documentation-API', 'Click', 'NewMainPage')" href='https://github.com/aslushnikov/latex-online#api'>More</a>
+        </p>
+      </div>
+      <div class="four columns">
+        <h5>Stand-Alone Version</h5>
+        <p>LaTeX.Online is hosted and auto-updated on <a href='https://hub.docker.com/r/aslushnikov/latex-online/'>docker hub</a>. Easily deploy it on your machine with Docker.
+<a onClick="ga('send', 'event', 'documentation-Deploy', 'Click', 'NewMainPage')" href='https://github.com/aslushnikov/latex-online#deploy-with-docker'>More</a>
+        </p>
+      </div>
+    </div>
+    <div id="documentation-div">
+    <a href='https://github.com/aslushnikov/latex-online#latex-online-' onClick="ga('send', 'event', 'DocumentationButton', 'Click', 'NewMainPage')" rel="nofollow" id='documentation-button' class="button button-primary">Documentation</a>
+    </div>
+  </div>
+  <!-- Footer
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <div class="footer">
+    Contact us at <a href="mailto:info@latexonline.cc" onClick="ga('send', 'event', 'ContactUs', 'Click', 'NewMainPage')" target="_blank" rel="nofollow">info@latexonline.cc</a>
+  </div>
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 
-<script>
-// Version is not that important. This new fancy syntax gonna work
-// only in latest chrome.
-document.addEventListener('DOMContentLoaded', async () => {
-    var response = await fetch('/version');
-    var json = await response.json();
-    var link = document.querySelector('#version a');
-    link.setAttribute('href', json.link);
-    link.textContent = 'SHA: ' + json.version;
-});
-</script>
+  <!-- Google Analytics -->
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-31467918-1', 'auto');
+  ga('send', 'pageview');
+  </script>
+
+  <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+</body>
+</html>
