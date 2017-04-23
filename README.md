@@ -11,8 +11,7 @@
 
 This service is developed to compile latex documents online. It can build PDF directly from GIT repository with TeX sources or from any link to TeX file. 
 
-In addition, the service provides command-line utility (for compiling local documents), API and Stand-Alone version.
-See "usage" section for more information.
+In addition, the service provides command-line utility (for compiling local documents), API and Stand-Alone version. See more below.
 
 [Latex-Online](http://latexonline.cc)
 
