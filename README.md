@@ -7,12 +7,12 @@
 [1]: http://www.twitter.com/latex_online
 <!-- Please don't remove this: Grab your social icons from https://github.com/carlsednaoui/gitsocial -->
 
-# Latex-Online [![alt text][1.1]][1]
+# About LaTeX.Online [![alt text][1.1]][1]
 
-Follow Latex-Online on [twitter](http://www.twitter.com/latex_online)! I'll post
-latest news/updates there to keep you up-to-date.
+This service is developed to compile latex documents online. It can build PDF directly from GIT repository with TeX sources or from any link to TeX file. 
 
-## Try it
+In addition, the service provides command-line utility (for compiling local documents), API and Stand-Alone version.
+See "usage" section for more information.
 
 [Latex-Online](http://latexonline.cc)
 
@@ -44,16 +44,6 @@ latest news/updates there to keep you up-to-date.
             - [Dependencies](#dependencies)
             - [Installation](#installation)
             - [Running](#running)
-
-## About
-
-This is a small service developed to
-compile latex documents online. The slogan is: "You give it a link, it gives you
-PDF.", but the service evolved and now you can give it a git repo as well.
-
-Additionally the service has a command-line utility that allows you for compiling
-local documents.
-See "usage" section for more information.
 
 ## Capabilities
 
