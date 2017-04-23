@@ -18,9 +18,6 @@ In addition, the service provides command-line utility (for compiling local docu
 ## Contents
 
 - [Latex-Online](#latex-online)
-    - [Try it](#try-it)
-    - [Contents](#contents)
-    - [About](#about)
     - [Capabilities](#capabilities)
     - [API](#api)
         - [Compile url](#compile-url)
