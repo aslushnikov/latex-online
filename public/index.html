@@ -39,7 +39,7 @@
   <nav>
     <div class="container">
       <div class='hbox'>
-        <h5><a href='https://latexonline.cc'>LaTeX.Online</a></h5>
+        <h5><a href='https://latexonline.cc' title="LaTeX.Online main page">LaTeX.Online</a></h5>
         <div class='hbox'>
           <a href="https://twitter.com/latex_online" class="twitter-follow-button" rel="nofollow" onClick="ga('send', 'event', 'TwitterButton', 'Click', 'NewMainPage')" target="_blank" data-show-count="false">Follow @latex_online</a>
           <iframe class='github-stars navigation-item' src="https://ghbtns.com/github-btn.html?user=aslushnikov&repo=latex-online&type=star&count=true" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
@@ -65,7 +65,7 @@
             <div>
               <div style='display: flex'>
                   <input style='flex-grow: 1' id='source-url-input' type="search" placeholder="TeX file on GitHub">
-                  <select id="command-select" style='flex-grow: 0; margin-left: 1rem; width: 120px;'>
+                  <select id="command-select" style='flex-grow: 0; margin-left: 1rem; width: 120px;' onClick="ga('send', 'event', 'SelectLatexCommand', 'Click', 'NewMainPage')">
                     <option value="pdflatex">pdflatex</option>
                     <option value="xelatex">xelatex</option>
                   </select>
@@ -90,19 +90,19 @@
       <div class="four columns">
         <h5>Command-Line Interface</h5>
         <p>Latex.Online has a convenient CLI-tool to compile local documents.
-<a onClick="ga('send', 'event', 'documentation-CLI', 'Click', 'NewMainPage')" href='https://github.com/aslushnikov/latex-online#command-line-interface'>More</a>
+<a onClick="ga('send', 'event', 'documentation-CLI', 'Click', 'NewMainPage')" href='https://github.com/aslushnikov/latex-online#command-line-interface' rel="nofollow">More</a>
         </p>
       </div>
       <div class="four columns">
         <h5>API</h5>
-        <p>Latex.Online REST API allows to compile git repositories, urls and plain text. The service returns HTTP.2xx and compiled PDF file on success.
-<a onClick="ga('send', 'event', 'documentation-API', 'Click', 'NewMainPage')" href='https://github.com/aslushnikov/latex-online#api'>More</a>
+        <p>REST API allows to compile GIT repositories, URLs and plain text. The service returns HTTP.2xx and compiled PDF file on success.
+<a onClick="ga('send', 'event', 'documentation-API', 'Click', 'NewMainPage')" href='https://github.com/aslushnikov/latex-online#api' rel="nofollow">More</a>
         </p>
       </div>
       <div class="four columns">
         <h5>Stand-Alone Version</h5>
-        <p>LaTeX.Online is hosted and auto-updated on <a href='https://hub.docker.com/r/aslushnikov/latex-online/'>docker hub</a>. Easily deploy it on your machine with Docker.
-<a onClick="ga('send', 'event', 'documentation-Deploy', 'Click', 'NewMainPage')" href='https://github.com/aslushnikov/latex-online#deploy-with-docker'>More</a>
+        <p>LaTeX.Online is hosted and auto-updated on <a href='https://hub.docker.com/r/aslushnikov/latex-online/' rel="nofollow" target="_blank" onClick="ga('send', 'event', 'docker-hub', 'Click', 'NewMainPage')">Docker Hub</a>. Easily deploy it on your machine with Docker.
+<a onClick="ga('send', 'event', 'documentation-Deploy', 'Click', 'NewMainPage')" href='https://github.com/aslushnikov/latex-online#deploy-with-docker' rel="nofollow">More</a>
         </p>
       </div>
     </div>
