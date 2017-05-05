@@ -21,7 +21,7 @@
 
 if [[ $# != 5 ]]; then
     echo "Not enough arguments!" >&2
-    echo "Usage: bash compile.sh [rootdir] [target] [outputFile] [logFile]" >&2
+    echo "Usage: bash compile.sh [rootdir] [target] [command] [outputFile] [logFile]" >&2
     exit 1
 fi
 
@@ -32,11 +32,8 @@ outputFile=$4
 logFile=$5
 
 cd $rootdir
-cd $(dirname $target)
-basename=`basename $target`
-
 LATEXRUN="$(dirname $0)"/../latexrun/latexrun
-PYTHONUNBUFFERED=true $LATEXRUN --verbose-cmd --latex-cmd=${command} -Wall -o $outputFile $basename &>$logFile
+PYTHONUNBUFFERED=true $LATEXRUN --verbose-cmd --latex-cmd=${command} -Wall -o $outputFile $target &>$logFile
 
 # if no PDF created, then exitcode 1
 if [[ ! -e $outputFile ]]; then

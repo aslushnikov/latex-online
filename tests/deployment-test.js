@@ -19,8 +19,15 @@ describe(baseUrl, function() {
             });
         });
         describe('xelatex command', function() {
-            it('https://github.com/posquit0/Awesome-CV&target=examples/resume.tex&command=xelatex', async function() {
-                var url = baseUrl +  '/compile?git=https%3A%2F%2Fgithub.com%2Fposquit0%2FAwesome-CV&target=examples%2Fresume.tex&command=xelatex';
+            it('https://github.com/aslushnikov/Awesome-CV&target=examples/resume.tex&command=xelatex', async function() {
+                var url = baseUrl +  '/compile?git=https%3A%2F%2Fgithub.com%2Faslushnikov%2FAwesome-CV&target=examples%2Fresume.tex&command=xelatex';
+                var request = createGetRequest(url);
+                await expectPdf(request);
+            });
+        });
+        describe('workdir parameter', function() {
+            it('https://github.com/aslushnikov/Awesome-CV&target=examples/coverletter.tex&command=xelatex&workdir=.', async function() {
+                var url = baseUrl +  '/compile?git=https%3A%2F%2Fgithub.com%2Faslushnikov%2FAwesome-CV&target=examples%2Fcoverletter.tex&command=xelatex&workdir=.';
                 var request = createGetRequest(url);
                 await expectPdf(request);
             });
