@@ -1,0 +1,40 @@
+<script>
+document.addEventListener('DOMContentLoaded', function onDOMContentLoaded() {
+    document.querySelector('#update').addEventListener('click', updatePreview);
+
+    function updatePreview() {
+      var text = document.querySelector('textarea').value;
+      var tex = [
+        '\\documentclass{article}',
+        '\\begin{document}',
+        text,
+        '\\end{document}',
+      ].join('\n');
+      var iframe = document.querySelector('iframe');
+      iframe.src = 'https://latexonline.cc/compile?text=' + encodeURIComponent(tex);
+    }
+});
+</script>
+<style>
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+iframe {
+    width: 800px;
+    height: 800px;
+}
+textarea {
+    width: 400px;
+}
+</style>
+<h1>PDF Generator</h1>
+<textarea>hello, tex!</textarea>
+<div>
+  <button id='update'>preview PDF</button>
+</div>
+<h4>PDF preview</h4>
+<iframe>
+</iframe>
+
