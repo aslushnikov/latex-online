@@ -105,6 +105,10 @@ latexonline.cc/compile?git=https://github.com/aslushnikov/diplom-latex&target=di
 For every compilation request you can pass the following additional arguments:
 
 - `force=true` This will force cache skipping and document recompilation
+- `command=xelatex` This will compile document with `xelatex` compiler. Other available options are:
+    - `pdflatex`
+    - `xelatex`
+    - `lualatex`
 - `download=sample.pdf` This will initiate downloading of the resulting PDF
     into the file with the name "sample.pdf"
 
