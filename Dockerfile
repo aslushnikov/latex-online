@@ -3,7 +3,7 @@
 # VERSION       1
 
 # use the ubuntu base image provided by dotCloud
-FROM node:7
+FROM node:8.9.1-stretch
 
 MAINTAINER Andrey Lushnikov aslushnikov@gmail.com
 
