@@ -3,12 +3,12 @@
 # VERSION       1
 
 # use the ubuntu base image provided by dotCloud
-FROM node:7
+FROM node:8.9.1-stretch
 
 MAINTAINER Andrey Lushnikov aslushnikov@gmail.com
 
 # Sorted list of used packages.
-RUN apt-get update && apt-get install -y \
+RUN apt-get clean && apt-get update && apt-get install -y \
     biber \
     cm-super \
     fontconfig \
@@ -20,7 +20,6 @@ RUN apt-get update && apt-get install -y \
     texlive-fonts-extra \
     texlive-generic-extra \
     texlive-lang-all \
-    texlive-lang-swedish \
     texlive-latex-base \
     texlive-latex-extra \
     texlive-math-extra \
