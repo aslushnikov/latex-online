@@ -60,7 +60,7 @@ function sendError(res, userError) {
     res.status(statusCode).send(error)
 }
 
-async function handleResult(res, preparation, force) {
+async function handleResult(res, preparation, force, downloadName) {
     var {request, downloader, userError} = preparation;
     if (!request) {
         sendError(res, userError);
@@ -79,6 +79,8 @@ async function handleResult(res, preparation, force) {
     if (compilation.userError) {
         sendError(res, compilation.userError);
     } else if (compilation.success) {
+        if (downloadName)
+          res.set('content-disposition', `attachment; filename="${downloadName}"`);
         res.status(200).sendFile(compilation.outputPath(), {acceptRanges: false});
     } else {
         res.status(400).sendFile(compilation.logPath(), {acceptRanges: false});
@@ -145,7 +147,7 @@ app.get('/compile', async (req, res) => {
         preparation = await latexOnline.prepareGitCompilation(req.query.git, req.query.target, 'master', command, workdir);
     }
     if (preparation)
-        handleResult(res, preparation, forceCompilation);
+        handleResult(res, preparation, forceCompilation, req.query.download);
     else
         sendError(res, 'ERROR: failed to parse request: ' + JSON.stringify(req.query));
 });
@@ -162,7 +164,7 @@ app.post('/data', upload.any(), async (req, res) => {
     var file = req.files[0];
     var preparation = await latexOnline.prepareTarballCompilation(file.path, req.query.target, command);
     if (preparation)
-        await handleResult(res, preparation, true /* force */);
+        await handleResult(res, preparation, true /* force */, null /* downloadName */);
     else
         sendError(res, 'ERROR: failed to process file upload!');
     utils.unlink(file.path);
