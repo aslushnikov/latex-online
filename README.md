@@ -122,7 +122,7 @@ need a tool called `laton`.
 
 
 ```
-curl -L https://raw.githubusercontent.com/aslushnikov/latex-online/master/util/laton > laton && chmod 755 laton
+curl -L https://raw.githubusercontent.com/aslushnikov/latex-online/master/util/latexonline > laton && chmod 755 laton
 ```
 
 This command will result in a `laton` script created in a current directory. Put it somewhere
