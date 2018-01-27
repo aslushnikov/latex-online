@@ -111,8 +111,7 @@ For every compilation request you can pass the following additional arguments:
     - `lualatex`
 - `download=sample.pdf` This will initiate downloading of the resulting PDF
     into the file with the name "sample.pdf"
-- `revision=some_revision_identifier`This will clone the repo with a specific branch, tag or commit
-    identifier
+- `revision=some_revision_identifier`This will clone the repo with a specific branch or tag
 
 ## Command-line interface
 
