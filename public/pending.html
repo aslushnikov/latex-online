@@ -18,10 +18,14 @@ if (location.search.length >= 1) {
     ga('create', 'UA-31467918-1', 'auto');
     ga('set', 'page', virtualPageURL);
     ga('send', 'pageview', {
-        'hitCallback': function() {
-            document.location.replace(redirectURL);
-        }
+      'hitCallback': hitCallback
     });
+    // GA might never call the hitCallback - call it automatically in 3 seconds.
+    setTimeout(hitCallback, 3000);
+
+    function hitCallback() {
+      document.location.replace(redirectURL);
+    }
 }
 </script>
 <!-- End Google Analytics -->
