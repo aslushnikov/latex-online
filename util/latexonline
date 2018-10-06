@@ -32,6 +32,7 @@ Options:
   -o - ouput filename or, if a directory name is given, where
       to put the file with a default name
   -f - force compiling. Will recompile file not relying on cache
+  -c - select compiler command. Available options are lualatex, xelatex and pdflatex (default)
 
 Examples:
   1. If you've got a simple tex file FOO.TEX that doesn't rely on any other files.
@@ -62,11 +63,19 @@ if  [[ ($1 == '-h') || ($1 == '--help') ]]; then
 fi
 
 host="https://latexonline.cc"
+command="pdflatex"
 GIT_TRACKED=false
-while getopts "fd:go:" flag
+while getopts "fd:c:go:" flag
 do
     if [ $flag == "d" ]; then
         host=$OPTARG
+    elif [[ $flag == "c" ]]; then
+        if [[ $OPTARG =~ "pdflatex"|"xelatex"|"lualatex" ]]; then
+            command=$OPTARG
+        else
+            echo "Only pdflatex, xelatex and lualatex compilers are supported."
+            exit 1
+        fi
     elif [[ $flag == "g" ]]; then
         GIT_TRACKED=true
     elif [[ $flag == "o" ]]; then
@@ -109,7 +118,7 @@ tar -cj $target $supportingFiles > $tarball
 # create tmp file for headers
 dumpHeaders=`mktemp latexCurlHeaders-XXXXXX`
 outputFile=`mktemp latexCurlOutput-XXXXXX`
-curl -L --post301 --post302 --post303 -D $dumpHeaders -F file=@$tarball "$host/data?target=$target&force=$FORCE" > $outputFile
+curl -L --post301 --post302 --post303 -D $dumpHeaders -F file=@$tarball "$host/data?target=$target&force=$FORCE&command=$command" > $outputFile
 
 httpResponse=`cat $dumpHeaders | grep ^HTTP | tail -1 | cut -f 2 -d ' '`
 
