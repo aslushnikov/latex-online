@@ -23,6 +23,7 @@ RUN apt-get clean && apt-get update && apt-get install -y \
     texlive-latex-base \
     texlive-latex-extra \
     texlive-math-extra \
+    texlive-publishers \
     texlive-science \
     texlive-xetex
 
