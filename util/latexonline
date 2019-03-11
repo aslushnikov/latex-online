@@ -20,7 +20,7 @@ function cleanup {
 
 function usage {
    echo "Usage:
-  bash $0 [-h host] [-o output] [-g] main.tex [file1] [file2]...
+  bash $0 [-d host] [-o output] [-g] main.tex [file1] [file2]...
 
 Description:
   This is a command line interface for Latex-Online service.
@@ -29,7 +29,7 @@ Options:
   -d HOST - use custom HOST instead of latexonline.cc
   -h, --help - show this help
   -g - pass git tracked files instead of file1, file2, etc.
-  -o - ouput filename or, if a directory name is given, where
+  -o - output filename or, if a directory name is given, where
       to put the file with a default name
   -f - force compiling. Will recompile file not relying on cache
   -c - select compiler command. Available options are lualatex, xelatex and pdflatex (default)
