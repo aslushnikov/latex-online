@@ -6,12 +6,13 @@
 #####################################################################################
 # Latex-Online container
 
-MAINTAINER Andrey Lushnikov aslushnikov@gmail.com
-
 # Rely on official texlive base image.
 # Description: https://gitlab.com/islandoftex/images/texlive
 # Registry viewer: https://gitlab.com/islandoftex/images/texlive/container_registry
 FROM registry.gitlab.com/islandoftex/images/texlive:TL2020-2020-05-17-04-19-src
+
+MAINTAINER Andrey Lushnikov aslushnikov@gmail.com
+
 
 # Install git & node dependencies.
 RUN apt-get clean && apt-get update && apt-get install -y \
