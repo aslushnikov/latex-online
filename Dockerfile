@@ -13,17 +13,9 @@ FROM registry.gitlab.com/islandoftex/images/texlive:TL2020-2020-05-17-04-19-src
 
 MAINTAINER Andrey Lushnikov aslushnikov@gmail.com
 
-
-# Install git & node dependencies.
-RUN apt-get clean && apt-get update && apt-get install -y \
-    git-core \
-    curl \
-    gnupg
-
-# Install node.js
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
-    apt-get install -y nodejs
-
+# Install git & Node.JS
+RUN apt-get clean && apt-get update && apt-get install -y git-core nodejs npm && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY ./util/docker-entrypoint.sh /
 
