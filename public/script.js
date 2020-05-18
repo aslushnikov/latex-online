@@ -90,12 +90,12 @@ function onBuildURL() {
 
 function generateURL(parameters) {
     var components = [
-        BASE_URL + '/compile',
+        '/compile',
         '?git=' + parameters.sourceURL,
         '&target=' + parameters.target,
         '&command=' + parameters.command
     ];
-    return components.join(''); 
+    return components.join('');
 }
 
 // ----- Form -----
