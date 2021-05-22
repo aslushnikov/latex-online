@@ -13,4 +13,4 @@ export VERSION=$(git rev-parse HEAD)
 
 # use forever to manage service
 npm install -g forever
-forever app.js
+forever --killTree app.js
