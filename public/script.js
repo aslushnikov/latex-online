@@ -13,6 +13,7 @@ var examplePresets = [
         name: 'Awesome CV',
         type: 'git',
         sourceURL: 'https://github.com/posquit0/Awesome-CV',
+        texlive: 'texlive2016',
         target: 'examples/resume.tex',
         command: 'xelatex'
     },
@@ -20,6 +21,7 @@ var examplePresets = [
         name: 'RoboCup Rule Book',
         type: 'git',
         sourceURL: 'http://github.com/RoboCupAtHome/RuleBook.git',
+        texlive: 'texlive2020',
         target: 'Rulebook.tex',
         command: 'pdflatex'
     },
@@ -27,10 +29,10 @@ var examplePresets = [
         name: 'Machine Learning Cheat Sheet',
         type: 'git',
         sourceURL: 'https://github.com/soulmachine/machine-learning-cheat-sheet',
+        texlive: 'texlive2016',
         target: 'machine-learning-cheat-sheet.tex',
         command: 'xelatex'
     },
-
 ];
 
 function populateExamples() {
@@ -52,8 +54,10 @@ function populateExamples() {
         var example = option.__example;
         var urlInput = document.querySelector('#source-url-input');
         var commandSelect = document.querySelector('#command-select');
+        var texliveSelect = document.querySelector('#texlive-select');
         urlInput.value = example.sourceURL + '/blob/master/' + example.target;
         commandSelect.value = example.command;
+        texliveSelect.value = example.texlive;
     }
 }
 
@@ -82,15 +86,20 @@ function onBuildURL() {
     var parameters = {
         sourceURL: 'https://github.com/' + github,
         target: relativePath,
-        command: form.command()
-    }
+        command: form.command(),
+        texlive: form.texlive(),
+    };
     var url = generateURL(parameters);
     window.open(url);
 }
 
 function generateURL(parameters) {
+    const texliveToURLPrefix = {
+      texlive2016: 'https://latexonline.cc/compile',
+      texlive2020: 'https://texlive2020.latexonline.cc/compile',
+    };
     var components = [
-        '/compile',
+        texliveToURLPrefix[parameters.texlive],
         '?git=' + parameters.sourceURL,
         '&target=' + parameters.target,
         '&command=' + parameters.command
@@ -104,6 +113,7 @@ function Form() {
     this._sourceURLInput = document.querySelector('#source-url-input');
     this._targetInput = document.querySelector('#target-input');
     this._commandSelect = document.querySelector('#command-select');
+    this._texliveSelect = document.querySelector('#texlive-select');
 }
 
 Form.prototype = {
@@ -129,5 +139,13 @@ Form.prototype = {
 
     setCommand: function(value) {
         this._commandSelect.value = value;
+    },
+
+    texlive: function() {
+        return this._texliveSelect.value;
+    },
+
+    setTexlive: function(value) {
+        this._texliveSelect.value = value;
     },
 }

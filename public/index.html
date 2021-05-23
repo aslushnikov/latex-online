@@ -65,6 +65,10 @@
             <div>
               <div style='display: flex'>
                   <input style='flex-grow: 1' id='source-url-input' type="search" placeholder="TeX file on GitHub">
+                  <select id="texlive-select" style='flex-grow: 0; margin-left: 1rem; width: 120px;' onClick="ga('send', 'event', 'SelectLatexCommand', 'Click', 'NewMainPage')">
+                    <option value="texlive2016">texlive2016</option>
+                    <option value="texlive2020">texlive2020</option>
+                  </select>
                   <select id="command-select" style='flex-grow: 0; margin-left: 1rem; width: 120px;' onClick="ga('send', 'event', 'SelectLatexCommand', 'Click', 'NewMainPage')">
                     <option value="pdflatex">pdflatex</option>
                     <option value="xelatex">xelatex</option>
