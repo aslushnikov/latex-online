@@ -46,11 +46,9 @@ function onInitialized(latex) {
 // Initialize server.
 var express = require('express');
 var compression = require('compression');
-var useragent = require('express-useragent');
 
 var app = express();
 app.use(compression());
-app.use(useragent.express());
 app.use(express.static(__dirname + '/public'));
 
 function sendError(res, userError) {
