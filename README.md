@@ -162,6 +162,17 @@ laton -g main.tex
 
 The script will behave as if `main.tex` includes each file stored in your git repo.
 
+### Example 3: compile remote git repo (which you have checked out locally)
+
+In case you store all your `.tex` and supporting files in a git repo, you
+can compile the project with the command
+
+```
+laton -r main.tex
+```
+
+The script will behave trigger the build with the git repository (which is received from git remote command). It uses the current relative dir as workdir and the file as base file.
+
 ## How it works?
 
 In this section a brief description of the service from the inside is given.

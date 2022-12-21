@@ -33,6 +33,7 @@ Options:
       to put the file with a default name
   -f - force compiling. Will recompile file not relying on cache
   -c - select compiler command. Available options are lualatex, xelatex and pdflatex (default)
+  -r - pass repo instead of files
 
 Examples:
   1. If you've got a simple tex file FOO.TEX that doesn't rely on any other files.
@@ -65,7 +66,8 @@ fi
 host="https://texlive2020.latexonline.cc"
 command="pdflatex"
 GIT_TRACKED=false
-while getopts "fd:c:go:" flag
+GIT_REPO=false
+while getopts "fd:c:gro:" flag
 do
     if [ $flag == "d" ]; then
         host=$OPTARG
@@ -76,6 +78,8 @@ do
             echo "Only pdflatex, xelatex and lualatex compilers are supported."
             exit 1
         fi
+    elif [[ $flag == "r" ]]; then
+        GIT_REPO=true
     elif [[ $flag == "g" ]]; then
         GIT_TRACKED=true
     elif [[ $flag == "o" ]]; then
@@ -113,12 +117,23 @@ if [[ $GIT_TRACKED == true ]]; then
 else
     supportingFiles=$@
 fi
-tar -cj $target $supportingFiles > $tarball
 
 # create tmp file for headers
 dumpHeaders=`mktemp latexCurlHeaders-XXXXXX`
 outputFile=`mktemp latexCurlOutput-XXXXXX`
-curl -L --post301 --post302 --post303 -D $dumpHeaders -F file=@$tarball "$host/data?target=$target&force=$FORCE&command=$command" > $outputFile
+
+if [[ $GIT_REPO == true ]]; then
+  GIT_URL=$(git remote get-url origin)
+  GIT_BRANCH=$(git branch --show-current)
+  GIT_PATH=$( git rev-parse --show-prefix)
+
+  curl -L -s -D $dumpHeaders "$host/compile?git=$GIT_URL&target=$GIT_PATH$target&force=$FORCE&workdir=$GIT_PATH&command=$command&branch=$GIT_BRANCH" > $outputFile
+else
+
+tar -cj $target $supportingFiles > $tarball
+
+curl -L -s --post301 --post302 --post303 -D $dumpHeaders -F file=@$tarball "$host/data?target=$target&force=$FORCE&command=$command" > $outputFile
+fi
 
 httpResponse=`cat $dumpHeaders | grep ^HTTP | tail -1 | cut -f 2 -d ' '`
 
