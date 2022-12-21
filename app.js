@@ -119,7 +119,8 @@ app.get('/compile', async (req, res) => {
         preparation = await latexOnline.prepareURLCompilation(req.query.url, command);
     } else if (req.query.git) {
         var workdir = req.query.workdir || '';
-        preparation = await latexOnline.prepareGitCompilation(req.query.git, req.query.target, 'master', command, workdir);
+        var branch = req.query.branch || 'main';
+        preparation = await latexOnline.prepareGitCompilation(req.query.git, req.query.target,branch, command, workdir);
     }
     if (preparation)
         handleResult(res, preparation, forceCompilation, req.query.download);
