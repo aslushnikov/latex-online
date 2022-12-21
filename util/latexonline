@@ -123,9 +123,9 @@ dumpHeaders=`mktemp latexCurlHeaders-XXXXXX`
 outputFile=`mktemp latexCurlOutput-XXXXXX`
 
 if [[ $GIT_REPO == true ]]; then
-  GIT_URL=$(git remote get-url origin)
+  GIT_URL=$(git remote get-url $(git for-each-ref --format='%(upstream:short)' $(git symbolic-ref -q HEAD)|cut -d/ -f1))
   GIT_BRANCH=$(git branch --show-current)
-  GIT_PATH=$( git rev-parse --show-prefix)
+  GIT_PATH=$(git rev-parse --show-prefix)
 
   curl -L -s -D $dumpHeaders "$host/compile?git=$GIT_URL&target=$GIT_PATH$target&force=$FORCE&workdir=$GIT_PATH&command=$command&branch=$GIT_BRANCH" > $outputFile
 else
