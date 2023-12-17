@@ -27,6 +27,10 @@ RUN apt-get clean && apt-get update && apt-get install -y \
     texlive-science \
     texlive-xetex
 
+RUN apt-get update && \
+    apt-get install ca-certificates -y && \
+    update-ca-certificates
+
 # Add xindy-2.2 instead of makeindex.
 ADD ./packages/xindy-2.2-rc2-linux.tar.gz /opt
 ENV PATH="/opt/xindy-2.2/bin:${PATH}"
