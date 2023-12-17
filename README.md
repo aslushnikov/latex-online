@@ -29,6 +29,7 @@ In addition, the service provides command-line utility (for compiling local docu
         - [Example 1: compile single file](#example-1-compile-single-file)
         - [Example 2: compile files with dependencies](#example-2-compile-files-with-dependencies)
         - [Example 3: compile local git repo](#example-3-compile-local-git-repo)
+        - [Example 4: compile remote git repo](#example-4-compile-remote-git-repo)
     - [How it works?](#how-it-works)
         - [1. Given a link to a `.TEX` file, compile it](#1-given-a-link-to-a-tex-file-compile-it)
         - [2. Given a `.TEX` file content, compile it](#2-given-a-tex-file-content-compile-it)
@@ -161,6 +162,18 @@ laton -g main.tex
 ```
 
 The script will behave as if `main.tex` includes each file stored in your git repo.
+
+### Example 4: compile remote git repo 
+
+Assumed your current directory is the local checkout of the remote git.
+In case you store all your `.tex` and supporting files in a git repo, you
+can compile the project with the command
+
+```
+laton -r main.tex
+```
+
+The script will behave trigger the build with the git repository (which is received from git remote command). It uses the current relative dir as workdir and the file as base file.
 
 ## How it works?
 
