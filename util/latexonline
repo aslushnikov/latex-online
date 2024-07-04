@@ -124,7 +124,7 @@ httpResponse=`cat $dumpHeaders | grep ^HTTP | tail -1 | cut -f 2 -d ' '`
 
 if [[ $httpResponse != 2* ]];
 then
-    echo Errors during compiling TeX document
+    echo Errors during compiling TeX document: $httpResponse
     # if so then output is not pdfFile but plain text one with errors
     # trap will clean the file
     cat $outputFile >&2
