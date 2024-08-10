@@ -111,6 +111,8 @@ For every compilation request you can pass the following additional arguments:
     - `lualatex`
 - `download=sample.pdf` This will initiate downloading of the resulting PDF
     into the file with the name "sample.pdf"
+- `workdir=<dir>` **git only** This is the working directory relative to the root of the repository.
+- `branch=master`  **git only** Select branch to build.
 
 ## Command-line interface
 
