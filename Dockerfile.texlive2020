@@ -9,7 +9,7 @@
 # Rely on official texlive base image.
 # Description: https://gitlab.com/islandoftex/images/texlive
 # Registry viewer: https://gitlab.com/islandoftex/images/texlive/container_registry
-FROM registry.gitlab.com/islandoftex/images/texlive:TL2020-2020-05-17-04-19-src
+FROM registry.gitlab.com/islandoftex/images/texlive:TL2020-historic-src
 
 MAINTAINER Andrey Lushnikov aslushnikov@gmail.com
 
